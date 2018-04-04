@@ -39,9 +39,11 @@ class UserController extends AbstractController
 
         if ($user && $user->checkPassword($_POST['pass'],$email)){
             $user->startConnection();
-            $json=[];
-            $json['content'] = $this->render('homepage.html.twig');
-            return new JsonResponse($json);
+            //$html = $this->render('homepage.html.twig');
+            $html = file_get_contents('index.html');
+            $json=['content'=>$html];
+            return $this->json($json);
+            //return $this->render('homepage.html.twig');
         }else{
             $json=['loginError'=>'<p>Identifiants invalides</p>'];
             return new JsonResponse($json);

@@ -1,4 +1,5 @@
-$(document).ready(function () {
+/*$(document).ready(function () {
+
     $( "form" ).submit(function(e) {
         e.preventDefault();
 
@@ -35,7 +36,7 @@ function processData(data) {
     });
 }
 
-
+*/
 (function ($) {
     "use strict";
 

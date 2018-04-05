@@ -46,7 +46,7 @@ class User
 
 
     public function startConnection(){
-        //session_start();
+        session_start();
         $_SESSION['user'] = $this;
     }
 

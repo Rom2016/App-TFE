@@ -23,8 +23,12 @@ class UserController extends AbstractController
     public function loginpage()
     {
 
-        $file = "login_form.html";
-        return new Response(file_get_contents($file));
+        if(isset($_SESSION['user'])){
+            return $this->render('homepage.html.twig',['title'=>'Accueil']);
+        }else{
+            return $this->render('login.html.twig',['title'=>'Bienvenue']);
+        }
+
     }
 
     /**
@@ -39,14 +43,9 @@ class UserController extends AbstractController
 
         if ($user && $user->checkPassword($_POST['pass'],$email)){
             $user->startConnection();
-            //$html = $this->render('homepage.html.twig');
-            $html = file_get_contents('index.html');
-            $json=['content'=>$html];
-            return $this->json($json);
-            //return $this->render('homepage.html.twig');
+            return $this->render('homepage.html.twig',['title'=>'Accueil']);
         }else{
-            $json=['loginError'=>'<p>Identifiants invalides</p>'];
-            return new JsonResponse($json);
+            return $this->render('login.html.twig',['title'=>"Bienvenue",'error'=>'Identifiants invalides']);
         }
     }
 

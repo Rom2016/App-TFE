@@ -18,17 +18,19 @@ use App\Entity\User;
 class UserController extends AbstractController
 {
     /**
-     * @Route("/", name="homepage", methods="GET")
+     * @Route("/", name="homepage")
      */
-    public function loginpage()
+    public function homepage()
     {
 
         if(isset($_SESSION['user'])){
-            return $this->render('homepage.html.twig',['title'=>'Accueil']);
-        }else{
-            return $this->render('login.html.twig',['title'=>'Bienvenue']);
+            return $this->render('homepage.html.twig',['title'=>'Accueil','fName'=>$_SESSION['user']->first_name,'sName'=>$_SESSION['user']->second_name]);
         }
-
+        elseif(isset($_POST['user']) && isset($_POST['pass'])){
+            return $this->userConnection();
+        }else{
+            return $this->render('login.html.twig',['title'=>"Bienvenue"]);
+        }
     }
 
     /**
@@ -43,7 +45,7 @@ class UserController extends AbstractController
 
         if ($user && $user->checkPassword($_POST['pass'],$email)){
             $user->startConnection();
-            return $this->render('homepage.html.twig',['title'=>'Accueil']);
+            return $this->render('homepage.html.twig',['title'=>'Accueil','fName'=>$_SESSION['user']->first_name,'sName'=>$_SESSION['user']->second_name]);
         }else{
             return $this->render('login.html.twig',['title'=>"Bienvenue",'error'=>'Identifiants invalides']);
         }
@@ -67,8 +69,8 @@ class UserController extends AbstractController
      */
     public function userLogoff()
     {
-        $_SESSION['user']->logoff();
-        $this->homepage();
+       $_SESSION['user']->logoff();
+       return $this->render('login.html.twig',['title'=>'Bienvenue']);
     }
 
 }

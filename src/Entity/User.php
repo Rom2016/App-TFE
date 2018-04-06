@@ -11,9 +11,9 @@ class User
 {
     function __construct($prenom,$nom,$mdp,$email)
     {
-        $this->prenom = $prenom;
-        $this->nom = $nom;
-        $this->mdp = $mdp;
+        $this->first_name = $prenom;
+        $this->second_name = $nom;
+        $this->pass = $mdp;
         $this->email = $email;
     }
 
@@ -44,6 +44,10 @@ class User
      */
     public $email;
 
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    public $profile_pic;
 
     public function startConnection(){
         session_start();
@@ -52,6 +56,7 @@ class User
 
     public function logoff(){
         session_destroy();
+
     }
 
     public function checkPassword($pass,$salt){

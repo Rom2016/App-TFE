@@ -19,6 +19,18 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    public function getNbRows()
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+        SELECT COUNT(id) FROM user u
+        ';
+        $stmt = $conn->prepare($sql)->execute();
+
+        return $stmt;
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

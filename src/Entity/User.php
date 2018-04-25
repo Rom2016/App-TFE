@@ -9,14 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User
 {
-    function __construct($prenom,$nom,$mdp,$email)
-    {
-        $this->first_name = $prenom;
-        $this->second_name = $nom;
-        $this->pass = $mdp;
-        $this->email = $email;
-    }
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -45,9 +37,38 @@ class User
     public $email;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=true )
      */
     public $profile_pic;
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    public $function;
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    public $phone;
+
+    /**
+     * User constructor.
+     * @param $first_name
+     * @param $second_name
+     * @param $pass
+     * @param $email
+     * @param $function
+     * @param $phone
+     */
+    public function __construct($first_name, $second_name, $email, $function, $phone)
+    {
+        $this->first_name = $first_name;
+        $this->second_name = $second_name;
+        $this->email = $email;
+        $this->function = $function;
+        $this->phone = $phone;
+    }
+
 
     public function startConnection(){
         session_start();
@@ -56,7 +77,6 @@ class User
 
     public function logoff(){
         session_destroy();
-
     }
 
     public function checkPassword($pass,$salt){
@@ -68,56 +88,175 @@ class User
         }
     }
 
+    public function saveUser(){
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $entityManager->persist($this);
+        $entityManager->flush();
+    }
+
+    public function selectProfilePic(){
+        if($this->profile_pic){
+            return $this->profile_pic;
+        }else{
+            return 'default_profile.png';
+        }
+    }
+
+    public function generatePassword($length) {
+
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        return substr(str_shuffle($chars),0,$length);
+    }
+
+    public function saltPassword($pass){
+        $this->pass = md5($pass.$this->email);
+    }
+
+    public function updateProfile(){
+        $this->setFirstName($_POST['fName']);
+        $this->setSecondName($_POST['sName']);
+        $this->setEmail($_POST['email']);
+        $this->setFunction($_POST['function']);
+        $this->setPhone($_POST['phone']);
+
+        $_SESSION['user'] = $this;
+    }
+
+    public function getAll(){
+        $array=['fName'=>$this->first_name,'sName'=>$this->second_name,'email'=>$this->email,'profPic'=>$this->selectProfilePic(),'phone'=>$this->phone,'function'=>$this->function];
+        return $array;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getId()
     {
         return $this->id;
     }
 
-    public function getPrenom(): ?string
+    /**
+     * @param mixed $id
+     */
+    public function setId($id): void
     {
-        return $this->prenom;
+        $this->id = $id;
     }
 
-    public function setPrenom(string $prenom): self
+    /**
+     * @return mixed
+     */
+    public function getFirstName()
     {
-        $this->prenom = $prenom;
-
-        return $this;
+        return $this->first_name;
     }
 
-    public function getNom(): ?string
+    /**
+     * @param mixed $first_name
+     */
+    public function setFirstName($first_name): void
     {
-        return $this->nom;
+        $this->first_name = $first_name;
     }
 
-    public function setNom(string $nom): self
+    /**
+     * @return mixed
+     */
+    public function getSecondName()
     {
-        $this->nom = $nom;
-
-        return $this;
+        return $this->second_name;
     }
 
-    public function getMdp(): ?string
+    /**
+     * @param mixed $second_name
+     */
+    public function setSecondName($second_name): void
     {
-        return $this->mdp;
+        $this->second_name = $second_name;
     }
 
-    public function setMdp(string $mdp): self
+    /**
+     * @return mixed
+     */
+    public function getPass()
     {
-        $this->mdp = $mdp;
-
-        return $this;
+        return $this->pass;
     }
 
-    public function getEmail(): ?string
+    /**
+     * @param mixed $pass
+     */
+    public function setPass($pass): void
+    {
+        $this->pass = $pass;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmail()
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    /**
+     * @param mixed $email
+     */
+    public function setEmail($email): void
     {
         $this->email = $email;
-
-        return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getProfilePic()
+    {
+        return $this->profile_pic;
+    }
+
+    /**
+     * @param mixed $profile_pic
+     */
+    public function setProfilePic($profile_pic): void
+    {
+        $this->profile_pic = $profile_pic;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFunction()
+    {
+        return $this->function;
+    }
+
+    /**
+     * @param mixed $function
+     */
+    public function setFunction($function): void
+    {
+        $this->function = $function;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * @param mixed $phone
+     */
+    public function setPhone($phone): void
+    {
+        $this->phone = $phone;
+    }
+
+
+
+
 }

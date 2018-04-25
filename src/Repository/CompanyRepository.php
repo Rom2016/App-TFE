@@ -19,6 +19,17 @@ class CompanyRepository extends ServiceEntityRepository
         parent::__construct($registry, Company::class);
     }
 
+    public function getNbRows()
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+        SELECT COUNT(id) FROM company c
+        ';
+        $stmt = $conn->prepare($sql);
+        return $stmt->execute();
+    }
+
 //    /**
 //     * @return Company[] Returns an array of Company objects
 //     */

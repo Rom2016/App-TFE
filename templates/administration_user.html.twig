@@ -5,13 +5,8 @@
 {% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
     <!-- Datatables -->
-    <link href="../vendor/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendor/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendor/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendor/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendor/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+    {{ parent() }}
 
     <link href="../vendor/jquery-ui-1.12.1/jquery-ui.min.css" rel="stylesheet">
 
@@ -67,7 +62,7 @@
                                 <tbody>
                                 {% for user in users %}
                                 <tr>
-                                    <td><input type="checkbox" name="{{ user.id }}"></td>
+                                    <td><input type="checkbox" name="{{ user.id }}" onclick="checkboxSelect(this)"></td>
                                     <td>{{ user.id }}</td>
                                     <td>{{ user.first_name }}</td>
                                     <td>{{ user.second_name }}</td>

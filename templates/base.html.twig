@@ -14,11 +14,6 @@
             <link href="../vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
             <!-- Font Awesome -->
             <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-            <!-- NProgress -->
-            <!-- iCheck -->
-            <!-- bootstrap-progressbar -->
-            <!-- JQVMap -->
-            <!-- bootstrap-daterangepicker -->
 
             <!-- Custom Theme Style -->
             <link href="../css/custom.min.css" rel="stylesheet">
@@ -58,10 +53,16 @@
                             <h3>Général</h3>
                             <ul class="nav side-menu">
                                 <li><a href="/"><i class="fa fa-home"></i> Tableau de bord</a>
-                                </li> <li><a><i class="fa fa-edit"></i> Administration <span class="fa fa-chevron-down"></span></a>
+                                <li><a><i class="fa fa-file"></i> Audit <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="../créer-audit">Créer un audit</a></li>
+                                        <li><a href="form_validation.html">Editer audit existant</a></li>
+                                    </ul>
+                                </li>
+                                <li><a><i class="fa fa-edit"></i> Administration <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="../administration-utilisateur">Utilisateurs</a></li>
-                                        <li><a href="form_validation.html">Audit</a></li>
+                                        <li><a href="../administration-audit">Audit</a></li>
                                     </ul>
                                 </li>
                             </ul>

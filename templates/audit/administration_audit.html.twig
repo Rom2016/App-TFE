@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Administration audit
+{% endblock %}
+{% block body %}
+    {{ parent() }}
+    <div class="right_col" role="main">
+        <div class="">
+            <div class="page-title">
+                <div class="title_left">
+                    <h3>Administration des phases d'audit</h3>
+                </div>
+
+            </div>
+
+            <div class="clearfix"></div>
+            <div class="row">
+                        <div class="x_panel tile" style="height: auto;">
+                            <div class="x_title">
+                                <h2>Nouvelle phase d'audit</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content" style="display: none;">
+                                <div id="wizard_verticle" class="form_wizard wizard_verticle">
+                                    <ul class="list-unstyled wizard_steps">
+                                        <li>
+                                            <a href="#step-11">
+                                                <span class="step_no">1</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#step-22">
+                                                <span class="step_no">2</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#step-33">
+                                                <span class="step_no">3</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                    <div id="step-11">
+                                        <form class="form-horizontal form-label-left" style="overflow:hidden">
+
+                                            <span class="section">Intitulé</span>
+
+                                            <div class="form-group">
+                                                <div class="col-md-6 col-sm-6">
+                                                    <input type="text" id="first-name2" required="required" class="form-control col-md-7 col-xs-12">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div id="step-22">
+                                        <form class="form-horizontal form-label-left" style="overflow:hidden">
+
+                                            <span class="section">Etape 2</span>
+
+                                            <div id="input-group" class="form-group">
+                                                <div class="col-md-6 col-sm-6">
+                                                    <input type="text" required>
+                                                    <span class="highlight"></span>
+                                                    <span class="bar"></span>
+                                                    <label>Test de phase</label>
+                                                    <a class="fa fa-plus-square" onclick="addInput(this)"></a>
+                                                    <a class="fa fa-minus-square" onclick="removeInput()"></a>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                    <div id="step-33">
+                                        <h2 class="StepTitle">Step 3 Content</h2>
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                        </p>
+                                        <p>
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                                            in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                        </p>
+                                    </div>
+
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="../vendor/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script>
+{% endblock %}

@@ -9,7 +9,6 @@
 namespace App\Controller;
 
 use App\Entity\Company;
-use App\Entity\Mailer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,20 +27,20 @@ class UserController extends AbstractController
         if (isset($_GET['rq'])){
             if(isset($_SESSION['user'])){
                 session_destroy();
-                return $this->render('login.html.twig');
+                return $this->render('user/login.html.twig');
             }else{
-                return $this->render('login.html.twig');
+                return $this->render('user/login.html.twig');
             }
         }
         elseif(isset($_SESSION['user'])){
             $array = $_SESSION['user']->getAll();
-            return $this->render('homepage.html.twig',$array);
+            return $this->render('user/homepage.html.twig',$array);
         }
         elseif(isset($_POST['user']) && isset($_POST['pass'])){
             return $this->userConnection();
         }
         else{
-            return $this->render('login.html.twig');
+            return $this->render('user/login.html.twig');
         }
     }
 
@@ -63,10 +62,10 @@ class UserController extends AbstractController
             $array['nbComp'] = $repositoryC->getNbRows();
             $array['nbUser'] = $repositoryU->getNbRows();
 
-            return $this->render('homepage.html.twig',$array);
+            return $this->render('user/homepage.html.twig',$array);
         }else{
 
-            return $this->render('login.html.twig',['title'=>"Bienvenue",'error'=>'Identifiants invalides']);
+            return $this->render('user/login.html.twig',['title'=>"Bienvenue",'error'=>'Identifiants invalides']);
         }
     }
 
@@ -85,8 +84,6 @@ class UserController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
 
-        $mailer = new Mailer($_POST['email'],'Test',$this->render('emails/new_user.html.twig'));
-        $mailer->sendMailNewUSer();
         $json['content'] = 'Utilisateur créé';
         return new JsonResponse($json);
     }
@@ -97,7 +94,7 @@ class UserController extends AbstractController
     public function userLogoff()
     {
        $_SESSION['user']->logoff();
-       return $this->render('login.html.twig');
+       return $this->render('user/login.html.twig');
     }
 
     /**
@@ -113,11 +110,11 @@ class UserController extends AbstractController
             $entityManager->flush();
             $array = $_SESSION['user']->getAll();
 
-            return $this->render('profile_user.html.twig', $array);
+            return $this->render('user/profile_user.html.twig', $array);
         }
         else {
             $array = $_SESSION['user']->getAll();
-            return $this->render('profile_user.html.twig', $array);
+            return $this->render('user/profile_user.html.twig', $array);
         }
     }
 

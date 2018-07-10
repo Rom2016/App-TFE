@@ -23,5 +23,13 @@ class AuditController extends AbstractController
         return $this->render('audit/new_audit.html.twig',$array);
     }
 
+    /**
+     * @Route("/nouvelle-phase-audit", name="new_phase", options={"utf8": true})
+     */
+    public function saveNewPhase()
+    {
+
+
+    }
 
 }

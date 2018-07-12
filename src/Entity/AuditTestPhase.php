@@ -14,23 +14,37 @@ class AuditTestPhase
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    public $id;
 
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $name;
+    public $name;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $priority;
+    public $priority;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AuditPhase", inversedBy="test")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $idPhase;
+    public $idPhase;
+
+    /**
+     * AuditTestPhase constructor.
+     * @param $name
+     * @param $priority
+     * @param $idPhase
+     */
+    public function __construct($name, $priority, $idPhase)
+    {
+        $this->name = $name;
+        $this->priority = $priority;
+        $this->idPhase = $idPhase;
+    }
+
 
     public function getId()
     {

@@ -9,6 +9,11 @@
     {{ parent() }}
 
     <link href="../vendor/jquery-ui-1.12.1/jquery-ui.min.css" rel="stylesheet">
+    <link href="../css/input_custom.css" rel="stylesheet">
+
+
+
+
 
 {% endblock %}
 {% block body %}
@@ -27,7 +32,6 @@
                             <div class="x_content">
                                 <div id="accordion">
                                     <h1>Créer une nouvelle phase d'audit</h1>
-                                    <div>
                                         <div class="row">
                                             <div class="col-md-12 col-sm-12 col-xs-12">
                                                 <div class="x_panel">
@@ -37,30 +41,29 @@
                                                     </div>
                                                     <div class="x_content">
                                                         <br />
-                                                        <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                                                        <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" name="../nouvelle-phase-audit">
 
                                                             <div class="form-group">
                                                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                                                    <input type="text" id="first-name" required="required" class="form-control col-md-7 col-xs-12">
+                                                                    <input type="text" id="first-name" required="required" class="form-control col-md-7 col-xs-12" name="name_phase">
                                                                 </div>
                                                             </div>
                                                             <div class="ln_solid"></div>
                                                             <div id="input-group" class="form-group test-group">
                                                                 <div class="col-md-6 col-sm-6">
-                                                                    <input type="text" required>
+                                                                    <input type="text" name="test_phase[]" class="input_test" required>
                                                                     <span class="highlight"></span>
                                                                     <span class="bar"></span>
-                                                                    <label>Test de phase</label>
+                                                                    <label class="label_test">Test de phase</label>
                                                                     <a class="fa fa-plus-square" onclick="addInput(this)"></a>
                                                                     <a class="fa fa-minus-square" onclick="removeInput(this)"></a>
                                                                 </div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                                                    <button type="submit" class="btn btn-success" name="../nouvelle-phase-audit">Soumettre</button>
+                                                                    <button type="submit" class="btn btn-success" >Soumettre</button>
                                                                 </div>
                                                             </div>
-
                                                         </form>
                                                     </div>
                                                 </div>
@@ -68,18 +71,96 @@
                                         </div>
                                     </div>
                                 </div>
-                             </div>
+                {% for phase in phases %}
+                <div class="row" id="table{{ phase.id }}">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>{{ phase.phase_name }}</h2>
+                                    <ul class="nav navbar-right panel_toolbox">
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-plus"></i></a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a onclick="toggleInput()">Ajouter un test de phase</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a onclick="dialogConfirm(this.name)" role="button" aria-expanded="false" name="../supprimer-test-phase"><i class="fa fa-close"></i></a>
+                                        </li>
+                                    </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <table id="myTable" class="myTable table table-striped table-bordered bulk_action dataTable no-footer">
+                                    <thead>
+                                    <tr>
+                                        <th>
+                                            <input type="checkbox"  class="flat">
+                                        </th>
+                                        <th>Test</th>
+                                        <th>Priorité</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    {% for test in tests %}
+                                        {% if test.idPhase.id == phase.id %}
+                                            <tr>
+                                                <td><input type="checkbox" name="{{ test.id }}" onclick="checkboxSelect(this)"></td>
+                                                <td>{{ test.name }}</td>
+                                                <td>{{ test.priority }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+
+                                </table>
+                                <br />
+                                <div class="row">
+                                <form id="input-new" name="../ajouter-test-audit" style="display: none">
+                                <div  class="form-group test-group">
+                                    <div class="col-md-6 col-sm-6">
+                                        <input type="hidden" name="idPhase" value="{{ phase.id }}">
+                                        <input type="text" name="test_phase[]" class="input_test" required>
+                                        <span class="highlight"></span>
+                                        <span class="bar"></span>
+                                        <label class="label_test">Test de phase</label>
+                                        <a class="fa fa-plus-square" onclick="addInput(this)"></a>
+                                        <a class="fa fa-minus-square" onclick="removeInput(this)"></a>
+                                    </div>
+                                </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                        <button type="submit" class="btn btn-success">Soumettre</button>
+                                    </div>
+                                </form>
+                                </div>
+                                <div class="actionBar">
+                                    <a class="btn btn-danger" id="{{ phase.id }}" onclick="deletePhase(this.id)">Supprimer la table</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+            {% endfor %}
+                <div id="dialog-confirm-table" title="Supprimer cette table" style="display: none">
+                    <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Etes-vous sûr de vouloir supprimer cette table? </p>
+                </div>
+                <div id="dialog-confirm" title="Supprimer ce test" style="display: none">
+                    <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Etes-vous sûr de vouloir supprimer ce test? </p>
+                </div>
             </div>
+        </div>
     </div>
+
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="../vendor/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script>
     <script src="../vendor/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-    <script src=" ../vendor/jquery-knob/dist/jquery.knob.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
     <script>
         $( function() {
             $( "#accordion" ).accordion({
@@ -88,7 +169,29 @@
                 heightStyle: "content"
 
             });
-        } );
+                $('.myTable').DataTable({
+                "language": {
+                    "sProcessing": "Traitement en cours ...",
+                    "sLengthMenu": "Afficher _MENU_ lignes",
+                    "sZeroRecords": "Aucun résultat trouvé",
+                    "sEmptyTable": "Aucune donnée disponible",
+                    "sInfo": "Lignes _START_ à _END_ sur _TOTAL_",
+                    "sInfoEmpty": "Aucune ligne affichée",
+                    "sInfoFiltered": "(Filtrer un maximum de_MAX_)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Chercher:",
+                    "sUrl": "",
+                    "sInfoThousands": ",",
+                    "sLoadingRecords": "Chargement...",
+                    "oPaginate": {
+                        "sFirst": "Premier", "sLast": "Dernier", "sNext": "Suivant", "sPrevious": "Précédent"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": Trier par ordre croissant", "sSortDescending": ": Trier par ordre décroissant"
+                    }
+                }
+            });
+        });
     </script>
 
 {% endblock %}

@@ -29,16 +29,4 @@ class AdministrationController extends AbstractController
 
     }
 
-    /**
-     * @Route("/administration-audit", name="admin_audit", options={"utf8": true})
-     */
-    public function viewAdminAudit()
-    {
-        $repository = $this->getDoctrine()->getRepository(User::class);
-        $array = $_SESSION['user']->getAll();
-        $array['users'] = $repository->findAll();
-        return $this->render('audit/administration_audit.html.twig',$array);
-
-    }
-
 }

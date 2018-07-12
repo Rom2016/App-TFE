@@ -16,22 +16,27 @@ class AuditPhase
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    public $id;
 
     /**
      * @ORM\Column(type="string", length=50)
      */
-    private $phase_name;
+    public $phase_name;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\AuditTestPhase", mappedBy="idPhase")
      */
-    private $test;
+    public $test;
 
-    public function __construct()
+    /**
+     * AuditPhase constructor.
+     * @param $phase_name
+     */
+    public function __construct($phase_name)
     {
-        $this->test = new ArrayCollection();
+        $this->phase_name = $phase_name;
     }
+
 
     public function getId()
     {

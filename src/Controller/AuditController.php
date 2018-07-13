@@ -41,6 +41,11 @@ class AuditController extends AbstractController
     public function newAudit()
     {
         $array = $_SESSION['user']->getAll();
+        $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
+        $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
+
+        $array['phases'] = $repository_phase->findAll();
+        $array['tests'] = $repository_test->findAll();
 
         return $this->render('audit/new_audit.html.twig',$array);
     }

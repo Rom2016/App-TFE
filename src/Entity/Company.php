@@ -31,6 +31,19 @@ class Company
      */
     private $email;
 
+    /**
+     * Company constructor.
+     * @param $name
+     * @param $phone
+     * @param $email
+     */
+    public function __construct($name, $phone, $email)
+    {
+        $this->name = $name;
+        $this->phone = $phone;
+        $this->email = $email;
+    }
+
 
     public function getId()
     {

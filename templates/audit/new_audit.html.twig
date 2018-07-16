@@ -70,20 +70,20 @@
                                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Nom de la société <span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="text" id="first-name" required="required" class="form-control col-md-7 col-xs-12">
+                                                <input type="text" id="name-company" required="required" class="form-control col-md-7 col-xs-12 info-company">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Téléphone de la société <span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                                <input type="text" id="phone-company" name="phone-company" required="required" class="form-control col-md-7 col-xs-12 info-company">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Email de la société<span class="required">*</span></label>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input id="middle-name" required="required" class="form-control col-md-7 col-xs-12" type="email" name="middle-name">
+                                                <input id="email-company" required="required" class="form-control col-md-7 col-xs-12 info-company" type="email" name="middle-name">
                                             </div>
                                         </div>
 
@@ -118,7 +118,7 @@
                                                                             <table data-vertable="ver1">
                                                                                 <thead>
                                                                                 <tr class="row100 head">
-                                                                                    <th class="column100 column1" data-column="column1">Test</th>
+                                                                                    <th class="column100 column1" data-column="column1"></th>
                                                                                     <th class="column100 column1" data-column="column1"></th>
                                                                                     <th class="column100 column1" data-column="column1">Informations addictionnelles</th>
                                                                                 </tr>
@@ -128,7 +128,7 @@
                                                                                     {% if test.idPhase.id == phase.id %}
                                                                                 <tr class="row100">
                                                                                     <td class="column100 column1" data-column="column1">{{ test.name }}</td>
-                                                                                    <td class="column100 column1" data-column="column1"><input type="checkbox" style="margin: auto"></td>
+                                                                                    <td class="column100 column1" data-column="column1"><input type="checkbox" style="margin: auto" name="{{ test.id }}"></td>
                                                                                     <td class="column100 column1" data-column="column1"></td>
 
                                                                                 </tr>
@@ -138,7 +138,6 @@
                                                                             </table>
                                                                         </div>
                                                                     </div>
-
                                                             </div>
                                                 {% set i = i+1 %}
                                                 {% endfor %}
@@ -151,7 +150,7 @@
                                 </div>
 
                                 <div id="step-3">
-                                    <h2 class="StepTitle">Step 3 Content</h2>
+                                    <a href="#" name="../résultat-audit" id="save-audit" onclick="saveAudit(this.name)" >Enregistrer l'audit et passer au résultat?</a>
                                 </div>
                             </div>
                             <!-- End SmartWizard Content -->
@@ -161,8 +160,6 @@
             </div>
         </div>
     </div>
-    </div>
-        </div>
     </div>
 {% endblock %}
     {% block javascripts %}

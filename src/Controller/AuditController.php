@@ -8,6 +8,8 @@
 
 namespace App\Controller;
 
+use App\Entity\AuditCompany;
+use App\Entity\Company;
 use App\Entity\User;
 use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
@@ -129,4 +131,23 @@ class AuditController extends AbstractController
         $json['content'] = 'Ok';
         return new JsonResponse($json);
     }
+
+    /**
+     * @Route("/résultat-audit", name="result_audit", options={"utf8": true})
+     */
+
+    public function resultAudit()
+    {
+        if(isset($_POST)) {
+            $company = new Company($_POST['name'],$_POST['phone'],$_POST['email']);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($company);
+
+            foreach ($_POST['id'] as $key => $value){
+                $auditCompany = new AuditCompany()
+            }
+            $entityManager->flush();
+        }
+    }
+
 }

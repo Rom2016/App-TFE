@@ -17,7 +17,7 @@ class AuditCompany
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Company", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Company", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $idCompany;
@@ -32,6 +32,22 @@ class AuditCompany
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $information;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $selected;
+
+    /**
+     * AuditCompany constructor.
+     * @param $idCompany
+     * @param $idTest
+     */
+    public function __construct($idCompany, $idTest)
+    {
+        $this->idCompany = $idCompany;
+        $this->idTest = $idTest;
+    }
 
 
     public function getId()
@@ -71,6 +87,18 @@ class AuditCompany
     public function setInformation(?string $information): self
     {
         $this->information = $information;
+
+        return $this;
+    }
+
+    public function getSelected(): ?bool
+    {
+        return $this->selected;
+    }
+
+    public function setSelected(bool $selected): self
+    {
+        $this->selected = $selected;
 
         return $this;
     }

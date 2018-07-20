@@ -142,12 +142,29 @@ class AuditController extends AbstractController
             $company = new Company($_POST['name'],$_POST['phone'],$_POST['email']);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($company);
+            $entityManager->flush();
+
 
             foreach ($_POST['id'] as $key => $value){
-                $auditCompany = new AuditCompany()
+                $test = $this->getDoctrine()->getRepository(AuditTestPhase::class)->findOneBy(['id' => $value]);
+                $auditCompany = new AuditCompany($company,$test);
+                $entityManager->persist($auditCompany);
             }
             $entityManager->flush();
         }
     }
 
+    /**
+     * @Route("/voir-audit", name="view_audit", options={"utf8": true})
+     */
+
+    public function viewAudits()
+    {
+        $repository_company = $this->getDoctrine()->getRepository(Company::class);
+        $array = $_SESSION['user']->getAll();
+        $array['company'] = $repository_company->findAll();
+
+
+        return $this->render('audit/select_audit.html.twig', $array);
+    }
 }

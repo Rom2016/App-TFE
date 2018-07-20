@@ -10,6 +10,8 @@
 {% block stylesheets %}
     {{ parent() }}
     <link href="../css/custom_audit_table.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/checkbox-bootstrap.css">
+
 
 {% endblock %}
 {% block body %}
@@ -111,14 +113,17 @@
                                             <div id="myTabContent" class="tab-content">
                                                 {% set i = 1 %}
                                                 {% for phase in phases %}
+                                                    {% if i == 1 %}
+                                                        <div role="tabpanel" class="tab-pane fade active in" id="tab_content{{ i }}" aria-labelledby="home-tab">
+                                                    {% else %}
+                                                        <div role="tabpanel" class="tab-pane fade" id="tab_content{{ i }}" aria-labelledby="home-tab">
+                                                    {% endif %}
 
-                                                            <div role="tabpanel" class="tab-pane fade active in" id="tab_content{{ i }}" aria-labelledby="home-tab">
                                                                     <div class="wrap-table100">
                                                                         <div class="table100 ver1 m-b-110">
                                                                             <table data-vertable="ver1">
                                                                                 <thead>
                                                                                 <tr class="row100 head">
-                                                                                    <th class="column100 column1" data-column="column1"></th>
                                                                                     <th class="column100 column1" data-column="column1"></th>
                                                                                     <th class="column100 column1" data-column="column1">Informations addictionnelles</th>
                                                                                 </tr>
@@ -127,8 +132,7 @@
                                                                                 {% for test in tests %}
                                                                                     {% if test.idPhase.id == phase.id %}
                                                                                 <tr class="row100">
-                                                                                    <td class="column100 column1" data-column="column1">{{ test.name }}</td>
-                                                                                    <td class="column100 column1" data-column="column1"><input type="checkbox" style="margin: auto" name="{{ test.id }}"></td>
+                                                                                    <td class="column100 column1" data-column="column1"><label class="checkbox-container">{{ test.name }}<input type="checkbox" class="checkbox-test" name="{{ test.id }}"></label></td>
                                                                                     <td class="column100 column1" data-column="column1"></td>
 
                                                                                 </tr>

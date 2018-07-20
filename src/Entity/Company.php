@@ -32,6 +32,12 @@ class Company
     private $email;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\CompanySize")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $size;
+
+    /**
      * Company constructor.
      * @param $name
      * @param $phone
@@ -92,6 +98,18 @@ class Company
     public function setEmail($email): void
     {
         $this->email = $email;
+    }
+
+    public function getSize(): ?CompanySize
+    {
+        return $this->size;
+    }
+
+    public function setSize(?CompanySize $size): self
+    {
+        $this->size = $size;
+
+        return $this;
     }
 
 

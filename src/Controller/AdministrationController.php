@@ -17,16 +17,5 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class AdministrationController extends AbstractController
 {
 
-    /**
-     * @Route("/administration-utilisateur", name="admin_user")
-     */
-    public function viewAdminUser()
-    {
-        $repository = $this->getDoctrine()->getRepository(User::class);
-        $array = $_SESSION['user']->getAll();
-        $array['users'] = $repository->findAll();
-        return $this->render('user/administration_user.html.twig',$array);
-
-    }
 
 }

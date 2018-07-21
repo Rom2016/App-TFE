@@ -132,7 +132,8 @@
                                                                                 {% for test in tests %}
                                                                                     {% if test.idPhase.id == phase.id %}
                                                                                 <tr class="row100">
-                                                                                    <td class="column100 column1" data-column="column1"><label class="checkbox-container">{{ test.name }}<input type="checkbox" class="checkbox-test" name="{{ test.id }}"></label></td>
+                                                                                    <td class="column100 column1" data-column="column1"><label class="checkbox-container" onclick="checkTest({{ i }})">{{ test.name }}<input type="checkbox" id="checkbox{{ i }}" class="checkbox-test" name="{{ test.id }}"><span class="checkmark"></span>
+                                                                                        </label></td>
                                                                                     <td class="column100 column1" data-column="column1"></td>
 
                                                                                 </tr>
@@ -170,7 +171,6 @@
         {{ parent() }}
         <script src="../vendor/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script>
         <script src="../js/custom_audit_table.js"></script>
-
 
 
     {% endblock %}

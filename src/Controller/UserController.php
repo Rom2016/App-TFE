@@ -44,6 +44,27 @@ class UserController extends AbstractController
         }
     }
 
+
+    /**
+     * @Route("/administration-utilisateur", name="admin_user")
+     */
+    public function viewAdminUser()
+    {
+        if($_POST){
+            switch ($_POST['submit']) {
+                case 'newUser':
+                    $this->newUser();
+                    break;
+            }
+        }
+
+        $repository = $this->getDoctrine()->getRepository(User::class);
+        $array = $_SESSION['user']->getAll();
+        $array['users'] = $repository->findAll();
+        return $this->render('user/administration_user.html.twig',$array);
+
+    }
+
     /**
      * @Route("/connexion", name="user_connection", methods="POST")
      */
@@ -69,9 +90,6 @@ class UserController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/créer-utilisateur", name="create_user", methods="POST", options={"utf8": true})
-     */
     public function newUser()
     {
         $entityManager = $this->getDoctrine()->getManager();
@@ -84,8 +102,6 @@ class UserController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
 
-        $json['content'] = 'Utilisateur créé';
-        return new JsonResponse($json);
     }
 
     /**

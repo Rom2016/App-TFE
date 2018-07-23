@@ -52,6 +52,9 @@
                                                                                         Test
                                                                                     </th>
                                                                                     <th>
+                                                                                        Type
+                                                                                    </th>
+                                                                                    <th>
                                                                                         Priorité
                                                                                     </th>
                                                                                     <th>
@@ -65,13 +68,22 @@
                                                                             <tr>
                                                                                 <td>
                                                                                     <div class="form-group col-md-6 col-sm-6 col-xs-12">
-                                                                                        <input type="text" name="test_phase[]" class="input_test" required>
+                                                                                        <input type="text" name="test_phase[]" class="input_test" placeholder="Ajouter un test" required>
                                                                                         <div class="bar"></div>
                                                                                     </div>
                                                                                 </td>
                                                                                 <td>
                                                                                     <div class="form-group">
-                                                                                        <select class="form-control" id="sel1">
+                                                                                        <select class="form-control" name="type" id="sel1">
+                                                                                            {% for t in test_type %}
+                                                                                                <option>{{ t.type }}</option>
+                                                                                            {% endfor %}
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <div class="form-group">
+                                                                                        <select class="form-control" name="priority" id="sel1">
                                                                                             <option>1</option>
                                                                                             <option>2</option>
                                                                                             <option>3</option>
@@ -79,13 +91,15 @@
                                                                                     </div>
                                                                                 </td>
                                                                                 <td>
-                                                                                    <div class="form-group col-md-6 col-sm-6 col-xs-12">
-                                                                                        <input type="text" name="test_phase[]" class="input_test">
+                                                                                    <div class="input-group col-md-6 col-sm-6 col-xs-12">
+                                                                                        <span class="input-group-addon"><a  class="glyphicon glyphicon-minus remove-child" style=" pointer-events: none;cursor: default;"></a></span>
+                                                                                        <input type="text" name="test_child[]" class="input_test" placeholder="Ajouter un test enfant">
                                                                                         <div class="bar"></div>
+                                                                                        <span class="input-group-addon"><a href="#" class="glyphicon glyphicon-plus add-child"></a></span>
                                                                                     </div>
                                                                                 </td>
                                                                                 <td>
-                                                                                    <a href="#" onclick="addRow()"><span class="glyphicon glyphicon-plus"></span></a>
+                                                                                    <a href="#" class="add-row"><span class="glyphicon glyphicon-plus"></span></a>
                                                                                 </td>
                                                                             </tr>
                                                                             </tbody>
@@ -200,7 +214,6 @@
         $( function() {
             $( "#accordion" ).accordion({
                 collapsible: true,
-                active: false,
                 heightStyle: "content"
 
             });
@@ -227,56 +240,66 @@
                 }
             });
         });
-        $(".knob").knob({
-            change : function (value) {
-                //console.log("change : " + value);
-            },
-            release : function (value) {
-                //console.log(this.$.attr('value'));
-                console.log("release : " + value);
-            },
-            cancel : function () {
-                console.log("cancel : ", this);
-            },
-            /*format : function (value) {
-                return value + '%';
-            },*/
-            draw : function () {
 
-                // "tron" case
-                if(this.$.data('skin') == 'tron') {
+        $('tbody').sortable();
 
-                    this.cursorExt = 0.3;
+        $('body').on('click', 'a.add-row', function() {
+            $(this).closest('tr').after('       <tr>\n' +
+                '                                                                                <td>\n' +
+                '                                                                                    <div class="form-group col-md-6 col-sm-6 col-xs-12">\n' +
+                '                                                                                        <input type="text" name="test_phase[]" class="input_test" placeholder="Ajouter un test" required>\n' +
+                '                                                                                        <div class="bar"></div>\n' +
+                '                                                                                    </div>\n' +
+                '                                                                                </td>\n' +
+                '                                                                                <td>\n' +
+                '                                                                                    <div class="form-group">\n' +
+                '                                                                                        <select class="form-control" id="sel1">\n' +
+                '                                                                                            {% for t in test_type %}\n' +
+                '                                                                                                <option>{{ t.type }}</option>\n' +
+                '                                                                                            {% endfor %}\n' +
+                '                                                                                        </select>\n' +
+                '                                                                                    </div>\n' +
+                '                                                                                </td>\n' +
+                '                                                                                <td>\n' +
+                '                                                                                    <div class="form-group">\n' +
+                '                                                                                        <select class="form-control" id="sel1">\n' +
+                '                                                                                            <option>1</option>\n' +
+                '                                                                                            <option>2</option>\n' +
+                '                                                                                            <option>3</option>\n' +
+                '                                                                                        </select>\n' +
+                '                                                                                    </div>\n' +
+                '                                                                                </td>\n' +
+                '                                                                                <td>\n' +
+                '                                                                                    <div class="input-group col-md-6 col-sm-6 col-xs-12">\n' +
+                '                                                                                        <span class="input-group-addon"><a  class="glyphicon glyphicon-minus remove-child" style=" pointer-events: none;cursor: default;"></a></span>\n' +
+                '                                                                                        <input type="text" name="test_child[]" class="input_test" placeholder="Ajouter un test enfant">\n' +
+                '                                                                                        <div class="bar"></div>\n' +
+                '                                                                                        <span class="input-group-addon"><a href="#" class="glyphicon glyphicon-plus add-child"></a></span>\n' +
+                '                                                                                    </div>\n' +
+                '                                                                                </td>\n' +
+                '                                                                                <td>\n' +
+                '                                                                                    <a href="#" class="remove-row"><span class="glyphicon glyphicon-minus"></span></a>\n' +
+                '                                                                                    <a href="#" class="add-row"><span class="glyphicon glyphicon-plus"></span></a>\n' +
+                '                                                                                </td>\n' +
+                '                                                                            </tr>')
+        })
 
-                    var a = this.arc(this.cv)  // Arc
-                        , pa                   // Previous arc
-                        , r = 1;
+        $('body').on('click', 'a.remove-row', function() {
+            $(this).closest('tr').remove();
+        })
 
-                    this.g.lineWidth = this.lineWidth;
+        $('body').on('click', 'a.add-child', function() {
+            $(this).closest('td').append(' <div class="input-group col-md-6 col-sm-6 col-xs-12">\n' +
+                '                                                                                        <span class="input-group-addon"><a href="#" class="glyphicon glyphicon-minus remove-child"></a></span>\n' +
+                '                                                                                        <input type="text" name="test_child[]" class="input_test" placeholder="Ajouter un test enfant">\n' +
+                '                                                                                        <div class="bar"></div>\n' +
+                '                                                                                        <span class="input-group-addon"><a href="#" class="glyphicon glyphicon-plus add-child"></a></span>\n' +
+                '                                                                                    </div>')
+        })
 
-                    if (this.o.displayPrevious) {
-                        pa = this.arc(this.v);
-                        this.g.beginPath();
-                        this.g.strokeStyle = this.pColor;
-                        this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, pa.s, pa.e, pa.d);
-                        this.g.stroke();
-                    }
-
-                    this.g.beginPath();
-                    this.g.strokeStyle = r ? this.o.fgColor : this.fgColor ;
-                    this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, a.s, a.e, a.d);
-                    this.g.stroke();
-
-                    this.g.lineWidth = 2;
-                    this.g.beginPath();
-                    this.g.strokeStyle = this.o.fgColor;
-                    this.g.arc( this.xy, this.xy, this.radius - this.lineWidth + 1 + this.lineWidth * 2 / 3, 0, 2 * Math.PI, false);
-                    this.g.stroke();
-
-                    return false;
-                }
-            }
-        });
+        $('body').on('click', 'a.remove-child', function() {
+            $(this).closest('div.input-group').remove();
+        })
     </script>
 
 {% endblock %}

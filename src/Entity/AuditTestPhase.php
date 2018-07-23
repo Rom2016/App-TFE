@@ -25,6 +25,8 @@ class AuditTestPhase
 
     /**
      * @ORM\Column(type="integer")
+     * @ORM\JoinColumn(nullable=true)
+
      */
     public $priority;
 
@@ -52,13 +54,12 @@ class AuditTestPhase
      * @param $type
      * @param $id_parent
      */
-    public function __construct($name, $priority, $idPhase, $type, $id_parent)
+    public function __construct($name, $priority, $idPhase, $type)
     {
         $this->name = $name;
         $this->priority = $priority;
         $this->idPhase = $idPhase;
         $this->type = $type;
-        $this->id_parent = $id_parent;
     }
 
     /**

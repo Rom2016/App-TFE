@@ -19,7 +19,7 @@ class TestType
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $type;
+    public $type;
 
     public function getId()
     {

@@ -10,11 +10,9 @@ namespace App\Controller;
 
 use App\Entity\AuditCompany;
 use App\Entity\Company;
-use App\Entity\TestFamily;
-use App\Entity\User;
 use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
-use http\Env\Response;
+use App\Entity\TestType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -40,10 +38,13 @@ class AuditController extends AbstractController
 
         $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
         $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
+        $repository_test_type = $this->getDoctrine()->getRepository(TestType::class);
+
 
         $array = $_SESSION['user']->getAll();
         $array['phases'] = $repository_phase->findAll();
         $array['tests'] = $repository_test->findAll();
+        $array['test_type'] = $repository_test_type->findAll();
 
         return $this->render('audit/administration_audit.html.twig', $array);
     }
@@ -72,7 +73,9 @@ class AuditController extends AbstractController
         $entityManager->flush();
 
         foreach ($_POST['test_phase'] as $key => $value){
-            $test_phase = new AuditTestPhase($value,$_POST['priority'], $phase);
+            $type = $this->getDoctrine()->getRepository(TestType::class)->findOneBy(['type' => $_POST['type']]);
+
+            $test_phase = new AuditTestPhase($value,$_POST['priority'], $phase, $type);
             $test[$value] = $test_phase;
             $entityManager->persist($test_phase);
         }
@@ -90,6 +93,7 @@ class AuditController extends AbstractController
         $phase = $this->getDoctrine()->getRepository(AuditPhase::class)->findOneBy(['id' => $idPhase]);
 
         foreach ($tests as $key => $value) {
+
             $entityManager->remove($value);
         }
 

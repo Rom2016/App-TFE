@@ -10,6 +10,7 @@ namespace App\Controller;
 
 use App\Entity\AuditCompany;
 use App\Entity\Company;
+use App\Entity\TestFamily;
 use App\Entity\User;
 use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
@@ -24,7 +25,7 @@ class AuditController extends AbstractController
     /**
      * @Route("/administration-audit", name="admin_audit", options={"utf8": true})
      */
-    public function viewAdminAudit()
+    public function adminAudit()
     {
         if($_POST){
             switch ($_POST['submit']) {
@@ -33,7 +34,7 @@ class AuditController extends AbstractController
                     break;
                 case 'addTest':
                     $this->addTestPhase();
-                    break;
+
             }
         }
 
@@ -46,8 +47,6 @@ class AuditController extends AbstractController
 
         return $this->render('audit/administration_audit.html.twig', $array);
     }
-
-
 
     /**
      * @Route("/créer-audit", name="create_audit", options={"utf8": true})
@@ -73,7 +72,7 @@ class AuditController extends AbstractController
         $entityManager->flush();
 
         foreach ($_POST['test_phase'] as $key => $value){
-            $test_phase = new AuditTestPhase($value,'1', $phase);
+            $test_phase = new AuditTestPhase($value,$_POST['priority'], $phase);
             $test[$value] = $test_phase;
             $entityManager->persist($test_phase);
         }
@@ -122,13 +121,14 @@ class AuditController extends AbstractController
      */
     public function deleteTestPhase()
     {
+        if(isset($_POST)) {
         $entityManager = $this->getDoctrine()->getManager();
         foreach ($_POST as $key => $value) {
             $object = $this->getDoctrine()->getRepository(AuditTestPhase::class)->findOneBy(['id' => $value]);
             $entityManager->remove($object);
         }
         $entityManager->flush();
-
+    }
         $json['content'] = 'Ok';
         return new JsonResponse($json);
     }

@@ -2,7 +2,7 @@
     font-size:18px;
     padding:10px 10px 10px 5px;
     display:block;
-    width:300px;
+    width:500px;
     border:none;
     border-bottom:1px solid #757575;
 }
@@ -30,7 +30,7 @@
 }
 
 /* BOTTOM BARS ================================= */
-.bar 	{ position:relative; display:block; width:300px; }
+.bar 	{ position:relative; display:block; width:500px; }
 .bar:before, .bar:after 	{
     content:'';
     height:2px;

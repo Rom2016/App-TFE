@@ -54,13 +54,25 @@ class AuditTestPhase
      * @param $type
      * @param $id_parent
      */
-    public function __construct($name, $priority, $idPhase, $type)
+    public function __construct($name, $priority, $idPhase, $type, $id_parent)
     {
         $this->name = $name;
         $this->priority = $priority;
         $this->idPhase = $idPhase;
         $this->type = $type;
+        $this->id_parent = $id_parent;
     }
+
+    /**
+     * AuditTestPhase constructor.
+     * @param $name
+     * @param $priority
+     * @param $idPhase
+     * @param $type
+     * @param $id_parent
+     */
+
+
 
     /**
      * @return mixed

@@ -20,13 +20,6 @@
     {{ parent() }}
     <div class="right_col" role="main">
         <div class="">
-            <div class="page-title">
-                <div class="title_left">
-                    <h3>Administration des phases d'audit</h3>
-                </div>
-
-            </div>
-
             <div class="clearfix"></div>
             <div class="row">
                             <div class="x_content">
@@ -68,13 +61,13 @@
                                                                             <tr>
                                                                                 <td>
                                                                                     <div class="form-group col-md-6 col-sm-6 col-xs-12">
-                                                                                        <input type="text" name="test_phase[]" class="input_test" placeholder="Ajouter un test" required>
+                                                                                        <input type="text" name="test_phase[1][parent]" class="input_test" placeholder="Ajouter un test" required>
                                                                                         <div class="bar"></div>
                                                                                     </div>
                                                                                 </td>
                                                                                 <td>
                                                                                     <div class="form-group">
-                                                                                        <select class="form-control" name="type" id="sel1">
+                                                                                        <select class="form-control" name="test_phase[1][type]" id="sel1">
                                                                                             {% for t in test_type %}
                                                                                                 <option>{{ t.type }}</option>
                                                                                             {% endfor %}
@@ -83,7 +76,7 @@
                                                                                 </td>
                                                                                 <td>
                                                                                     <div class="form-group">
-                                                                                        <select class="form-control" name="priority" id="sel1">
+                                                                                        <select class="form-control" name="test_phase[1][prio]" id="sel1">
                                                                                             <option>1</option>
                                                                                             <option>2</option>
                                                                                             <option>3</option>
@@ -93,7 +86,7 @@
                                                                                 <td>
                                                                                     <div class="input-group col-md-6 col-sm-6 col-xs-12">
                                                                                         <span class="input-group-addon"><a  class="glyphicon glyphicon-minus remove-child" style=" pointer-events: none;cursor: default;"></a></span>
-                                                                                        <input type="text" name="test_child[]" class="input_test" placeholder="Ajouter un test enfant">
+                                                                                        <input type="text" name="test_phase[1][child][]" class="input_test" placeholder="Ajouter un test enfant">
                                                                                         <div class="bar"></div>
                                                                                         <span class="input-group-addon"><a href="#" class="glyphicon glyphicon-plus add-child"></a></span>
                                                                                     </div>
@@ -121,25 +114,9 @@
                 {% for phase in phases %}
                 <div class="row" id="table{{ phase.id }}">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                        <div class="x_panel">
-                            <div class="x_title">
-                                <h2>{{ phase.phase_name }}</h2>
-                                    <ul class="nav navbar-right panel_toolbox">
-                                        <li class="dropdown">
-                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-plus"></i></a>
-                                            <ul class="dropdown-menu" role="menu">
-                                                <li><a onclick="toggleInput({{ phase.id }})">Ajouter un test de phase</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a onclick="dialogConfirm(this.name)" role="button" aria-expanded="false" name="../supprimer-test-phase"><i class="fa fa-close"></i></a>
-                                        </li>
-                                    </ul>
-                                <div class="clearfix"></div>
-                            </div>
-                            <div class="x_content">
-                                <table id="myTable" class="myTable table table-striped table-bordered bulk_action dataTable no-footer">
+                        <div class="panel panel-primary shadow">
+                            <div class="panel-heading"><h2>{{ phase.phase_name }}</h2></div>
+                                <table id="myTable" class="myTable table table-striped table-bordered bulk_action dataTable no-footer" style="padding: 1%">
                                     <thead>
                                     <tr>
                                         <th>
@@ -183,12 +160,11 @@
                                 </form>
                                 </div>
                                 <div class="actionBar">
-                                    <a class="btn btn-danger" id="{{ phase.id }}" onclick="deletePhase(this.id)">Supprimer la table</a>
+                                    <a class="btn btn-primary" id="{{ phase.id }}" onclick="deletePhase(this.id)">Modifier la table</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
             {% endfor %}
                 <div id="dialog-confirm-table" title="Supprimer cette table" style="display: none">
                     <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Etes-vous sûr de vouloir supprimer cette table? </p>
@@ -211,6 +187,8 @@
     <script src="../js/jquery.knob.js"></script>
 
     <script>
+        var i = 1;
+
         $( function() {
             $( "#accordion" ).accordion({
                 collapsible: true,
@@ -244,16 +222,17 @@
         $('tbody').sortable();
 
         $('body').on('click', 'a.add-row', function() {
-            $(this).closest('tr').after('       <tr>\n' +
+            i = i+1;
+            var html = ' <tr>\n' +
                 '                                                                                <td>\n' +
                 '                                                                                    <div class="form-group col-md-6 col-sm-6 col-xs-12">\n' +
-                '                                                                                        <input type="text" name="test_phase[]" class="input_test" placeholder="Ajouter un test" required>\n' +
+                '                                                                                        <input type="text" name="test_phase['+i+'][parent]" class="input_test" placeholder="Ajouter un test" required>\n' +
                 '                                                                                        <div class="bar"></div>\n' +
                 '                                                                                    </div>\n' +
                 '                                                                                </td>\n' +
                 '                                                                                <td>\n' +
                 '                                                                                    <div class="form-group">\n' +
-                '                                                                                        <select class="form-control" id="sel1">\n' +
+                '                                                                                        <select class="form-control" name="test_phase['+i+'][type]" id="sel1">\n' +
                 '                                                                                            {% for t in test_type %}\n' +
                 '                                                                                                <option>{{ t.type }}</option>\n' +
                 '                                                                                            {% endfor %}\n' +
@@ -262,7 +241,7 @@
                 '                                                                                </td>\n' +
                 '                                                                                <td>\n' +
                 '                                                                                    <div class="form-group">\n' +
-                '                                                                                        <select class="form-control" id="sel1">\n' +
+                '                                                                                        <select class="form-control" name="test_phase['+i+'][prio]" id="sel1">\n' +
                 '                                                                                            <option>1</option>\n' +
                 '                                                                                            <option>2</option>\n' +
                 '                                                                                            <option>3</option>\n' +
@@ -272,16 +251,16 @@
                 '                                                                                <td>\n' +
                 '                                                                                    <div class="input-group col-md-6 col-sm-6 col-xs-12">\n' +
                 '                                                                                        <span class="input-group-addon"><a  class="glyphicon glyphicon-minus remove-child" style=" pointer-events: none;cursor: default;"></a></span>\n' +
-                '                                                                                        <input type="text" name="test_child[]" class="input_test" placeholder="Ajouter un test enfant">\n' +
+                '                                                                                        <input type="text" name="test_phase['+i+'][child][]" class="input_test" placeholder="Ajouter un test enfant">\n' +
                 '                                                                                        <div class="bar"></div>\n' +
                 '                                                                                        <span class="input-group-addon"><a href="#" class="glyphicon glyphicon-plus add-child"></a></span>\n' +
                 '                                                                                    </div>\n' +
                 '                                                                                </td>\n' +
                 '                                                                                <td>\n' +
-                '                                                                                    <a href="#" class="remove-row"><span class="glyphicon glyphicon-minus"></span></a>\n' +
                 '                                                                                    <a href="#" class="add-row"><span class="glyphicon glyphicon-plus"></span></a>\n' +
                 '                                                                                </td>\n' +
-                '                                                                            </tr>')
+                '                                                                            </tr>'
+            $(this).closest('tr').after(html);
         })
 
         $('body').on('click', 'a.remove-row', function() {
@@ -291,7 +270,7 @@
         $('body').on('click', 'a.add-child', function() {
             $(this).closest('td').append(' <div class="input-group col-md-6 col-sm-6 col-xs-12">\n' +
                 '                                                                                        <span class="input-group-addon"><a href="#" class="glyphicon glyphicon-minus remove-child"></a></span>\n' +
-                '                                                                                        <input type="text" name="test_child[]" class="input_test" placeholder="Ajouter un test enfant">\n' +
+                '                                                                                        <input type="text" name="test_phase['+i+'][child][]" class="input_test" placeholder="Ajouter un test enfant">\n' +
                 '                                                                                        <div class="bar"></div>\n' +
                 '                                                                                        <span class="input-group-addon"><a href="#" class="glyphicon glyphicon-plus add-child"></a></span>\n' +
                 '                                                                                    </div>')

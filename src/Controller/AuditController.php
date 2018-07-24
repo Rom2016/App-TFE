@@ -13,6 +13,7 @@ use App\Entity\Company;
 use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
 use App\Entity\TestType;
+use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,6 +30,9 @@ class AuditController extends AbstractController
             switch ($_POST['submit']) {
                 case 'newPhase':
                     $this->saveNewPhase();
+                    //$results = print_r($_POST, true);
+                    //return new Response($results);
+
                     break;
                 case 'addTest':
                     $this->addTestPhase();
@@ -45,7 +49,6 @@ class AuditController extends AbstractController
         $array['phases'] = $repository_phase->findAll();
         $array['tests'] = $repository_test->findAll();
         $array['test_type'] = $repository_test_type->findAll();
-
         return $this->render('audit/administration_audit.html.twig', $array);
     }
 
@@ -72,14 +75,20 @@ class AuditController extends AbstractController
         $entityManager->persist($phase);
         $entityManager->flush();
 
-        foreach ($_POST['test_phase'] as $key => $value){
-            $type = $this->getDoctrine()->getRepository(TestType::class)->findOneBy(['type' => $_POST['type']]);
+        foreach ($_POST['test_phase'] as $key => $value) {
+                $type = $this->getDoctrine()->getRepository(TestType::class)->findOneBy(['type' => $value['type']]);
 
-            $test_phase = new AuditTestPhase($value,$_POST['priority'], $phase, $type);
-            $test[$value] = $test_phase;
-            $entityManager->persist($test_phase);
+                $test_phase = new AuditTestPhase($value['parent'], $value['prio'], $phase, $type , null);
+                $entityManager->persist($test_phase);
+                $entityManager->flush();
+                foreach ($value['child'] as $k => $v) {
+                    if(!empty($v)) {
+                        $test_child = new AuditTestPhase($v, null, $phase, null, $test_phase);
+                        $entityManager->persist($test_child);
+                    }
+                }
+                $entityManager->flush();
         }
-        $entityManager->flush();
     }
 
     /**

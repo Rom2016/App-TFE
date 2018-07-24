@@ -1,66 +1,86 @@
-<div class="row" id="table{{ phase.id }}">
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="x_panel">
-            <div class="x_title">
-                <h2>{{ phase.phase_name }}</h2>
-                <ul class="nav navbar-right panel_toolbox">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-plus"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a onclick="toggleInput()">Ajouter un test de phase</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a onclick="dialogConfirm(this.name)" role="button" aria-expanded="false" name="../supprimer-test-phase"><i class="fa fa-close"></i></a>
-                    </li>
-                </ul>
-                <div class="clearfix"></div>
-            </div>
-            <div class="x_content">
-                <table id="myTable" class="myTable table table-striped table-bordered bulk_action dataTable no-footer">
-                    <thead>
-                    <tr>
-                        <th>
-                            <input type="checkbox"  class="flat">
-                        </th>
-                        <th>Test</th>
-                        <th>Priorité</th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    {% for test in tests %}
-                            <tr>
-                                <td><input type="checkbox" name="{{ test.id }}" onclick="checkboxSelect(this)"></td>
-                                <td>{{ test.name }}</td>
-                                <td>{{ test.priority }}</td>
-                            </tr>
-                    {% endfor %}
-                    </tbody>
-
-                </table>
-                <br />
-                <div class="row">
-                    <form id="input-new{{ phase.id }}" name="../ajouter-test-audit" style="display: none">
-                        <div  class="form-group test-group">
-                            <div class="col-md-6 col-sm-6">
-                                <input type="hidden" name="idPhase" value="{{ phase.id }}">
-                                <input type="text" name="test_phase[]" class="input_test" required>
-                                <span class="highlight"></span>
-                                <span class="bar"></span>
-                                <label class="label_test">Test de phase</label>
-                                <a class="fa fa-plus-square" onclick="addInput(this)"></a>
-                                <a class="fa fa-minus-square" onclick="removeInput(this)"></a>
+<div class="row">
+    <div class="x_content">
+        <div id="accordion">
+            <h1>Créer une nouvelle phase d'audit</h1>
+            <div class="container">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_content">
+                        <br />
+                        <form id="demo-form2" data-parsley-validate class="" method="post" action="../administration-audit">
+                            <div class="row">
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                    <label>Intitulé de la phase</label>
+                                    <input type="text" id="first-name" required="required" class="form-control col-md-6 col-xs-12" name="name_phase">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                            <button type="submit" class="btn btn-success">Soumettre</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="actionBar">
-                    <a class="btn btn-danger" id="{{ phase.id }}" onclick="deletePhase(this.id)">Supprimer la table</a>
+                            <div class="row">
+                                <div class="table-responsive col-md-12 col-sm-12">
+                                    <table class="table table-hover table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                Test
+                                            </th>
+                                            <th>
+                                                Type
+                                            </th>
+                                            <th>
+                                                Priorité
+                                            </th>
+                                            <th>
+                                                Famille
+                                            </th>
+                                            <th>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                                    <input type="text" name="test_phase[]" class="input_test" placeholder="Ajouter un test" required>
+                                                    <div class="bar"></div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <select class="form-control" name="type" id="sel1">
+                                                            <option>{{ t.type }}</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <select class="form-control" name="priority" id="sel1">
+                                                        <option>1</option>
+                                                        <option>2</option>
+                                                        <option>3</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="input-group col-md-6 col-sm-6 col-xs-12">
+                                                    <span class="input-group-addon"><a  class="glyphicon glyphicon-minus remove-child" style=" pointer-events: none;cursor: default;"></a></span>
+                                                    <input type="text" name="test_child[]" class="input_test" placeholder="Ajouter un test enfant">
+                                                    <div class="bar"></div>
+                                                    <span class="input-group-addon"><a href="#" class="glyphicon glyphicon-plus add-child"></a></span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a href="#" class="add-row"><span class="glyphicon glyphicon-plus"></span></a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                    <button type="submit" class="btn btn-success" name="submit" value="newPhase" >Soumettre</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

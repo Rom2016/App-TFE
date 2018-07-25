@@ -29,6 +29,11 @@ class AuditPhase
     public $test;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    public $number;
+
+    /**
      * AuditPhase constructor.
      * @param $phase_name
      */
@@ -82,6 +87,18 @@ class AuditPhase
                 $test->setIdPhase(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNumber(): ?int
+    {
+        return $this->number;
+    }
+
+    public function setNumber(?int $number): self
+    {
+        $this->number = $number;
 
         return $this;
     }

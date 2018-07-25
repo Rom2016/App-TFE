@@ -26,17 +26,27 @@ class AuditController extends AbstractController
      */
     public function adminAudit()
     {
-        if($_POST){
+
+        if ($_POST) {
             switch ($_POST['submit']) {
                 case 'newPhase':
                     $this->saveNewPhase();
                     //$results = print_r($_POST, true);
                     //return new Response($results);
-
                     break;
                 case 'addTest':
                     $this->addTestPhase();
-
+                    break;
+                case 'switchPhases':
+                    $this->switchPhases();
+                    //foreach ($_POST['name_phase'] as $key => $value){
+                    // $array[]['number'] = $value[0];
+                    //}
+                    //$results = print_r($array,true);
+                    //return new Response($results);
+                    //$results = print_r($_POST['name_phase'], true);
+                    //return new Response($results);
+                    break;
             }
         }
 
@@ -46,10 +56,26 @@ class AuditController extends AbstractController
 
 
         $array = $_SESSION['user']->getAll();
-        $array['phases'] = $repository_phase->findAll();
+        $array['phases'] = $repository_phase->findBy([], ['number' => 'ASC']);
         $array['tests'] = $repository_test->findAll();
         $array['test_type'] = $repository_test_type->findAll();
         return $this->render('audit/administration_audit.html.twig', $array);
+    }
+
+    /**
+     * @Route("/modifier-phase", name="modif_phase", options={"utf8": true})
+     */
+
+    public function modifPhase()
+    {
+        $array = $_SESSION['user']->getAll();
+        $phase = $this->getDoctrine()->getRepository(AuditPhase::class)->findOneBy(['id' => $_GET['id']]);
+        $array['tests'] = $this->getDoctrine()->getRepository(AuditTestPhase::class)->findBy(['idPhase' => $phase]);
+        $array['type'] = $this->getDoctrine()->getRepository(TestType::class)->findAll();
+        $array['phase'] = $phase;
+
+        return $this->render('audit/new_phase.html.twig',$array) ;
+
     }
 
     /**
@@ -64,30 +90,50 @@ class AuditController extends AbstractController
         $array['phases'] = $repository_phase->findAll();
         $array['tests'] = $repository_test->findAll();
 
-        return $this->render('audit/new_audit.html.twig',$array);
+        return $this->render('audit/new_audit.html.twig', $array);
     }
 
     public function saveNewPhase()
     {
         $entityManager = $this->getDoctrine()->getManager();
         $phase = new AuditPhase($_POST['name_phase']);
-
         $entityManager->persist($phase);
         $entityManager->flush();
 
-        foreach ($_POST['test_phase'] as $key => $value) {
-                $type = $this->getDoctrine()->getRepository(TestType::class)->findOneBy(['type' => $value['type']]);
+        $phase->setNumber($phase->getId());
+        $entityManager->persist($phase);
+        $entityManager->flush();
 
-                $test_phase = new AuditTestPhase($value['parent'], $value['prio'], $phase, $type , null);
-                $entityManager->persist($test_phase);
-                $entityManager->flush();
-                foreach ($value['child'] as $k => $v) {
-                    if(!empty($v)) {
-                        $test_child = new AuditTestPhase($v, null, $phase, null, $test_phase);
-                        $entityManager->persist($test_child);
-                    }
+
+        foreach ($_POST['test_phase'] as $key => $value) {
+            $type = $this->getDoctrine()->getRepository(TestType::class)->findOneBy(['type' => $value['type']]);
+
+            $test_phase = new AuditTestPhase($value['parent'], $value['prio'], $phase, $type, null);
+            $entityManager->persist($test_phase);
+            $entityManager->flush();
+            foreach ($value['child'] as $k => $v) {
+                if (!empty($value['child'][$k]['name'])) {
+                    $type = $this->getDoctrine()->getRepository(TestType::class)->findOneBy(['type' => $value['child'][$k]['type']]);
+                    $test_child = new AuditTestPhase($value['child'][$k]['name'], $value['child'][$k]['prio'], $phase, $type, $test_phase);
+                    $entityManager->persist($test_child);
                 }
-                $entityManager->flush();
+            }
+            $entityManager->flush();
+        }
+    }
+
+    public function switchPhases()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
+        $array['phases'] = $repository_phase->findBy([], ['number' => 'ASC']);
+
+        foreach ($_POST['name_phase'] as $key => $value) {
+            foreach ($array['phases'] as $k => $v)
+                if ($v->getPhaseName() == $k) {
+                    $v->setNumber($array['phases'][$k]->getNumber());
+                }
+            $entityManager->flush();
         }
     }
 
@@ -113,6 +159,7 @@ class AuditController extends AbstractController
         return new JsonResponse($_POST);
 
     }
+
 
     public function addTestPhase()
     {
@@ -181,4 +228,8 @@ class AuditController extends AbstractController
 
         return $this->render('audit/select_audit.html.twig', $array);
     }
+    /**
+     * @Route("/voir-audit", name="view_audit", options={"utf8": true})
+     */
+
 }

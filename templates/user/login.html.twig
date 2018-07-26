@@ -43,9 +43,16 @@
                         <span class="focus-input100" data-placeholder="&#xf191;"></span>
                     </div>
 
+                    {% if error is defined %}
+                        <div class="alert alert-danger text-center">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+
                     <div class="container-login100-form-btn">
                         <input type="submit" name="../" value="Connexion" class="login100-form-btn">
                     </div>
+
 
                     <div class="text-center p-t-90">
                         <a class="txt1" href="#">
@@ -53,11 +60,7 @@
                         </a>
                     </div>
                 </form>
-                <div class="login-error">
-                    {% if error is defined %}
-                        {{ error }}
-                    {% endif %}
-                </div>
+
             </div>
         </div>
     </div>

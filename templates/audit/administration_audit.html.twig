@@ -133,11 +133,10 @@
                                 <table id="myTable" class="myTable table table-striped table-bordered bulk_action dataTable no-footer" style="padding: 1%">
                                     <thead>
                                     <tr>
-                                        <th>
-                                            <input type="checkbox"  class="flat">
-                                        </th>
+                                        <th>#</th>
                                         <th>Test</th>
                                         <th>Priorité</th>
+                                        <th>Type</th>
                                     </tr>
                                     </thead>
 
@@ -145,9 +144,15 @@
                                     {% for test in tests %}
                                         {% if test.idPhase.id == phase.id %}
                                             <tr>
-                                                <td><input type="checkbox" name="{{ test.id }}" onclick="checkboxSelect(this)"></td>
+                                                <td>{{ test.id }}</td>
                                                 <td>{{ test.name }}</td>
-                                                <td>{{ test.priority }}</td>
+                                                <td class="text-center">{{ test.priority }}</td>
+                                                <td class="text-center">{% for t in test_type %}
+                                                        {% if t == test.type %}
+                                                            {{ t.type }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </td>
                                             </tr>
                                         {% endif %}
                                     {% endfor %}
@@ -189,7 +194,7 @@
                     <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Etes-vous sûr de vouloir supprimer ce test? </p>
                 </div>
             <div class="row">
-                <div class="col-xs-12 col-md-6 small-container">
+                <div class="col-xs-12 col-md-5 small-container">
                     <form method="post" action="../administration-audit">
                         <div class="page-header">
                         <h3>Ordre des phases dans l'audit</h3>
@@ -209,8 +214,39 @@
                     </div>
                     </form>
                 </div>
+                <div class="col-md-offset-1 col-xs-12 col-md-5 small-container-mirror ">
+                    <form method="post" action="../administration-audit">
+                        <div class="page-header">
+                            <h3>Gestion des sélections de test</h3>
+                        </div>
+                        <ul class="list-group">
+
+                            {% for phase in phases %}
+                                <div class="dropdown">
+                                    <li class="list-group-item dropdown-toggle" type="button" data-toggle="dropdown">{{ phase.phase_name }}
+                                    <span class="caret"></span>
+                                    </li>
+                                    <ul class="dropdown-menu">
+                                        {% for test in tests %}
+                                            {% if test.idPhase == phase %}
+                                                {% for t in type %}
+                                                     {% if t.type == 'Selection' and t == test.type %}
+                                                        <li><a href="#">{{ test.name }}</a></li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        </ul>
+                                </div>
+                            {% endfor %}
+                        </ul>
+                        <div class="actionBar">
+                            <button type="submit" name="submit" value="switchPhases" class="btn btn-primary">Modifier l'ordre des phases</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+    </div>
     </div>
 
 

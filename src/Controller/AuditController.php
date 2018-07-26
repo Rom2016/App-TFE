@@ -47,6 +47,9 @@ class AuditController extends AbstractController
                     //$results = print_r($_POST['name_phase'], true);
                     //return new Response($results);
                     break;
+                case 'submitModifPhase':
+                    $this->saveModifPhase();
+                    break;
             }
         }
 
@@ -56,10 +59,73 @@ class AuditController extends AbstractController
 
 
         $array = $_SESSION['user']->getAll();
+        $array['type'] = $repository_test_type->findAll();
         $array['phases'] = $repository_phase->findBy([], ['number' => 'ASC']);
         $array['tests'] = $repository_test->findAll();
         $array['test_type'] = $repository_test_type->findAll();
         return $this->render('audit/administration_audit.html.twig', $array);
+    }
+
+    public function saveModifPhase()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
+        $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
+        $repository_test_type = $this->getDoctrine()->getRepository(TestType::class);
+
+        $phase = $repository_phase->findOneBy(['id' => $_GET['id']]);
+
+        if($phase->getPhaseName() != $_POST['name_phase']){
+            $phase->setPhaseName($_POST['name_phase']);
+        }
+
+        foreach($_POST['test_phase'] as $key => $value) {
+            if (isset($value['id'])) {
+                $test = $repository_test->findOneBy(['id' => $value['id']]);
+                $type = $repository_test_type->findOneBy(['type' => $value['type']]);
+                if ($test->getName() != $value['parent']) {
+                    $test->setName($value['parent']);
+                }
+                if ($test->getType() != $type) {
+                    $test->setType($type);
+                }
+                if ($test->getPriority() != $value['prio']) {
+                    $test->setPriority($value['prio']);
+                }
+                foreach ($value['child'] as $k => $v) {
+                    if ($v['name'] && isset($v['id'])) {
+                        $child = $repository_test->findOneBy(['id' => $v['id']]);
+                        $type = $repository_test_type->findOneBy(['type' => $v['type']]);
+                        if ($child->getName() != $v['name']) {
+                            $child->setName($v['name']);
+                        }
+                        if ($child->getType() != $type) {
+                            $child->setType($type);
+                        }
+                        if ($child->getPriority() != $v['prio']) {
+                            $child->setPriority($v['prio']);
+                        }
+                    }elseif($v['name']){
+                        $type = $repository_test_type->findOneBy(['type' => $v['type']]);
+                        $child = new AuditTestPhase($v['name'],$v['prio'],$phase,$type,$test);
+                        $entityManager->persist($child);
+                    }
+                }
+            }else{
+                $type = $repository_test_type->findOneBy(['type' => $value['type']]);
+                $test = new AuditTestPhase($value['parent'],$value['prio'],$phase,$type,null);
+                $entityManager->persist($test);
+                $entityManager->flush();
+                foreach ($value['child'] as $k => $v){
+                    if($v['name']){
+                        $type = $repository_test_type->findOneBy(['type' => $v['type']]);
+                        $child = new AuditTestPhase($v['name'],$v['prio'],$phase,$type,$test);
+                        $entityManager->persist($child);
+                    }
+                }
+            }
+        }
+        $entityManager->flush();
     }
 
     /**
@@ -76,6 +142,28 @@ class AuditController extends AbstractController
 
         return $this->render('audit/new_phase.html.twig',$array) ;
 
+    }
+
+    /**
+     * @Route("/supprimer-test-phase", name="delete_test", methods="POST", options={"utf8": true})
+     */
+    public function deleteTest()
+    {
+        if(isset($_SESSION)) {
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
+            $parent = $repository_test->findOneBy(['id' => $_POST['id']]);
+            $child = $repository_test->findBy(['id_parent' => $parent]);
+            foreach ($child as $key => $value) {
+                $entityManager->remove($value);
+            }
+            $entityManager->flush();
+            $entityManager->remove($parent);
+            $entityManager->flush();
+        }
+        $json['content'] = 'Ok';
+        return new JsonResponse($json);
     }
 
     /**
@@ -147,13 +235,21 @@ class AuditController extends AbstractController
         $tests = $this->getDoctrine()->getRepository(AuditTestPhase::class)->findBy(['idPhase' => $idPhase]);
         $phase = $this->getDoctrine()->getRepository(AuditPhase::class)->findOneBy(['id' => $idPhase]);
 
-        foreach ($tests as $key => $value) {
 
-            $entityManager->remove($value);
+        foreach ($tests as $key => $value) {
+            if($value->getIdParent()) {
+                $entityManager->remove($value);
+            }else{
+                $array[] = $value;
+            }
         }
 
+        if(isset($array)) {
+            foreach ($array as $key => $value) {
+                $entityManager->remove($value);
+            }
+        }
         $entityManager->remove($phase);
-
         $entityManager->flush();
 
         return new JsonResponse($_POST);
@@ -174,23 +270,6 @@ class AuditController extends AbstractController
             $entityManager->persist($test_phase);
             $entityManager->flush();
         }
-    }
-
-    /**
-     * @Route("/supprimer-test-phase", name="delete_test_phase", options={"utf8": true})
-     */
-    public function deleteTestPhase()
-    {
-        if(isset($_POST)) {
-        $entityManager = $this->getDoctrine()->getManager();
-        foreach ($_POST as $key => $value) {
-            $object = $this->getDoctrine()->getRepository(AuditTestPhase::class)->findOneBy(['id' => $value]);
-            $entityManager->remove($object);
-        }
-        $entityManager->flush();
-    }
-        $json['content'] = 'Ok';
-        return new JsonResponse($json);
     }
 
     /**

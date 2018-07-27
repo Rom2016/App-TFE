@@ -50,24 +50,27 @@ class UserController extends AbstractController
      */
     public function viewAdminUser()
     {
-        if($_POST){
-            switch ($_POST['submit']) {
-                case 'newUser':
-                    $this->newUser();
-                    break;
+        if(isset($_SESSION)){
+            if ($_SESSION['user']->isAdmin) {
+                if ($_POST){
+                    switch ($_POST['submit']) {
+                        case 'newUser':
+                            $this->newUser();
+                            break;
+                    }
+                }
+                $repository = $this->getDoctrine()->getRepository(User::class);
+                $array = $_SESSION['user']->getAll();
+                $array['users'] = $repository->findAll();
+                return $this->render('user/administration_user.html.twig', $array);
+            }else{
+                return $this->render('error/error_403.html.twig');
             }
+        }else{
+            return $this->redirectToRoute('homepage');
         }
-
-        $repository = $this->getDoctrine()->getRepository(User::class);
-        $array = $_SESSION['user']->getAll();
-        $array['users'] = $repository->findAll();
-        return $this->render('user/administration_user.html.twig',$array);
-
     }
 
-    /**
-     * @Route("/connexion", name="user_connection", methods="POST")
-     */
     public function userConnection()
     {
         //$entityManager = $this->getDoctrine()->getManager();
@@ -75,17 +78,11 @@ class UserController extends AbstractController
         $repositoryU = $this->getDoctrine()->getRepository(User::class);
         $user = $repositoryU->findOneBy(['email' => $email]);
 
-        if ($user && $user->checkPassword($_POST['pass'],$email)){
+        if ($user && password_verify($_POST['pass'],$user->getPass())){
             $user->startConnection();
-
             $array = $_SESSION['user']->getAll();
-            $repositoryC = $this->getDoctrine()->getRepository(Company::class);
-            $array['nbComp'] = $repositoryC->getNbRows();
-            $array['nbUser'] = $repositoryU->getNbRows();
-
             return $this->render('user/homepage.html.twig',$array);
         }else{
-
             return $this->render('user/login.html.twig',['title'=>"Bienvenue",'error'=>'Identifiants invalides']);
         }
     }
@@ -94,48 +91,50 @@ class UserController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        $user = new User($_POST['fName'],$_POST['sName'],$_POST['email'],$_POST['function'],$_POST['phone']);
+        $user = new User($_POST['fName'],$_POST['sName'],$_POST['email'],$_POST['function'],$_POST['phone'],$this->setAdmin());
 
-        $randomPass = $user->generatePassword(10);
-        $user->saltPassword($randomPass);
-
+        $user->setPass(password_hash('TFE_AUDIT_2018', PASSWORD_BCRYPT));
         $entityManager->persist($user);
         $entityManager->flush();
-
     }
 
-    /**
-     * @Route("/deconnexion", name="user_logoff", methods="GET")
-     */
-    public function userLogoff()
+    public function setAdmin()
     {
-       $_SESSION['user']->logoff();
-       return $this->render('user/login.html.twig');
+        if(isset($_POST['admin'])){
+            return true;
+        }else{
+            return false;
+        }
     }
+
 
     /**
      * @Route("/profile", name="view_profile_user")
      */
     public function viewProfile()
     {
-        if(isset($_GET['save'])){
-            $entityManager = $this->getDoctrine()->getManager();
-            $object = $this->getDoctrine()->getRepository(User::class)->findOneBy(['id' => $_SESSION['user']->id]);
-            $object->updateProfile();
-            $entityManager->persist($object);
-            $entityManager->flush();
-            $array = $_SESSION['user']->getAll();
-
+        if(isset($_SESSION)) {
+            if ($_POST) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['id' => $_SESSION['user']->id]);
+                $user->updateProfile();
+                $entityManager->persist($user);
+                $entityManager->flush();
+                $array = $_SESSION['user']->getAll();
+            } else {
+                $array = $_SESSION['user']->getAll();
+            }
             return $this->render('user/profile_user.html.twig', $array);
-        }
-        else {
-            $array = $_SESSION['user']->getAll();
-            return $this->render('user/profile_user.html.twig', $array);
+        }else{
+            return $this->redirectToRoute('homepage');
         }
     }
 
+    /*
+     * JQUERY
+     */
     /**
-     * @Route("/supprimer-utilisateur", name="delete_user")
+     * @Route("/supprimer-utilisateur", name="delete_user", methods="POST")
      */
     public function deleteUser()
     {
@@ -149,6 +148,5 @@ class UserController extends AbstractController
         }
         return new Response('ok');
     }
-
 }
 

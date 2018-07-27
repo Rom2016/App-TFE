@@ -10,10 +10,9 @@
 {% block stylesheets %}
     {{ parent() }}
     <link href="../vendor/iCheck/skins/flat/green.css" rel="stylesheet">
-
-
-
+    <link href="../css/input_custom.css" rel="stylesheet">
 {% endblock %}
+
 {% block body %}
 
     {{ parent() }}
@@ -38,7 +37,7 @@
                             <div id="wizard" class="form_wizard wizard_horizontal">
                                 <ul class="wizard_steps">
                                     <li>
-                                        <a href="#step-1">
+                                        <a href="#step-1" id="trigger-step1">
                                             <span class="step_no">1</span>
                                             <span class="step_descr">
                                               Etape 1<br />
@@ -69,23 +68,23 @@
                                     <form class="form-horizontal form-label-left">
 
                                         <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Nom de la société <span class="required">*</span>
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Nom de la société <span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="text" id="name-company" required="required" class="form-control col-md-7 col-xs-12 info-company">
+                                                <input type="text" id="name-company" required="required" class="input_test col-md-7 col-xs-12 info-company">
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Téléphone de la société <span class="required">*</span>
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Téléphone de la société <span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="text" id="phone-company" name="phone-company" required="required" class="form-control col-md-7 col-xs-12 info-company">
+                                                <input type="text" id="phone-company" name="phone-company" required="required" class="input_test col-md-7 col-xs-12 info-company">
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Email de la société<span class="required">*</span></label>
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Email de la société<span class="required">*</span></label>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input id="email-company" required="required" class="form-control col-md-7 col-xs-12 info-company" type="email" name="middle-name">
+                                                <input id="email-company" required="required" class="input_test col-md-7 col-xs-12 info-company" type="email" name="middle-name">
                                             </div>
                                         </div>
 
@@ -178,7 +177,6 @@
     {% block javascripts %}
         {{ parent() }}
         <script src="../vendor/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script>
-        <script src="../js/custom_audit_table.js"></script>
         <!-- iCheck -->
         <script src="../vendor/iCheck/icheck.min.js"></script>
         <script>

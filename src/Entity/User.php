@@ -27,7 +27,7 @@ class User
     public $second_name;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=255)
      */
     public $pass;
 
@@ -52,47 +52,33 @@ class User
     public $phone;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    public $isAdmin;
+
+    /**
      * User constructor.
      * @param $first_name
      * @param $second_name
-     * @param $pass
      * @param $email
      * @param $function
      * @param $phone
+     * @param $isAdmin
      */
-    public function __construct($first_name, $second_name, $email, $function, $phone)
+    public function __construct($first_name, $second_name, $email, $function, $phone, $isAdmin)
     {
         $this->first_name = $first_name;
         $this->second_name = $second_name;
         $this->email = $email;
         $this->function = $function;
         $this->phone = $phone;
+        $this->isAdmin = $isAdmin;
     }
 
 
     public function startConnection(){
         session_start();
         $_SESSION['user'] = $this;
-    }
-
-    public function logoff(){
-        session_destroy();
-    }
-
-    public function checkPassword($pass,$salt){
-        $password=md5($pass.$salt);
-        if($this->pass == $password){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    public function saveUser(){
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $entityManager->persist($this);
-        $entityManager->flush();
     }
 
     public function selectProfilePic(){
@@ -109,8 +95,7 @@ class User
         return substr(str_shuffle($chars),0,$length);
     }
 
-    public function saltPassword($pass){
-        $this->pass = md5($pass.$this->email);
+    public function hachPassword($pass){
     }
 
     public function updateProfile(){
@@ -124,7 +109,7 @@ class User
     }
 
     public function getAll(){
-        $array=['fName'=>$this->first_name,'sName'=>$this->second_name,'email'=>$this->email,'profPic'=>$this->selectProfilePic(),'phone'=>$this->phone,'function'=>$this->function];
+        $array=['fName'=>$this->first_name,'sName'=>$this->second_name,'email'=>$this->email,'profPic'=>$this->selectProfilePic(),'phone'=>$this->phone,'function'=>$this->function,'is_admin'=>$this->isAdmin];
         return $array;
     }
 
@@ -254,6 +239,30 @@ class User
     public function setPhone($phone): void
     {
         $this->phone = $phone;
+    }
+
+    public function getSalt(): ?string
+    {
+        return $this->salt;
+    }
+
+    public function setSalt(string $salt): self
+    {
+        $this->salt = $salt;
+
+        return $this;
+    }
+
+    public function getIsAdmin(): ?bool
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin(bool $isAdmin): self
+    {
+        $this->isAdmin = $isAdmin;
+
+        return $this;
     }
 
 

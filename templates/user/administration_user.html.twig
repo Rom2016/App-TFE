@@ -9,7 +9,8 @@
     {{ parent() }}
 
     <link href="../vendor/jquery-ui-1.12.1/jquery-ui.min.css" rel="stylesheet">
-
+    <link href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="../vendor/iCheck/skins/flat/green.css" rel="stylesheet">
 
 {% endblock %}
 {% block body %}
@@ -43,14 +44,14 @@
                             </ul>
                             <div class="clearfix"></div>
                         </div>
-                        <div class="x_content">
-                            <table class="myTable table table-striped table-bordered bulk_action">
+                        <div class="col-xs-12 col-md-12">
+                            <table id="myTable" class="">
                                 <thead>
                                 <tr>
                                     <th>
                                     <input type="checkbox"  class="flat">
                                     </th>
-                                    <th>ID</th>
+                                    <th>#</th>
                                     <th>Prénom</th>
                                     <th>Nom</th>
                                     <th>Email</th>
@@ -58,12 +59,10 @@
                                     <th>Téléphone</th>
                                 </tr>
                                 </thead>
-
-
                                 <tbody>
                                 {% for user in users %}
                                 <tr>
-                                    <td><input type="checkbox" name="{{ user.id }}" onclick="checkboxSelect(this)"></td>
+                                    <td><input type="checkbox" class="check-user" name="{{ user.id }}" onclick="checkboxSelect(this)"></td>
                                     <td>{{ user.id }}</td>
                                     <td>{{ user.first_name }}</td>
                                     <td>{{ user.second_name }}</td>
@@ -84,7 +83,7 @@
         </div>
         <div class="clearfix"></div>
         <div class="form-hidden" id="form" >
-            <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="col-md-6 col-sm-12 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
                         <h2>Nouvel utilisateur</h2>
@@ -128,9 +127,16 @@
                                     <input id="birthday" name="phone" class="date-picker form-control col-md-7 col-xs-12" required="required" type="text">
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">Administrateur
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input name="admin" type="checkbox">
+                                </div>
+                            </div>
                             <div class="ln_solid"></div>
                             <div class="form-group">
-                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-5">
                                     <button type="submit" name="submit" value="newUser" class="btn btn-success">Soumettre</button>
                                 </div>
                             </div>
@@ -151,7 +157,7 @@
 
     <script>
         $( function() {
-            $('.myTable').DataTable({
+            $('#myTable').DataTable({
                 "language": {
                     "sProcessing": "Traitement en cours ...",
                     "sLengthMenu": "Afficher _MENU_ lignes",
@@ -174,5 +180,12 @@
                 }
             });
         });
+    </script>
+
+    <script src="../vendor/iCheck/icheck.min.js"></script>
+    <script>
+        $('.check-user').iCheck({
+            checkboxClass: 'icheckbox_flat-green'
+        })
     </script>
 {% endblock %}

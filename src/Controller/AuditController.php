@@ -12,6 +12,7 @@ use App\Entity\AuditCompany;
 use App\Entity\Company;
 use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
+use App\Entity\TestSelection;
 use App\Entity\TestType;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -20,50 +21,86 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AuditController extends AbstractController
 {
-
+/*
+ *
+ */
     /**
      * @Route("/administration-audit", name="admin_audit", options={"utf8": true})
      */
     public function adminAudit()
     {
+        if(isset($_SESSION)) {
+            if ($_SESSION['user']->isAdmin) {
+                if ($_POST) {
+                    switch ($_POST['submit']) {
+                        case 'newPhase':
+                            $this->saveNewPhase();
+                            break;
+                        case 'addTest':
+                            $this->addTestPhase();
+                            break;
+                        case 'switchPhases':
+                            $this->switchPhases();
+                            break;
+                        case 'submitModifPhase':
+                            $this->saveModifPhase();
+                            break;
+                    }
+                }
 
-        if ($_POST) {
-            switch ($_POST['submit']) {
-                case 'newPhase':
-                    $this->saveNewPhase();
-                    //$results = print_r($_POST, true);
-                    //return new Response($results);
-                    break;
-                case 'addTest':
-                    $this->addTestPhase();
-                    break;
-                case 'switchPhases':
-                    $this->switchPhases();
-                    //foreach ($_POST['name_phase'] as $key => $value){
-                    // $array[]['number'] = $value[0];
-                    //}
-                    //$results = print_r($array,true);
-                    //return new Response($results);
-                    //$results = print_r($_POST['name_phase'], true);
-                    //return new Response($results);
-                    break;
-                case 'submitModifPhase':
-                    $this->saveModifPhase();
-                    break;
+                $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
+                $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
+                $repository_test_type = $this->getDoctrine()->getRepository(TestType::class);
+                $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
+
+
+                $array = $_SESSION['user']->getAll();
+                $array['selection'] = $repository_selection->findAll();
+                $array['type'] = $repository_test_type->findAll();
+                $array['phases'] = $repository_phase->findBy([], ['number' => 'ASC']);
+                $array['tests'] = $repository_test->findAll();
+                $array['test_type'] = $repository_test_type->findAll();
+
+                return $this->render('audit/administration_audit.html.twig', $array);
+            }else{
+                return $this->render('error/error_403.html.twig');
             }
+        }else{
+            return $this->redirectToRoute('homepage');
         }
+    }
 
-        $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
-        $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
-        $repository_test_type = $this->getDoctrine()->getRepository(TestType::class);
+    /*
+     * JQUERY
+     */
 
+    /**
+     * @Route("/selection-test", name="selection-test", methods="POST", options={"utf8": true})
+     */
+    public function selectionTest()
+    {
+        if(isset($_SESSION)) {
+            $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
+            $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
+            $test = $repository_test->findOneBy(['id' => $_POST['id_test']]);
+            $entityManager = $this->getDoctrine()->getManager();
 
-        $array = $_SESSION['user']->getAll();
-        $array['type'] = $repository_test_type->findAll();
-        $array['phases'] = $repository_phase->findBy([], ['number' => 'ASC']);
-        $array['tests'] = $repository_test->findAll();
-        $array['test_type'] = $repository_test_type->findAll();
-        return $this->render('audit/administration_audit.html.twig', $array);
+            foreach ($_POST['selection'] as $key => $value) {
+                if (isset($value['id'])) {
+                    $selection = $repository_selection->findOneBy(['id' => $value['id']]);
+                    if ($value['name'] != $selection->getName()) {
+                        $selection->setName($value['name']);
+                    }
+                } elseif ($value['name']) {
+                    $selection = new TestSelection($value['name'], $test);
+                    $entityManager->persist($selection);
+                }
+            }
+            $entityManager->flush();
+            return new Response('ok');
+        }else{
+            return $this->redirectToRoute('homepage');
+        }
     }
 
     public function saveModifPhase()
@@ -134,14 +171,20 @@ class AuditController extends AbstractController
 
     public function modifPhase()
     {
-        $array = $_SESSION['user']->getAll();
-        $phase = $this->getDoctrine()->getRepository(AuditPhase::class)->findOneBy(['id' => $_GET['id']]);
-        $array['tests'] = $this->getDoctrine()->getRepository(AuditTestPhase::class)->findBy(['idPhase' => $phase]);
-        $array['type'] = $this->getDoctrine()->getRepository(TestType::class)->findAll();
-        $array['phase'] = $phase;
-
-        return $this->render('audit/new_phase.html.twig',$array) ;
-
+        if(isset($_SESSION)) {
+            if ($_SESSION['user']->isAdmin) {
+                $array = $_SESSION['user']->getAll();
+                $phase = $this->getDoctrine()->getRepository(AuditPhase::class)->findOneBy(['id' => $_GET['id']]);
+                $array['tests'] = $this->getDoctrine()->getRepository(AuditTestPhase::class)->findBy(['idPhase' => $phase]);
+                $array['type'] = $this->getDoctrine()->getRepository(TestType::class)->findAll();
+                $array['phase'] = $phase;
+                return $this->render('audit/new_phase.html.twig', $array);
+            } else {
+                return $this->render('error/error_403.html.twig');
+            }
+        }else{
+            return $this->redirectToRoute('homepage');
+        }
     }
 
     /**
@@ -149,21 +192,30 @@ class AuditController extends AbstractController
      */
     public function deleteTest()
     {
-        if(isset($_SESSION)) {
-
             $entityManager = $this->getDoctrine()->getManager();
             $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
+            $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
             $parent = $repository_test->findOneBy(['id' => $_POST['id']]);
             $child = $repository_test->findBy(['id_parent' => $parent]);
             foreach ($child as $key => $value) {
+                $selection = $repository_selection->findBy(['test' => $value]);
+                if($selection){
+                    foreach ($selection as $k => $v){
+                        $entityManager->remove($v);
+                    }
+                }
                 $entityManager->remove($value);
             }
-            $entityManager->flush();
+            $selection = $repository_selection->findBy(['test' => $parent]);
+            if($selection){
+                foreach ($selection as $k => $v){
+                    $entityManager->remove($v);
+                }
+            }
             $entityManager->remove($parent);
             $entityManager->flush();
-        }
-        $json['content'] = 'Ok';
-        return new JsonResponse($json);
+            $json['content'] = 'Ok';
+            return new JsonResponse($json);
     }
 
     /**
@@ -171,14 +223,18 @@ class AuditController extends AbstractController
      */
     public function newAudit()
     {
-        $array = $_SESSION['user']->getAll();
-        $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
-        $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
+        if(isset($_SESSION)){
+            $array = $_SESSION['user']->getAll();
+            $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
+            $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
 
-        $array['phases'] = $repository_phase->findAll();
-        $array['tests'] = $repository_test->findAll();
+            $array['phases'] = $repository_phase->findAll();
+            $array['tests'] = $repository_test->findAll();
 
-        return $this->render('audit/new_audit.html.twig', $array);
+            return $this->render('audit/new_audit.html.twig', $array);
+        }else{
+            return $this->redirectToRoute('homepage');
+        }
     }
 
     public function saveNewPhase()
@@ -225,6 +281,9 @@ class AuditController extends AbstractController
         }
     }
 
+    /*
+     * JQUERY
+     */
     /**
      * @Route("/supprimer-phase-audit", name="delete_audit_phase", options={"utf8": true})
      */
@@ -243,7 +302,6 @@ class AuditController extends AbstractController
                 $array[] = $value;
             }
         }
-
         if(isset($array)) {
             foreach ($array as $key => $value) {
                 $entityManager->remove($value);
@@ -300,15 +358,15 @@ class AuditController extends AbstractController
 
     public function viewAudits()
     {
-        $repository_company = $this->getDoctrine()->getRepository(Company::class);
-        $array = $_SESSION['user']->getAll();
-        $array['company'] = $repository_company->findAll();
+        if(isset($_SESSION)) {
+            $repository_company = $this->getDoctrine()->getRepository(Company::class);
+            $array = $_SESSION['user']->getAll();
+            $array['company'] = $repository_company->findAll();
 
-
-        return $this->render('audit/select_audit.html.twig', $array);
+            return $this->render('audit/select_audit.html.twig', $array);
+        }else{
+            return $this->redirectToRoute('homepage');
+        }
     }
-    /**
-     * @Route("/voir-audit", name="view_audit", options={"utf8": true})
-     */
 
 }

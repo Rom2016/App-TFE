@@ -11,87 +11,46 @@
     {{ parent() }}
     <link href="../vendor/iCheck/skins/flat/green.css" rel="stylesheet">
     <link href="../css/input_custom.css" rel="stylesheet">
+    <style>
+    </style>
 {% endblock %}
 
 {% block body %}
 
     {{ parent() }}
     <div class="right_col" role="main">
-        <div class="">
-            <div class="page-title">
-
 
             <div class="row">
+                <form class="form-horizontal form-label-left" method="post" action="../résultat-audit">
 
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                    <div class="x_panel">
-                        <div class="x_title">
-                            <h2>Créer un nouvel audit</h2>
-
-                            <div class="clearfix"></div>
-                        </div>
-                        <div class="x_content">
-
-
-                            <!-- Smart Wizard -->
-                            <div id="wizard" class="form_wizard wizard_horizontal">
-                                <ul class="wizard_steps">
-                                    <li>
-                                        <a href="#step-1" id="trigger-step1">
-                                            <span class="step_no">1</span>
-                                            <span class="step_descr">
-                                              Etape 1<br />
-                                              <small>Informations du client</small>
-                                          </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#step-2">
-                                            <span class="step_no">2</span>
-                                            <span class="step_descr">
-                                              Auditer<br />
-                                              <small>Auditer</small>
-                                          </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#step-3">
-                                            <span class="step_no">3</span>
-                                            <span class="step_descr">
-                                              Résultats<br />
-                                              <small>Résulats</small>
-                                          </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                                <div id="step-1">
-                                    <form class="form-horizontal form-label-left">
-
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Nom de la société <span class="required">*</span>
+                <div class="col-md-6 col-sm-12 col-xs-12 col-md-offset-3">
+                         <div class="panel panel-primary shadow">
+                             <div class="panel-heading"><h2>Informations de la société</h2></div>
+                             <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Nom de la société
                                             </label>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="text" id="name-company" required="required" class="input_test col-md-7 col-xs-12 info-company">
+                                                <input type="text" id="name-company" required="required" class="input_test col-md-7 col-xs-12 info-company" name="name">
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Téléphone de la société <span class="required">*</span>
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Téléphone de la société
                                             </label>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="text" id="phone-company" name="phone-company" required="required" class="input_test col-md-7 col-xs-12 info-company">
+                                                <input type="text" id="phone-company" name="phone" required="required" class="input_test col-md-7 col-xs-12 info-company">
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Email de la société<span class="required">*</span></label>
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Email de la société</label>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input id="email-company" required="required" class="input_test col-md-7 col-xs-12 info-company" type="email" name="middle-name">
+                                                <input id="email-company" required="required" class="input_test col-md-7 col-xs-12 info-company" type="email" name="email">
                                             </div>
                                         </div>
-
-
-                                    </form>
-
                                 </div>
+                </div>
+
+                    <div class="x_panel">
+                    <div class="clearfix"></div>
                                 <div id="step-2">
 
                                         <div class="" role="tabpanel" data-example-id="togglable-tabs">
@@ -119,36 +78,83 @@
                                                     {% endif %}
                                                             <div class="container">
                                                                 <div class="row">
-                                                            <div class="col-md-10 col-sm-10 col-xs-12 col-md-offset-1">
-
-                                                            <div class="panel panel-primary shadow">
-                                                                <div class="panel-heading"><h3>Subsection</h3></div>
-                                                                <div class="panel-body">
-                                                                    <form>
+                                                            <div class="col-md-8 col-sm-10 col-xs-12 col-md-offset-2" style="border: 1px solid; box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);">
+                                                                <div class="col-md-10 col-md-offset-1 ">
+                                                                    <div id="audit-number" style="text-align: right">
+                                                                    <h4>Audit n°{{ auditNumber }}</h4>
+                                                                </div>
+                                                                <div class="well well-md">
+                                                                    <span style="display: block; text-align: center">Société:<h1 class="name-company"></h1></span>
+                                                                </div>
+                                                                </div>
+                                                                <div class="clearfix"></div>
+                                                                <div class="page-header">
+                                                                    <h2>{{ phase.phase_name }}</h2>
+                                                                </div>
 
                                                                 {% for test in tests %}
-                                                                    {% if test.idPhase.id == phase.id and test.id_parent is null%}
+                                                                    {% if test.idPhase.id == phase.id and test.id_parent is null %}
                                                                       <div id="group-form{{ test.id }}" class="group-form-unchecked col-md-8 col-sm-8 col-xs-12" style="margin: 1%">
                                                                         <div class="form-group">
-
-                                                                            <label class="checkbox-inline" onclick="toggleClass({{ test.id }})"><input type="checkbox" class="form-control check-audit" id="checkbox-audit{{ test.id }}" name="{{ test.id }}">{{ test.name }}</label>
+                                                                            <label class="checkbox-inline" onclick="toggleClass({{ test.id }})">
+                                                                                <input type="checkbox" class="form-control check-audit" id="checkbox-audit{{ test.id }}" name="{{ test.id }}">{{ test.name }}
+                                                                            </label>
+                                                                            <span class="glyphicon glyphicon-edit" data-toggle="modal" data-target="#myModal{{ test.id }}"></span>
+                                                                            <div class="modal fade" id="myModal{{ test.id }}" role="dialog">
+                                                                                <div class="modal-dialog modal-lg">
+                                                                                    <div class="modal-content">
+                                                                                        <div class="modal-header">
+                                                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                                            <h4 class="modal-title">Informations additionnelles</h4><small>{{ test.name }}</small>
+                                                                                        </div>
+                                                                                        <div class="modal-body">
+                                                                                            <textarea class="autoExpand form-control" rows="5" name="info[{{ test.id }}][info]"></textarea>
+                                                                                        </div>
+                                                                                        <div class="modal-footer">
+                                                                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                          <div class="group-child col-md-offset-1" id="group-child{{ test.id }}">
+                                                                          {% set tmp = 1 %}
                                                                           {% for t in tests %}
                                                                             {% if test == t.id_parent %}
-                                                                                    <div class="form-group">
+                                                                                {% if tmp == 1 %}
+                                                                                <div class="group-child col-md-offset-1" id="group-child{{ test.id }}">
+                                                                                    {% endif %}
+
+                                                                                <div class="form-group">
                                                                                         <label class="checkbox-inline"><input type="checkbox" class="form-control check-audit box{{ test.id }}" name="{{ t.id }}">{{ t.name }}</label>
+                                                                                        <span class="glyphicon glyphicon-edit" data-toggle="modal" data-target="#myModal{{ t.id }}"></span>
+                                                                                    <div class="modal fade" id="myModal{{ t.id }}" role="dialog">
+                                                                                        <div class="modal-dialog modal-lg">
+                                                                                            <div class="modal-content">
+                                                                                                <div class="modal-header">
+                                                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                                                    <h4 class="modal-title">Informations additionnelles</h4><small>{{ t.name }}</small>
+                                                                                                </div>
+                                                                                                <div class="modal-body">
+                                                                                                    <textarea class="autoExpand form-control" rows="5" name="info[{{ t.id }}][info]"></textarea>
+                                                                                                </div>
+                                                                                                <div class="modal-footer">
+                                                                                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
                                                                                     </div>
-                                                                            {% endif %}
+                                                                                    </div>
+
+                                                                                {% set tmp = tmp+1 %}
+                                                                          {% endif %}
                                                                         {% endfor %}
-                                                                    </div>
+                                                                                    {% if tmp > 1 %}
+                                                                                </div>
+                                                                          {% endif %}
                                                                       </div>
                                                                     {% endif %}
                                                                 {% endfor %}
-                                                                    </form>
                                                                 </div>
-                                                            </div>
-                                                            </div>
                                                             </div>
                                                             </div>
                                                         </div>
@@ -159,19 +165,18 @@
 
                                     </div>
                                         </div>
-
-
-                                <div id="step-3">
-                                    <a href="#" name="../résultat-audit" id="save-audit" onclick="saveAudit(this.name)" >Enregistrer l'audit et passer au résultat?</a>
-                                </div>
+                                    <div id="dialog-info-test"></div>
+                                    <div class="actionBar">
+                                        <button type="submit" class="btn btn-success" name="submit" value="submitAudit">Soumettre</button>
+                                    </div>
                             </div>
-                            <!-- End SmartWizard Content -->
-                        </div>
-                        </div>
+
+                    </div>
+                            </form>
+
                     </div>
             </div>
         </div>
-    </div>
     </div>
 {% endblock %}
     {% block javascripts %}
@@ -183,6 +188,12 @@
             $('.check-audit').iCheck({
                 checkboxClass: 'icheckbox_flat-green'
             })
+
+            $('#name-company').focusout(function(){
+                var name = $(this).val();
+                $('.name-company').html(name);
+            })
+
         </script>
 
     {% endblock %}

@@ -227,9 +227,16 @@ class AuditController extends AbstractController
             $array = $_SESSION['user']->getAll();
             $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
             $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
+            $repository_company = $this->getDoctrine()->getRepository(Company::class);
+            $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
 
+
+            $array['selection'] = $repository_selection->findAll();
             $array['phases'] = $repository_phase->findAll();
             $array['tests'] = $repository_test->findAll();
+            $last_id = $repository_company->findOneBy([], ['id' => 'DESC']);
+            $array['auditNumber'] = $last_id->getId();
+            $array['auditNumber'] = $array['auditNumber']+1;
 
             return $this->render('audit/new_audit.html.twig', $array);
         }else{

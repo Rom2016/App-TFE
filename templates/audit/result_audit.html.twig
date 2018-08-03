@@ -40,7 +40,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr style="">
                             <td>Haute</td>
                             <td><div class="progress">
                                     <div class="progress-bar bg-{% if avg_prio1 < 35 %}red{% elseif avg_prio1 < 60%}orange{% else %}green{% endif %}" role="progressbar" data-transitiongoal="{{ avg_prio1 }}" aria-valuenow="56">
@@ -49,7 +49,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr style="background-color: whitesmoke">
+                        <tr style="background-color: whitesmoke;">
                             <td>Moyenne</td>
                             <td><div class="progress">
                                     <div class="progress-bar bg-{% if avg_prio2 < 35 %}red{% elseif avg_prio2 < 60%}orange{% else %}green{% endif %}" role="progressbar" data-transitiongoal="{{ avg_prio2 }}" aria-valuenow="56">
@@ -58,7 +58,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr style="">
                             <td>Faible</td>
                             <td>
                                 <div class="progress">
@@ -80,8 +80,99 @@
                         {{ avg }}%
                     </h1>
                 </div>
-                <hr />
+                <div class="clearfix"></div>
+                <h1 class="page-header">Récapitulatif</h1>
+                <div class="row">
+                    <h1 class="danger col-md-10">Danger</h1>
+                {% for phase in phases %}
+                    <h2 class="col-md-10">
+                        <span class="glyphicon glyphicon-{{ phase.glyphicon }}"></span>
+                        {{ phase.phase_name }}
+                    </h2>
+                    {% if prio1 is defined %}
+                        <div class="col-md-6">
+                        <table class="table table-hover">
+                            <thead>
 
+                            </thead>
+                            <tbody>
+                                {% for test in prio1 %}
+                                    {% if test.idPhase == phase %}
+
+                                        <tr>
+                                        <td><span class="fa fa-warning" style="color: indianred"></span>{{ test.name }}</td>
+                                    </tr>
+                                        {% else %}
+                                    {% endif %}
+                                {% endfor %}
+                                <tr></tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    {% endif %}
+                    {% endfor %}
+
+                </div>
+                <div class="row">
+                    <h1 class="warning col-md-10" >Menaces potentielles</h1>
+                    {% for phase in phases %}
+                        <h2 class="col-md-10">
+                            <span class="glyphicon glyphicon-{{ phase.glyphicon }}"></span>
+                            {{ phase.phase_name }}
+                        </h2>
+                        {% if prio2 is defined %}
+                            <div class="col-md-6">
+                                <table class="table table-hover">
+                                    <thead>
+
+                                    </thead>
+                                    <tbody>
+                                    {% for test in prio2 %}
+                                        {% if test.idPhase == phase %}
+
+                                            <tr>
+                                                <td>{{ test.name }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <tr></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="clearfix"></div>
+                            {% endif %}
+                            {% endfor %}
+                            </div>
+                <div class="row">
+                    <h1 class="watch col-md-10" >A surveiller</h1>
+                    {% for phase in phases %}
+                        <h2 class="col-md-10">
+                            <span class="glyphicon glyphicon-{{ phase.glyphicon }}"></span>
+                            {{ phase.phase_name }}
+                        </h2>
+                        {% if prio3 is defined %}
+                            <div class="col-md-6">
+                                <table class="table table-hover">
+                                    <thead>
+
+                                    </thead>
+                                    <tbody>
+                                    {% for test in prio3 %}
+                                        {% if test.idPhase == phase %}
+
+                                            <tr>
+                                                <td>{{ test.name }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <tr></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="clearfix"></div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>

@@ -34,6 +34,11 @@ class AuditPhase
     public $number;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $glyphicon;
+
+    /**
      * AuditPhase constructor.
      * @param $phase_name
      */
@@ -99,6 +104,18 @@ class AuditPhase
     public function setNumber(?int $number): self
     {
         $this->number = $number;
+
+        return $this;
+    }
+
+    public function getGlyphicon(): ?string
+    {
+        return $this->glyphicon;
+    }
+
+    public function setGlyphicon(string $glyphicon): self
+    {
+        $this->glyphicon = $glyphicon;
 
         return $this;
     }

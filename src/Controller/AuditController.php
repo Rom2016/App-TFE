@@ -353,10 +353,12 @@ class AuditController extends AbstractController
     {
 
         $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
+        $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
+
         $array = $_SESSION['user']->getAll();
         $last_company = $this->getDoctrine()->getRepository(Company::class)->findOneBy([], ['id' => 'DESC']);
         $array['auditNumber'] = $last_company->getId()+1;
-
+        $array['phases'] = $repository_phase->findAll();
         $array['name_company'] = $_POST['name'];
         $array['phone_company'] = $_POST['phone'];
         $array['email_company'] = $_POST['email'];
@@ -366,28 +368,31 @@ class AuditController extends AbstractController
         $i['prio1'] = 0;
         $i['prio2'] = 0;
         $i['prio3'] = 0;
-        $test = $repository_test->findAll([');
+        $test = $repository_test->findAll();
 
-        foreach ($_POST['tests'] as $key => $value){
-            if($test->priority == 1){
-                if(isset($value['check']) or isset($value['selection']) and $value['selection']) {
+        foreach ($test as $key => $value){
+            if($value->priority == 1){
+                if(isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
                     $avg['prio1'] = $avg['prio1'] + 1;
                     $i['prio1'] = $i['prio1'] + 1;
+                    $array['prio1'][] = $value;
                 }else {
                     $i['prio1'] = $i['prio1'] + 1;
                 }
-            }elseif ($test->priority == 2){
-                if(isset($value['check']) or isset($value['selection']) and $value['selection']) {
+            }elseif ($value->priority == 2){
+                if(isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
                     $avg['prio2'] = $avg['prio2'] + 1;
                     $i['prio2'] = $i['prio2'] + 1;
-
+                    $array['prio2'][] = $value;
                 }else {
                     $i['prio2'] = $i['prio2'] + 1;
                 }
-            }elseif ($test->priority == 3){
-                if(isset($value['check']) or isset($value['selection']) and $value['selection']) {
+            }elseif ($value->priority == 3){
+                if(isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
                     $avg['prio3'] = $avg['prio3'] + 1;
                     $i['prio3'] = $i['prio3'] + 1;
+                    $array['prio3'][] = $value;
+
                 }else {
                     $i['prio3'] = $i['prio3'] + 1;
                 }

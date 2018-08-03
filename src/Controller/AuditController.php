@@ -14,6 +14,7 @@ use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
 use App\Entity\TestSelection;
 use App\Entity\TestType;
+use Proxies\__CG__\App\Entity\CompanySize;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -229,6 +230,10 @@ class AuditController extends AbstractController
             $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
             $repository_company = $this->getDoctrine()->getRepository(Company::class);
             $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
+            $repository_type = $this->getDoctrine()->getRepository(TestType::class);
+            $repository_size = $this->getDoctrine()->getRepository(CompanySize::class);
+
+
 
 
             $array['selection'] = $repository_selection->findAll();
@@ -237,6 +242,9 @@ class AuditController extends AbstractController
             $last_id = $repository_company->findOneBy([], ['id' => 'DESC']);
             $array['auditNumber'] = $last_id->getId();
             $array['auditNumber'] = $array['auditNumber']+1;
+            $array['type'] = $repository_type->findAll();
+            $array['size'] = $repository_size->findAll();
+
 
             return $this->render('audit/new_audit.html.twig', $array);
         }else{
@@ -343,20 +351,54 @@ class AuditController extends AbstractController
 
     public function resultAudit()
     {
-        if(isset($_POST)) {
-            $company = new Company($_POST['name'],$_POST['phone'],$_POST['email']);
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($company);
-            $entityManager->flush();
 
+        $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
+        $array = $_SESSION['user']->getAll();
+        $last_company = $this->getDoctrine()->getRepository(Company::class)->findOneBy([], ['id' => 'DESC']);
+        $array['auditNumber'] = $last_company->getId()+1;
 
-            foreach ($_POST['id'] as $key => $value){
-                $test = $this->getDoctrine()->getRepository(AuditTestPhase::class)->findOneBy(['id' => $value]);
-                $auditCompany = new AuditCompany($company,$test);
-                $entityManager->persist($auditCompany);
+        $array['name_company'] = $_POST['name'];
+        $array['phone_company'] = $_POST['phone'];
+        $array['email_company'] = $_POST['email'];
+        $avg['prio1'] = 0;
+        $avg['prio2'] = 0;
+        $avg['prio3'] = 0;
+        $i['prio1'] = 0;
+        $i['prio2'] = 0;
+        $i['prio3'] = 0;
+        $test = $repository_test->findAll([');
+
+        foreach ($_POST['tests'] as $key => $value){
+            if($test->priority == 1){
+                if(isset($value['check']) or isset($value['selection']) and $value['selection']) {
+                    $avg['prio1'] = $avg['prio1'] + 1;
+                    $i['prio1'] = $i['prio1'] + 1;
+                }else {
+                    $i['prio1'] = $i['prio1'] + 1;
+                }
+            }elseif ($test->priority == 2){
+                if(isset($value['check']) or isset($value['selection']) and $value['selection']) {
+                    $avg['prio2'] = $avg['prio2'] + 1;
+                    $i['prio2'] = $i['prio2'] + 1;
+
+                }else {
+                    $i['prio2'] = $i['prio2'] + 1;
+                }
+            }elseif ($test->priority == 3){
+                if(isset($value['check']) or isset($value['selection']) and $value['selection']) {
+                    $avg['prio3'] = $avg['prio3'] + 1;
+                    $i['prio3'] = $i['prio3'] + 1;
+                }else {
+                    $i['prio3'] = $i['prio3'] + 1;
+                }
             }
-            $entityManager->flush();
         }
+        $array['avg_prio1'] = number_format((float)$avg['prio1']/$i['prio1']*100, 2, '.', '');
+        $array['avg_prio2'] = number_format((float)$avg['prio2']/$i['prio2']*100, 2, '.', '');
+        $array['avg_prio3'] = number_format((float)$avg['prio3']/$i['prio3']*100, 2, '.', '');
+        $array['avg'] = number_format((float)($array['avg_prio1'] + $array['avg_prio2'] + $array['avg_prio3'])/3, 2, '.', '');
+
+        return $this->render('audit/result_audit.html.twig',$array);
     }
 
     /**

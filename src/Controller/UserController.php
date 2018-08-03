@@ -75,15 +75,35 @@ class UserController extends AbstractController
     {
         //$entityManager = $this->getDoctrine()->getManager();
         $email = $_POST['user'];
+        // Ma clé privée
+        $secret = "6Ld3lw4UAAAAAOfAaZ8SKgLfUbcMGx0fL8vRZbWp";
+        // Paramètre renvoyé par le recaptcha
+        $response = $_POST['g-recaptcha-response'];
+        // On récupère l'IP de l'utilisateur
+        $remoteip = $_SERVER['REMOTE_ADDR'];
+
+        $api_url = "https://www.google.com/recaptcha/api/siteverify?secret="
+            . $secret
+            . "&response=" . $response
+            . "&remoteip=" . $remoteip ;
+
+        $decode = json_decode(file_get_contents($api_url), true);
+
+
         $repositoryU = $this->getDoctrine()->getRepository(User::class);
         $user = $repositoryU->findOneBy(['email' => $email]);
 
-        if ($user && password_verify($_POST['pass'],$user->getPass())){
-            $user->startConnection();
-            $array = $_SESSION['user']->getAll();
-            return $this->render('user/homepage.html.twig',$array);
+
+        if($decode['success'] == true) {
+            if ($user && password_verify($_POST['pass'], $user->getPass())) {
+                $user->startConnection();
+                $array = $_SESSION['user']->getAll();
+                return $this->render('user/homepage.html.twig', $array);
+            } else {
+                return $this->render('user/login.html.twig', ['title' => "Bienvenue", 'error' => 'Identifiants invalides']);
+            }
         }else{
-            return $this->render('user/login.html.twig',['title'=>"Bienvenue",'error'=>'Identifiants invalides']);
+            return $this->render('user/login.html.twig', ['title' => "Bienvenue", 'error' => 'Erreur de captcha']);
         }
     }
 

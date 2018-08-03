@@ -14,17 +14,17 @@ class TestSelection
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    public $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    public $name;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AuditTestPhase")
      */
-    private $test;
+    public $test;
 
     /**
      * TestSelection constructor.

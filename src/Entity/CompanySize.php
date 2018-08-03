@@ -19,7 +19,7 @@ class CompanySize
     /**
      * @ORM\Column(type="integer")
      */
-    private $max_size;
+    public $max_size;
 
     public function getId()
     {

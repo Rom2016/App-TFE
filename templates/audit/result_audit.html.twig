@@ -3,13 +3,18 @@
 {% block title %}
     Résultat
 {% endblock %}
-
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="../vendor/jquery-ui-1.12.1/jquery-ui.min.css" rel="stylesheet">
+    <link href="../vendor/iCheck/skins/flat/green.css" rel="stylesheet">
+{% endblock %}
 {% block body %}
     {{ parent() }}
     <div class="right_col" role="main">
 
         <div class="container">
-            <div class="row row-container col-md-10 col-md-offset-2" style="border: 1px solid; background-color: white">
+
+            <div class="row row-container col-md-10">
                 <div class="col-md-4 col-md-offset-8" >
 
                     <div class="well">
@@ -28,6 +33,11 @@
                     <div class="row">
                         <span class="glyphicon glyphicon-envelope"></span>
                         <span>{{ email_company }}</span>
+                    </div>
+                    <div class="row">
+                        <span class="glyphicon glyphicon-user"></span>
+                        <span>{{ size_company }} personnes</span>
+                        <input type="hidden" name="size" id="size-company" value="{{ size_company }}">
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -49,7 +59,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr style="background-color: whitesmoke;">
+                        <tr>
                             <td>Moyenne</td>
                             <td><div class="progress">
                                     <div class="progress-bar bg-{% if avg_prio2 < 35 %}red{% elseif avg_prio2 < 60%}orange{% else %}green{% endif %}" role="progressbar" data-transitiongoal="{{ avg_prio2 }}" aria-valuenow="56">
@@ -81,99 +91,179 @@
                     </h1>
                 </div>
                 <div class="clearfix"></div>
-                <h1 class="page-header">Récapitulatif</h1>
+                <h1 class="page-header">Tests négatifs</h1>
                 <div class="row">
-                    <h1 class="danger col-md-10">Danger</h1>
-                {% for phase in phases %}
+                    <h1 class="danger col-md-12">Danger</h1>
+                    <div class="clearfix"></div>
+                    <div id="accordion">
+                        <h3 class="text-center">Récapitulatif</h3>
+                        <div class="row">
+                            <div id="container-solution" class="col-md-8">
+                                <h4 class="page-header">Solutions</h4>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="jumbotron"><h5>Estimation:</h5></div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="actionBar">
+                                <button type="submit" class="btn btn-success" name="submit" value="confirmAudit">Confirmer</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% for phase in phases %}
+                    <div class="col-md-8" id="phase-prio1">
                     <h2 class="col-md-10">
                         <span class="glyphicon glyphicon-{{ phase.glyphicon }}"></span>
                         {{ phase.phase_name }}
                     </h2>
-                    {% if prio1 is defined %}
-                        <div class="col-md-6">
-                        <table class="table table-hover">
+                        {% set i = 0 %}
+
+                        {% if prio1 is defined %}
+                        <div class="col-md-12">
+                        <table class="table">
                             <thead>
 
                             </thead>
                             <tbody>
                                 {% for test in prio1 %}
                                     {% if test.idPhase == phase %}
-
+                                        {% set i = i+1 %}
                                         <tr>
-                                        <td><span class="fa fa-warning" style="color: indianred"></span>{{ test.name }}</td>
+                                        <td><input type="checkbox" class="check-audit" value="{{ test.id }}"/>{{ test.name }}<span class="fa fa-warning" style="color: indianred"></span></td>
                                     </tr>
                                         {% else %}
                                     {% endif %}
                                 {% endfor %}
-                                <tr></tr>
+
                             </tbody>
                         </table>
                         </div>
+                        <div class="clearfix"></div>
                     {% endif %}
-                    {% endfor %}
+                        <div class="clearfix"></div>
 
+                        {% if i == 0 %}
+                            <span class ="fa fa-check" style="color: limegreen"></span>Rien à signaler
+                        {% endif %}
+                    </div>
+                {% endfor %}
                 </div>
                 <div class="row">
                     <h1 class="warning col-md-10" >Menaces potentielles</h1>
+                    <div class="clearfix"></div>
+
                     {% for phase in phases %}
+                        <div class="col-md-8" id="phase-prio2">
                         <h2 class="col-md-10">
                             <span class="glyphicon glyphicon-{{ phase.glyphicon }}"></span>
                             {{ phase.phase_name }}
                         </h2>
-                        {% if prio2 is defined %}
-                            <div class="col-md-6">
-                                <table class="table table-hover">
+                            {% set i = 0 %}
+
+                            {% if prio2 is defined %}
+                            <div class="col-md-12">
+                                <table class="table">
                                     <thead>
 
                                     </thead>
                                     <tbody>
                                     {% for test in prio2 %}
                                         {% if test.idPhase == phase %}
+                                            {% set i = i+1 %}
 
                                             <tr>
-                                                <td>{{ test.name }}</td>
+                                                <td><input type="checkbox" class="check-audit">{{ test.name }}</td>
                                             </tr>
                                         {% endif %}
                                     {% endfor %}
-                                    <tr></tr>
                                     </tbody>
                                 </table>
                             </div>
                             <div class="clearfix"></div>
                             {% endif %}
+                            <div class="clearfix"></div>
+
+                            {% if i == 0 %}
+                                <span class ="fa fa-check" style="color: limegreen"></span>Rien à signaler
+                            {% endif %}
+                       </div>
                             {% endfor %}
+
                             </div>
                 <div class="row">
-                    <h1 class="watch col-md-10" >A surveiller</h1>
+                    <h1 class="watch col-md-8" >A surveiller</h1>
+                    <div class="clearfix"></div>
+
                     {% for phase in phases %}
+                        <div class="col-md-8" id="phase-prio3">
+
                         <h2 class="col-md-10">
                             <span class="glyphicon glyphicon-{{ phase.glyphicon }}"></span>
                             {{ phase.phase_name }}
                         </h2>
-                        {% if prio3 is defined %}
-                            <div class="col-md-6">
-                                <table class="table table-hover">
+                            {% set i = 0 %}
+
+                            {% if prio3 is defined %}
+                            <div class="col-md-12">
+                                <table class="table">
                                     <thead>
 
                                     </thead>
                                     <tbody>
+
                                     {% for test in prio3 %}
                                         {% if test.idPhase == phase %}
-
+                                            {% set i = i+1 %}
                                             <tr>
-                                                <td>{{ test.name }}</td>
+                                                <td><input type="checkbox" class="check-audit">{{ test.name }}</td>
                                             </tr>
                                         {% endif %}
                                     {% endfor %}
-                                    <tr></tr>
+
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="clearfix"></div>
                         {% endif %}
+                            <div class="clearfix"></div>
+
+                            {% if i == 0 %}
+                                <span class ="fa fa-check" style="color: limegreen"></span>Rien à signaler
+                            {% endif %}
+                     </div>
                     {% endfor %}
+
                 </div>
             </div>
         </div>
+        <div id="test"></div>
     </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="../vendor/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+
+    <!-- iCheck -->
+    <script src="../vendor/iCheck/icheck.min.js"></script>
+    <script>
+            $('#accordion').affix({offset: {top: 800} });
+            $('#accordion').on('affix.bs.affix', function(){
+                $(this).css('visibility','visible');
+            });
+            $('#accordion').on('affix-top.bs.affix', function(){
+                $(this).css('visibility','hidden');
+                $(this).accordion({
+                    active: false
+                });
+            });
+            $("#accordion").accordion({
+                collapsible: true,
+                heightStyle: "content",
+                active: false
+            });
+
+
+
+
+    </script>
+
 {% endblock %}

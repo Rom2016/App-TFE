@@ -14,28 +14,38 @@ class Solution
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    public $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    public $name;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
      */
-    private $cost;
+    public $cost;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\CompanySize")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $id_size;
+    public $id_size;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AuditTestPhase")
      */
-    private $id_test;
+    public $id_test;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $pic;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
 
     public function getId()
     {
@@ -86,6 +96,30 @@ class Solution
     public function setIdTest(?AuditTestPhase $id_test): self
     {
         $this->id_test = $id_test;
+
+        return $this;
+    }
+
+    public function getPic(): ?string
+    {
+        return $this->pic;
+    }
+
+    public function setPic(?string $pic): self
+    {
+        $this->pic = $pic;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

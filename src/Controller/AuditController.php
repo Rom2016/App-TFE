@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 use App\Entity\AuditCompany;
+use App\Entity\AuditTestInfrastructure;
 use App\Entity\Company;
 use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
@@ -233,11 +234,14 @@ class AuditController extends AbstractController
             $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
             $repository_type = $this->getDoctrine()->getRepository(TestType::class);
             $repository_size = $this->getDoctrine()->getRepository(CompanySize::class);
+            $repository_test_infra = $this->getDoctrine()->getRepository(AuditTestInfrastructure::class);
+
 
 
             $array['selection'] = $repository_selection->findAll();
             $array['phases'] = $repository_phase->findAll();
             $array['tests'] = $repository_test->findAll();
+            $array['tests_infra'] = $repository_test_infra->findAll();
             $last_id = $repository_company->findOneBy([], ['id' => 'DESC']);
             $array['auditNumber'] = $last_id->getId();
             $array['auditNumber'] = $array['auditNumber'] + 1;

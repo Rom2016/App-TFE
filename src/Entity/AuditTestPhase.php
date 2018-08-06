@@ -25,19 +25,18 @@ class AuditTestPhase
 
     /**
      * @ORM\Column(type="integer")
-     * @ORM\JoinColumn(nullable=true)
-
      */
     public $priority;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AuditPhase", inversedBy="test")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     public $idPhase;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\TestType")
+
      */
     public $type;
 

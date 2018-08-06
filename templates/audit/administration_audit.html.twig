@@ -191,26 +191,6 @@
                     <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Etes-vous sûr de vouloir supprimer cette table? </p>
                 </div>
             <div class="row">
-                <div class="col-xs-12 col-md-5 small-container">
-                    <form method="post" action="../administration-audit">
-                        <div class="page-header">
-                        <h3>Ordre des phases dans l'audit</h3>
-                    </div>
-                    <ul class="list-group sortable">
-                        {% set i = 1 %}
-                        {% for phase in phases %}
-                        <div>
-                            <li class="list-group-item">{{ phase.phase_name }}</li>
-                            <input type="hidden" name="name_phase[{{ i }}][{{ phase.phase_name }}]" value="{{ phase.number }}">
-                        </div>
-                        {% set i = i+1 %}
-                    {% endfor %}
-                    </ul>
-                    <div class="actionBar">
-                        <button type="submit" name="submit" value="switchPhases" class="btn btn-primary">Modifier l'ordre des phases</button>
-                    </div>
-                    </form>
-                </div>
                 <div class="col-md-offset-1 col-xs-12 col-md-5 small-container">
                         <div class="page-header">
                             <h3>Gestion des sélections de test</h3>

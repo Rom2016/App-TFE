@@ -28,7 +28,7 @@
 .small-container{
     background-color: white;
     margin-bottom: 2%;
-    border-left: 5px solid #337ab7;
+    border-left: 5px solid #5cb85c;
     border-radius: 0px 15px 15px 0px;
 }
 
@@ -41,6 +41,10 @@
     background-color: white;
     border-radius: 15px 0px 0px 15px;
     border-right: 5px solid #337ab7;
+}
+
+input[type=text]:focus, textarea:focus, input[type=email]:focus {
+    border: 2px solid rgba(60, 179, 113, 0.2);
 }
 
 

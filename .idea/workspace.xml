@@ -3,7 +3,7 @@
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/templates/base.html.twig" line="30" />
     <bookmark url="file://$PROJECT_DIR$/src/Entity/User.php" line="110" />
-    <bookmark url="file://$PROJECT_DIR$/templates/audit/new_audit.html.twig" line="138" />
+    <bookmark url="file://$PROJECT_DIR$/templates/audit/new_audit.html.twig" line="146" />
     <bookmark url="file://$PROJECT_DIR$/src/Controller/UserController.php" line="105" />
     <bookmark url="file://$PROJECT_DIR$/templates/audit/result_audit.html.twig" line="195" />
   </component>
@@ -27,19 +27,13 @@
       <file leaf-file-name="new_audit.html.twig" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/audit/new_audit.html.twig">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="571">
-              <caret line="231" column="109" lean-forward="false" selection-start-line="231" selection-start-column="109" selection-end-line="231" selection-end-column="109" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/public/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="570">
+              <caret line="268" column="13" lean-forward="false" selection-start-line="268" selection-start-column="12" selection-end-line="268" selection-end-column="13" />
+              <folding>
+                <element signature="n#style#0;n#p#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#form#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#a#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#form#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#span#0;n#a#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#form#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -47,23 +41,45 @@
       <file leaf-file-name="AuditController.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Controller/AuditController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-7">
-              <caret line="509" column="0" lean-forward="false" selection-start-line="509" selection-start-column="0" selection-end-line="509" selection-end-column="0" />
+            <state relative-caret-position="541">
+              <caret line="575" column="34" lean-forward="false" selection-start-line="575" selection-start-column="34" selection-end-line="575" selection-end-column="34" />
               <folding>
-                <marker date="1533752957175" expanded="false" signature="10698:10708" ph="..." />
-                <marker date="1533752957175" expanded="true" signature="10709:10710" ph="..." />
-                <marker date="1533752957175" expanded="true" signature="10709:18301" ph="..." />
-                <marker date="1533752957175" expanded="true" signature="15093:15449" ph="..." />
-                <marker date="1533752957175" expanded="true" signature="15308:15449" ph="..." />
-                <marker date="1533752957175" expanded="true" signature="16116:18064" ph="..." />
-                <marker date="1533752957175" expanded="true" signature="16240:17973" ph="..." />
-                <marker date="1533752957175" expanded="true" signature="16360:17878" ph="..." />
-                <marker date="1533752957175" expanded="true" signature="16483:16948" ph="..." />
-                <marker date="1533752957175" expanded="false" signature="16642:16649" ph="×" />
-                <marker date="1533752957175" expanded="true" signature="17069:17370" ph="..." />
-                <marker date="1533752957175" expanded="true" signature="17493:17779" ph="..." />
+                <element signature="e#117#145#0#PHP" expanded="true" />
+                <marker date="1533823248216" expanded="false" signature="10698:10708" ph="..." />
+                <marker date="1533823248216" expanded="true" signature="10709:10710" ph="..." />
+                <marker date="1533823248216" expanded="true" signature="10709:18301" ph="..." />
+                <marker date="1533823248216" expanded="true" signature="15093:15449" ph="..." />
+                <marker date="1533823248216" expanded="true" signature="15308:15449" ph="..." />
+                <marker date="1533823248216" expanded="true" signature="16116:18064" ph="..." />
+                <marker date="1533823248216" expanded="true" signature="16240:17973" ph="..." />
+                <marker date="1533823248216" expanded="true" signature="16360:17878" ph="..." />
+                <marker date="1533823248216" expanded="true" signature="16483:16948" ph="..." />
+                <marker date="1533823248216" expanded="false" signature="16642:16649" ph="×" />
+                <marker date="1533823248216" expanded="true" signature="17069:17370" ph="..." />
+                <marker date="1533823248216" expanded="true" signature="17493:17779" ph="..." />
               </folding>
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="1.jpg" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/AntiSpam et solution de pare-feu/1.jpg">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="2.jpg" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/AntiSpam et solution de pare-feu/2.jpg">
+          <provider selected="true" editor-type-id="images">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="1.jpg" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/L'entreprise dispose t-elle d'un pare-feu/1.jpg">
+          <provider selected="true" editor-type-id="images">
+            <state />
           </provider>
         </entry>
       </file>
@@ -80,8 +96,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>tabs</find>
-      <find>persis</find>
       <find>findal</find>
       <find>mud</find>
       <find>an</find>
@@ -110,6 +124,8 @@
       <find>newA</find>
       <find>ifche</find>
       <find>basic</find>
+      <find>auditnu</find>
+      <find>ASC</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -118,7 +134,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/tests/UserRepository.php" />
         <option value="$PROJECT_DIR$/tests/User.php" />
         <option value="$PROJECT_DIR$/tests/test.php" />
         <option value="$PROJECT_DIR$/templates/homepage.html.twig" />
@@ -164,11 +179,12 @@
         <option value="$PROJECT_DIR$/src/Entity/TestsInfrastructure.php" />
         <option value="$PROJECT_DIR$/templates/audit/test.twig.html" />
         <option value="$PROJECT_DIR$/templates/audit/test.html.twig" />
-        <option value="$PROJECT_DIR$/public/js/custom.min.js" />
-        <option value="$PROJECT_DIR$/src/Controller/AuditController.php" />
-        <option value="$PROJECT_DIR$/templates/base.html.twig" />
         <option value="$PROJECT_DIR$/public/js/file_uploader.js" />
+        <option value="$PROJECT_DIR$/templates/base.html.twig" />
+        <option value="$PROJECT_DIR$/public/js/custom.min.js" />
         <option value="$PROJECT_DIR$/templates/audit/new_audit.html.twig" />
+        <option value="$PROJECT_DIR$/src/Entity/AuditTestPic.php" />
+        <option value="$PROJECT_DIR$/src/Controller/AuditController.php" />
       </list>
     </option>
   </component>
@@ -275,11 +291,11 @@
       <path value="$PROJECT_DIR$/vendor/symfony/validator" />
     </include_path>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="60" />
-    <option name="y" value="785" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="4" />
+    <option name="y" value="334" />
     <option name="width" value="1934" />
-    <option name="height" value="960" />
+    <option name="height" value="1085" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -314,7 +330,40 @@
               <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
               <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
               <item name="public" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="js" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="images" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="public" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="images" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="test_pic" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="public" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="images" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="test_pic" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="3" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="public" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="images" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="test_pic" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="3" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="AntiSpam et solution de pare-feu" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="public" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="images" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="test_pic" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="3" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="L'entreprise dispose t-elle d'un pare-feu" type="2a2b976b:PhpTreeStructureProvider$1" />
             </path>
             <path>
               <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
@@ -331,24 +380,12 @@
               <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
               <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
               <item name="src" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Entity" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="src" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Migrations" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="Repository" type="2a2b976b:PhpTreeStructureProvider$1" />
             </path>
             <path>
               <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
               <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
               <item name="templates" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="templates" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="audit" type="2a2b976b:PhpTreeStructureProvider$1" />
             </path>
           </expand>
           <select />
@@ -372,18 +409,18 @@
     <property name="list.type.of.created.stylesheet" value="CSS" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\wamp64\www\Audit\public\css" />
+      <recent name="C:\wamp64\www\Audit\public\js" />
+      <recent name="C:\wamp64\www\Audit\src\Controller" />
+      <recent name="C:\wamp64\www\Audit\tests" />
+      <recent name="C:\wamp64\www\Audit\public" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\wamp64\www\Audit\templates\user" />
       <recent name="C:\wamp64\www\Audit\public\js" />
       <recent name="C:\wamp64\www\Audit\public\css" />
       <recent name="C:\wamp64\www\Audit\vendor\bootstrap\dist\css" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\wamp64\www\Audit\src\Controller" />
-      <recent name="C:\wamp64\www\Audit\public\css" />
-      <recent name="C:\wamp64\www\Audit\tests" />
-      <recent name="C:\wamp64\www\Audit\public" />
-      <recent name="C:\wamp64\www\Audit\public\js" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -514,23 +551,23 @@
       <workItem from="1533730577826" duration="9995000" />
       <workItem from="1533743624823" duration="3811000" />
       <workItem from="1533752012102" duration="1543000" />
-      <workItem from="1533798867054" duration="2508000" />
+      <workItem from="1533798867054" duration="20045000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="581687000" />
+    <option name="totallyTimeSpent" value="599224000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="60" y="785" width="1934" height="960" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.041322313" sideWeight="0.5125" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.03711559" sideWeight="0.5125" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979852" sideWeight="0.49791667" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32794577" sideWeight="0.49628845" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32760417" sideWeight="0.49628845" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979852" sideWeight="0.4875" order="1" side_tool="false" content_ui="tabs" />
@@ -556,7 +593,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/js/custom.min.js</url>
-          <line>127</line>
+          <line>140</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
@@ -565,101 +602,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/polaris/polaris.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/polaris/polaris.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/minimal/yellow.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/minimal/red.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/minimal/minimal.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/flat/blue.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/error/error_403.html.twig">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="53" lean-forward="false" selection-start-line="24" selection-start-column="53" selection-end-line="24" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/user/administration_user.html.twig">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="51" column="0" lean-forward="false" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/futurico/futurico.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/line/grey.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/line/line.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/line/orange.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/line/line@2x.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/minimal/aero.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/minimal/green.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/minimal/pink@2x.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/square/aero@2x.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/vendor/iCheck/skins/square/green.png">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -669,14 +611,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Controller/UserController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="849">
-          <caret line="94" column="0" lean-forward="false" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -692,11 +626,6 @@
         <state relative-caret-position="826">
           <caret line="70" column="19" lean-forward="false" selection-start-line="70" selection-start-column="19" selection-end-line="70" selection-end-column="19" />
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/images/solution_pic/1.jpg">
-      <provider selected="true" editor-type-id="images">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/audit/new_phase.html.twig">
@@ -820,24 +749,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/custom.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="116" column="46" lean-forward="false" selection-start-line="116" selection-start-column="46" selection-end-line="116" selection-end-column="46" />
-          <folding>
-            <marker date="1533740514706" expanded="true" signature="35781:35793" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/base.html.twig">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="588">
-          <caret line="120" column="36" lean-forward="false" selection-start-line="120" selection-start-column="36" selection-end-line="120" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/js/file_uploader.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="996">
@@ -854,39 +765,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Controller/AuditController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-7">
-          <caret line="509" column="0" lean-forward="false" selection-start-line="509" selection-start-column="0" selection-end-line="509" selection-end-column="0" />
-          <folding>
-            <marker date="1533752957175" expanded="false" signature="10698:10708" ph="..." />
-            <marker date="1533752957175" expanded="true" signature="10709:10710" ph="..." />
-            <marker date="1533752957175" expanded="true" signature="10709:18301" ph="..." />
-            <marker date="1533752957175" expanded="true" signature="15093:15449" ph="..." />
-            <marker date="1533752957175" expanded="true" signature="15308:15449" ph="..." />
-            <marker date="1533752957175" expanded="true" signature="16116:18064" ph="..." />
-            <marker date="1533752957175" expanded="true" signature="16240:17973" ph="..." />
-            <marker date="1533752957175" expanded="true" signature="16360:17878" ph="..." />
-            <marker date="1533752957175" expanded="true" signature="16483:16948" ph="..." />
-            <marker date="1533752957175" expanded="false" signature="16642:16649" ph="×" />
-            <marker date="1533752957175" expanded="true" signature="17069:17370" ph="..." />
-            <marker date="1533752957175" expanded="true" signature="17493:17779" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/vendor/jQuery-File-Upload-master/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="654">
           <caret line="175" column="0" lean-forward="false" selection-start-line="143" selection-start-column="0" selection-end-line="175" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/audit/new_audit.html.twig">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="571">
-          <caret line="231" column="109" lean-forward="false" selection-start-line="231" selection-start-column="109" selection-end-line="231" selection-end-column="109" />
           <folding />
         </state>
       </provider>
@@ -897,6 +779,166 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/base.html.twig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1761">
+          <caret line="123" column="0" lean-forward="false" selection-start-line="123" selection-start-column="0" selection-end-line="123" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/css/dropzone.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="176" column="20" lean-forward="false" selection-start-line="176" selection-start-column="20" selection-end-line="176" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/solution_pic/1.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/company_pic/user.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/dropzone.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/test_pic/DfkhrO1XUAEYkdw.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/L'entreprise dispose t-elle d'un pare-feuDfkhrO1XUAEYkdw.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/test_pic/téléchargement.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/custom.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-663">
+          <caret line="29" column="29" lean-forward="false" selection-start-line="29" selection-start-column="19" selection-end-line="29" selection-end-column="29" />
+          <folding>
+            <marker date="1533818987786" expanded="true" signature="23154:23161" ph="×" />
+            <marker date="1533818987786" expanded="true" signature="36172:36184" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Controller/UserController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-533">
+          <caret line="94" column="0" lean-forward="false" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/L'entreprise dispose t-elle d'un pare-feu/téléchargement.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/L'entreprise dispose t-elle d'un pare-feu/DfkhrO1XUAEYkdw.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/L'entreprise dispose t-elle d'un pare-feu/3test.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/L'entreprise dispose t-elle d'un pare-feu/30.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/bg-01.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/L'entreprise dispose t-elle d'un pare-feu/2.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/audit/new_audit.html.twig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="570">
+          <caret line="268" column="13" lean-forward="false" selection-start-line="268" selection-start-column="12" selection-end-line="268" selection-end-column="13" />
+          <folding>
+            <element signature="n#style#0;n#p#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#form#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#form#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#a#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#form#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Entity/AuditTestPic.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/L'entreprise dispose t-elle d'un pare-feu/6.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Controller/AuditController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="541">
+          <caret line="575" column="34" lean-forward="false" selection-start-line="575" selection-start-column="34" selection-end-line="575" selection-end-column="34" />
+          <folding>
+            <element signature="e#117#145#0#PHP" expanded="true" />
+            <marker date="1533823248216" expanded="false" signature="10698:10708" ph="..." />
+            <marker date="1533823248216" expanded="true" signature="10709:10710" ph="..." />
+            <marker date="1533823248216" expanded="true" signature="10709:18301" ph="..." />
+            <marker date="1533823248216" expanded="true" signature="15093:15449" ph="..." />
+            <marker date="1533823248216" expanded="true" signature="15308:15449" ph="..." />
+            <marker date="1533823248216" expanded="true" signature="16116:18064" ph="..." />
+            <marker date="1533823248216" expanded="true" signature="16240:17973" ph="..." />
+            <marker date="1533823248216" expanded="true" signature="16360:17878" ph="..." />
+            <marker date="1533823248216" expanded="true" signature="16483:16948" ph="..." />
+            <marker date="1533823248216" expanded="false" signature="16642:16649" ph="×" />
+            <marker date="1533823248216" expanded="true" signature="17069:17370" ph="..." />
+            <marker date="1533823248216" expanded="true" signature="17493:17779" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/AntiSpam et solution de pare-feu/1.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/AntiSpam et solution de pare-feu/2.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/L'entreprise dispose t-elle d'un pare-feu/1.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
       </provider>
     </entry>
   </component>

@@ -552,4 +552,46 @@ class AuditController extends AbstractController
         return $this->render('audit/solutions_test.html.twig',$array);
     }
 
+    //jquery
+    /**
+     * @Route("/enregistrer-images", name="save_images_test", methods="POST" )
+     */
+    function saveFiles()
+    {
+        $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
+
+        $test = $repository_test->findOneBy(['id'=>$_POST['id']]);
+        $auditFolder = 'images/test_pic/'.$_POST['auditNumber'];   //2
+        $testFolder = 'images/test_pic/'.$_POST['auditNumber'].'/'.$test->name.'/';   //2
+        $path = $_FILES['file']['name'];
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
+        // if folder doesn't exists, create it
+        if(!file_exists($auditFolder) && !is_dir($auditFolder)) {
+            mkdir($auditFolder);
+        }
+        if(!file_exists($testFolder) && !is_dir($testFolder)) {
+            mkdir($testFolder);
+            $fileName = '1.'.$ext;
+        }else {
+            $count = scandir($testFolder, 1);
+            if ($count) {
+                $tab = explode('.', $count[0]);
+                $fileName = intval($tab[0]);
+                $fileName = $fileName+1;
+                $fileName = $fileName.'.'.$ext;
+            }
+        }
+        if(!empty($_FILES)){
+
+            $tempFile = $_FILES['file']['tmp_name'];          //3
+            $targetPath = $testFolder;  //4
+            }
+            $targetFile =  $targetPath.$fileName;  //5
+
+            if(move_uploaded_file($tempFile, $targetFile)){
+                return new Response('ok');
+            }; //6
+        }
+
+
 }

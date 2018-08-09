@@ -11,8 +11,16 @@
     {{ parent() }}
     <link href="../vendor/iCheck/skins/flat/green.css" rel="stylesheet" xmlns="http://www.w3.org/1999/html">
     <link rel="stylesheet" type="text/css" href="../vendor/bootstrap-select/dist/css/bootstrap-select.css">
-    <style>
+    <link rel="stylesheet" type="text/css" href="../css/dropzone.css">
 
+    <style>
+        .myDropzone{
+            border: #337ab7 dashed 1px;
+            margin-top: 2%;
+
+
+
+        }
     </style>
 
 {% endblock %}
@@ -140,7 +148,17 @@
                                                                                         </div>
                                                                                         <div class="modal-body">
                                                                                             <textarea class="autoExpand form-control" rows="5" name="tests[{{ test.id }}][info]"></textarea>
+                                                                                            <h2 class="page-header">Ajouter des images</h2>
+                                                                                            <div id="myDropzone{{ test.id }}" class="myDropzone dropzone">
+
+                                                                                                    <div class="dz-message needsclick">
+                                                                                                        <p style="color: darkgrey;"><i>Déposer ou clicker</i></p>
+                                                                                                    </div>
+                                                                                            </div>
+                                                                                            <a class="btn btn-success btn-block" style="display: block; margin: auto; margin-top: 1%" onclick="uploadFile({{ test.id }},{{ auditNumber }})"><span class="fa fa-upload fa-10x" style="color: white; font-size: 100%"></span></a>
+
                                                                                         </div>
+                                                                                        <div class="clearfix"></div>
                                                                                         <div class="modal-footer">
                                                                                             <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
                                                                                         </div>
@@ -230,6 +248,8 @@
         <!-- iCheck -->
         <script src="../vendor/iCheck/icheck.min.js"></script>
         <script type="text/javascript" src="../vendor/bootstrap-select/dist/js/bootstrap-select.js"></script>
+        <script type="text/javascript" src="../js/dropzone.js"></script>
+
 
         <script>
             $('.check-audit').iCheck({
@@ -247,6 +267,20 @@
             });
 0
             $('.selectpicker').selectpicker();
+            $(".myDropzone").dropzone({
+                url: "/enregistrer-images",
+                resizeWidth: 1280,
+                acceptedFiles: 'image/*',
+                dictInvalidFileType: 'Image uniquement',
+                autoProcessQueue: false,
+                addRemoveLinks: true,
+                dictRemoveFile: 'Supprimer fichier',
+                dictCancelUpload: 'Annuler le transfert'
+
+
+
+            });
+
 
 
         </script>

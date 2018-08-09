@@ -15,6 +15,7 @@ use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
 use App\Entity\Solution;
 use App\Entity\TestSelection;
+use App\Entity\TestsInfrastructure;
 use App\Entity\TestType;
 use Proxies\__CG__\App\Entity\CompanySize;
 use Symfony\Component\HttpFoundation\Response;
@@ -227,29 +228,120 @@ class AuditController extends AbstractController
     public function newAudit()
     {
         if (isset($_SESSION)) {
-            $array = $_SESSION['user']->getAll();
-            $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
+            $repository_test_infra = $this->getDoctrine()->getRepository(AuditTestInfrastructure::class);
+            $repository_type = $this->getDoctrine()->getRepository(TestType::class);
             $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
+            $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
             $repository_company = $this->getDoctrine()->getRepository(Company::class);
             $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
-            $repository_type = $this->getDoctrine()->getRepository(TestType::class);
             $repository_size = $this->getDoctrine()->getRepository(CompanySize::class);
-            $repository_test_infra = $this->getDoctrine()->getRepository(AuditTestInfrastructure::class);
+
+            if(isset($_POST['testId'])){
+                $repository_test_infra_audit = $this->getDoctrine()->getRepository(TestsInfrastructure::class);
+
+                $testInfra = $repository_test_infra->findOneBy(['id'=>$_POST['testId']]);
+                $tests = $repository_test_infra_audit->findBy(['test_infra'=>$testInfra]);
+
+                foreach($tests as $key => $value){
+                    if(!$value->test_phase->id_parent) {
+                        $test = $repository_test->findOneBy(['id'=>$value->test_phase]);
+                    $selection = $repository_selection->findBy(['test'=>$test]);
+                        $test_child = $repository_test->findBy(['id_parent' => $test]);
+                        $html = '<div id="group-form' . $test->id . '" class="group-form-unchecked col-md-8 col-sm-8 col-xs-12" style="margin: 1%"><div class="form-group">';
+                        if ($test->type->type == 'Question') {
+                            $html .= '<label class="checkbox-inline" onclick="toggleClass('.$test->id.')">
+                                    <input type="checkbox" class="form-control check-audit" id="checkbox-audit' . $test->id . '" name="tests[' . $test->id . '][check]">' . $test->name . '</label>';
+                        } elseif ($test->type->type == 'Selection') {
+                            $html .= '<label class="checkbox-inline" onclick="toggleClass(' . $test->id . ')">' . $test->name . '
+                                                                                        <select class="form-control check-audit" id="checkbox-audit' . $test->id . '" name="tests[' . $test->id . '][selection]" >
+                                                                                            <option value="" selected>Aucun</option>';
+                            if ($selection) {
+                                foreach ($selection as $k => $v) {
+                                    $html .= '<option value="' . $v->name . '">' . $v->name . '"></option>';
+                                }
+                                $html .= '</select>
+                                      </label>';
+                            }
+                        }
+                        $html .= '<span class="glyphicon glyphicon-edit" data-toggle="modal" data-target="#myModal' . $test->id . '"></span>
+                                                                            <div class="modal fade" id="myModal' . $test->id . '" role="dialog">
+                                                                                <div class="modal-dialog modal-lg">
+                                                                                    <div class="modal-content">
+                                                                                        <div class="modal-header">
+                                                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                                            <h4 class="modal-title">Informations additionnelles</h4><small>' . $test->name . '</small>
+                                                                                        </div>
+                                                                                        <div class="modal-body">
+                                                                                            <textarea class="autoExpand form-control" rows="5" name="tests[' . $test->id . '][info]"></textarea>
+                                                                                        </div>
+                                                                                        <div class="modal-footer">
+                                                                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>';
+
+                        if ($test_child) {
+                            $html .= '<div class="group-child col-md-offset-1" id="group-child' . $test->id . '">';
+                            foreach ($test_child as $k => $v) {
+                                $html .= '<div class="form-group">';
+                                $selection_child = $repository_selection->findBy(['test' => $v]);
+                                if ($v->type->type == 'Question') {
+                                    $html .= '<label class="checkbox-inline"><input type="checkbox" class="form-control check-audit box' . $test->id . '" name="tests[' . $v->id . '][check]">' . $v->name . '</label>
+';
+                                } elseif ($v->type->type == 'Selection') {
+                                    $html .= '<label class="checkbox-inline">' . $v->name . '
+                                                                                                <select class="form-control check-audit box' . $test->id . '" name="tests[' . $v->id . '][selection]">
+                                                                                                    <option value="" selected>Aucun</option>';
+                                    foreach ($selection_child as $ke => $va) {
+                                        $html .= '<option value="' . $va->name . '">' . $va->name . '</option>';
+                                    }
+                                    $html .= '</select>
+                                      </label>';
+                                }
+                                $html .= '<span class="glyphicon glyphicon-edit" data-toggle="modal" data-target="#myModal' . $v->id . '"></span>
+                                                                                    <div class="modal fade" id="myModal' . $v->id . '" role="dialog">
+                                                                                        <div class="modal-dialog modal-lg">
+                                                                                            <div class="modal-content">
+                                                                                                <div class="modal-header">
+                                                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                                                    <h4 class="modal-title">Informations additionnelles</h4><small>' . $v->name . '</small>
+                                                                                                </div>
+                                                                                                <div class="modal-body">
+                                                                                                    <textarea class="autoExpand form-control" rows="5" name="tests[' . $v->id . '][info]"></textarea>
+                                                                                                </div>
+                                                                                                <div class="modal-footer">
+                                                                                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    </div>';
+                            }
+                            $html .= '</div>';
+                        }
+                        $html .= '</div>';
+                        $array[$test->idPhase->id][$test->name] = $html;
+                    }
+                    }
+                    return new JsonResponse($array);
+            }else {
+                $array = $_SESSION['user']->getAll();
+
+                $array['selection'] = $repository_selection->findAll();
+                $array['phases'] = $repository_phase->findAll();
+                $array['tests'] = $repository_test->findAll();
+                $array['tests_infra'] = $repository_test_infra->findAll();
+                $last_id = $repository_company->findOneBy([], ['id' => 'DESC']);
+                $array['auditNumber'] = $last_id->getId();
+                $array['auditNumber'] = $array['auditNumber'] + 1;
+                $array['type'] = $repository_type->findAll();
+                $array['size'] = $repository_size->findAll();
 
 
-
-            $array['selection'] = $repository_selection->findAll();
-            $array['phases'] = $repository_phase->findAll();
-            $array['tests'] = $repository_test->findAll();
-            $array['tests_infra'] = $repository_test_infra->findAll();
-            $last_id = $repository_company->findOneBy([], ['id' => 'DESC']);
-            $array['auditNumber'] = $last_id->getId();
-            $array['auditNumber'] = $array['auditNumber'] + 1;
-            $array['type'] = $repository_type->findAll();
-            $array['size'] = $repository_size->findAll();
-
-
-            return $this->render('audit/new_audit.html.twig', $array);
+                return $this->render('audit/new_audit.html.twig', $array);
+            }
         } else {
             return $this->redirectToRoute('homepage');
         }
@@ -372,6 +464,8 @@ class AuditController extends AbstractController
         $i['prio1'] = 0;
         $i['prio2'] = 0;
         $i['prio3'] = 0;
+        $points = 0;
+        $total_points = 0;
         $test = $repository_test->findAll();
 
         foreach ($test as $key => $value) {
@@ -379,28 +473,40 @@ class AuditController extends AbstractController
                 if (isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
                     $avg['prio1'] = $avg['prio1'] + 1;
                     $i['prio1'] = $i['prio1'] + 1;
+                    $points = $points+3;
+                    $total_points = $total_points+3;
                 } else {
                     $i['prio1'] = $i['prio1'] + 1;
                     $array['prio1'][] = $value;
+                    $total_points = $total_points+3;
+
 
                 }
             } elseif ($value->priority == 2) {
                 if (isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
                     $avg['prio2'] = $avg['prio2'] + 1;
                     $i['prio2'] = $i['prio2'] + 1;
+                    $points = $points+2;
+                    $total_points = $total_points+2;
+
                 } else {
                     $i['prio2'] = $i['prio2'] + 1;
                     $array['prio2'][] = $value;
+                    $total_points = $total_points+2;
+
 
                 }
             } elseif ($value->priority == 3) {
                 if (isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
                     $avg['prio3'] = $avg['prio3'] + 1;
                     $i['prio3'] = $i['prio3'] + 1;
-
+                    $points = $points+1;
+                    $total_points = $total_points+1;
                 } else {
                     $i['prio3'] = $i['prio3'] + 1;
                     $array['prio3'][] = $value;
+                    $total_points = $total_points+1;
+
 
                 }
             }
@@ -408,7 +514,7 @@ class AuditController extends AbstractController
         $array['avg_prio1'] = number_format((float)$avg['prio1'] / $i['prio1'] * 100, 2, '.', '');
         $array['avg_prio2'] = number_format((float)$avg['prio2'] / $i['prio2'] * 100, 2, '.', '');
         $array['avg_prio3'] = number_format((float)$avg['prio3'] / $i['prio3'] * 100, 2, '.', '');
-        $array['avg'] = number_format((float)($array['avg_prio1'] + $array['avg_prio2'] + $array['avg_prio3']) / 3, 2, '.', '');
+        $array['avg'] = number_format((float)($points/$total_points)*100, 2, '.', '');
         return $this->render('audit/result_audit.html.twig', $array);
     }
 

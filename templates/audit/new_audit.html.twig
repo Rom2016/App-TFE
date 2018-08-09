@@ -11,7 +11,9 @@
     {{ parent() }}
     <link href="../vendor/iCheck/skins/flat/green.css" rel="stylesheet" xmlns="http://www.w3.org/1999/html">
     <link rel="stylesheet" type="text/css" href="../vendor/bootstrap-select/dist/css/bootstrap-select.css">
+    <style>
 
+    </style>
 
 {% endblock %}
 
@@ -39,7 +41,7 @@
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-phone"></i></span>
                                 <input type="text" class="form-control" name="phone" placeholder="Téléphone de la société">
                             </div>
-                                 <div class="col-sm-6 col-xs-12">
+                                 <div class="col-md-4 col-xs-12">
                                      <select class="selectpicker" data-style="btn-success" title='Taille de la société' name="size">
                                          <option disabled selected>Taille de la société</option>
                                          {% for s in size %}
@@ -52,9 +54,11 @@
                         {% set i = 1 %}
                         {% for t in tests_infra %}
                             <div style="padding: 1%">
-                                <label>{{ i }}. {{ t.name }}</label><br>
-                                <input type="radio" class="check-audit" name="test[radio][{{ t.name }}">Oui
-                               <input type="radio" class="check-audit" name="test[radio][{{ t.name }}" checked>Non
+                               {{ i }}. {{ t.name }}</label><br>
+                                <label for="radioPos{{ t.id }}">Oui</label>
+                                <input type="radio" id="radioPos{{ t.id }}" class="" name="test[radio][{{ t.name }}]" onchange="getInfraTest({{ t.id }})">
+                                <label for="radioNeg{{ t.id }}">Non</label>
+                                <input type="radio" id="radioNeg{{ t.id }}" class="" name="test[radio][{{ t.name }}]" checked>
                             </div>
                             <br>
                             {% set i = i+1 %}
@@ -88,9 +92,9 @@
                                                     {% else %}
                                                         <div role="tabpanel" class="tab-pane fade" id="tab_content{{ i }}" aria-labelledby="home-tab">
                                                     {% endif %}
-                                                            <div class="container">
+                                                            <div class="container" >
                                                                 <div class="row">
-                                                            <div class="col-md-8 col-sm-10 col-xs-12 col-md-offset-2" style="border: 1px solid; box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);">
+                                                            <div class="col-md-8 col-sm-10 col-xs-12 col-md-offset-2" id="phase{{ phase.id }}" style="border: 1px solid; box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);">
                                                                     <div class="col-md-10 col-md-offset-1 ">
                                                                     <div id="audit-number" style="text-align: right">
                                                                     <h4>Audit n°{{ auditNumber }}</h4>
@@ -230,9 +234,12 @@
         <script>
             $('.check-audit').iCheck({
                 checkboxClass: 'icheckbox_flat-green',
-                radioClass: 'iradio_flat-green'
-
             });
+            $('.radio-audit').iCheck({
+                radioClass: 'iradio_flat-green',
+            });
+
+
 
             $('#name-company').focusout(function(){
                 var name = $(this).val();

@@ -236,6 +236,13 @@ class AuditController extends AbstractController
             $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
             $repository_size = $this->getDoctrine()->getRepository(CompanySize::class);
 
+            if(isset($_GET['rq'])){
+                $repository_test_infra_audit = $this->getDoctrine()->getRepository(TestsInfrastructure::class);
+
+                $testInfra = $repository_test_infra->findOneBy(['id'=>$_POST['testId']]);
+                $tests = $repository_test_infra_audit->findBy(['test_infra'=>$testInfra]);
+                return new JsonResponse($tests);
+            }
             if(isset($_POST['testId'])){
                 $repository_test_infra_audit = $this->getDoctrine()->getRepository(TestsInfrastructure::class);
 

@@ -327,11 +327,18 @@ class AuditController extends AbstractController
                     }
                     return new JsonResponse($array);
             }else {
+                $em = $this->getDoctrine()->getManager();
+                $sql = 'SELECT  * 
+                        FROM audit_test_phase 
+                        WHERE NOT EXISTS 
+                        (SELECT * 
+                        FROM tests_infrastructure
+                        WHERE audit_test_phase.id = tests_infrastructure.test_phase_id)';
                 $array = $_SESSION['user']->getAll();
+                $array['tests'] =  $em->getConnection()->query($sql)->fetchAll();
 
                 $array['selection'] = $repository_selection->findAll();
                 $array['phases'] = $repository_phase->findAll();
-                $array['tests'] = $repository_test->findAll();
                 $array['tests_infra'] = $repository_test_infra->findAll();
                 $last_id = $repository_company->findOneBy([], ['id' => 'DESC']);
                 $array['auditNumber'] = $last_id->getId();
@@ -475,12 +482,10 @@ class AuditController extends AbstractController
                     $i['prio1'] = $i['prio1'] + 1;
                     $points = $points+3;
                     $total_points = $total_points+3;
-                } else {
+                } elseif(isset($_POST['tests'][$value->getId()])) {
                     $i['prio1'] = $i['prio1'] + 1;
                     $array['prio1'][] = $value;
                     $total_points = $total_points+3;
-
-
                 }
             } elseif ($value->priority == 2) {
                 if (isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
@@ -489,12 +494,10 @@ class AuditController extends AbstractController
                     $points = $points+2;
                     $total_points = $total_points+2;
 
-                } else {
+                } elseif(isset($_POST['tests'][$value->getId()])) {
                     $i['prio2'] = $i['prio2'] + 1;
                     $array['prio2'][] = $value;
                     $total_points = $total_points+2;
-
-
                 }
             } elseif ($value->priority == 3) {
                 if (isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
@@ -502,7 +505,7 @@ class AuditController extends AbstractController
                     $i['prio3'] = $i['prio3'] + 1;
                     $points = $points+1;
                     $total_points = $total_points+1;
-                } else {
+                } elseif(isset($_POST['tests'][$value->getId()])) {
                     $i['prio3'] = $i['prio3'] + 1;
                     $array['prio3'][] = $value;
                     $total_points = $total_points+1;

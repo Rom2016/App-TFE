@@ -66,7 +66,7 @@
                                 <label for="radioPos{{ t.id }}">Oui</label>
                                 <input type="radio" id="radioPos{{ t.id }}" class="" name="test[radio][{{ t.name }}]" onchange="getInfraTest({{ t.id }})">
                                 <label for="radioNeg{{ t.id }}">Non</label>
-                                <input type="radio" id="radioNeg{{ t.id }}" class="" name="test[radio][{{ t.name }}]" checked>
+                                <input type="radio" id="radioNeg{{ t.id }}" class="" name="test[radio][{{ t.name }}]" onclick="removeInfraTest({{ t.id }})" checked>
                             </div>
                             <br>
                             {% set i = i+1 %}
@@ -117,14 +117,14 @@
                                                                 </div>
 
                                                                 {% for test in tests %}
-                                                                    {% if test.idPhase.id == phase.id and test.id_parent is null %}
+                                                                    {% if test.id_phase_id == phase.id and test.id_parent_id is null %}
                                                                       <div id="group-form{{ test.id }}" class="group-form-unchecked col-md-8 col-sm-8 col-xs-12" style="margin: 1%">
                                                                         <div class="form-group">
                                                                             {% for t in type %}
-                                                                                {% if t.type == 'Question' and t == test.type %}
+                                                                                {% if t.type == 'Question' and t.id == test.type_id %}
                                                                                     <label class="checkbox-inline" onclick="toggleClass({{ test.id }})">
                                                                                     <input type="checkbox" class="form-control check-audit" id="checkbox-audit{{ test.id }}" name="tests[{{ test.id }}][check]">{{ test.name }}</label>
-                                                                                {% elseif t.type == 'Selection' and t == test.type %}
+                                                                                {% elseif t.type == 'Selection' and t.id == test.type_id %}
                                                                                     <label class="checkbox-inline" onclick="toggleClass({{ test.id }})">{{ test.name }}
                                                                                         <select class="form-control check-audit" id="checkbox-audit{{ test.id }}" name="tests[{{ test.id }}][selection]" >
                                                                                             <option value="" selected>Aucun</option>
@@ -168,16 +168,16 @@
                                                                         </div>
                                                                           {% set tmp = 1 %}
                                                                           {% for t in tests %}
-                                                                            {% if test == t.id_parent %}
+                                                                            {% if test.id == t.id_parent_id %}
                                                                                 {% if tmp == 1 %}
                                                                                 <div class="group-child col-md-offset-1" id="group-child{{ test.id }}">
                                                                                     {% endif %}
 
                                                                                 <div class="form-group">
                                                                                     {% for ty in type %}
-                                                                                        {% if ty.type == 'Question' and ty == t.type %}
+                                                                                        {% if ty.type == 'Question' and ty.id == t.type_id %}
                                                                                             <label class="checkbox-inline"><input type="checkbox" class="form-control check-audit box{{ test.id }}" name="tests[{{ t.id }}][check]">{{ t.name }}</label>
-                                                                                        {% elseif ty.type == 'Selection' and ty == t.type %}
+                                                                                        {% elseif ty.type == 'Selection' and ty.id == t.type_id %}
                                                                                             <label class="checkbox-inline">{{ t.name }}
                                                                                                 <select class="form-control check-audit box{{ test.id }}" name="tests[{{ t.id }}][selection]">
                                                                                                     <option value="" selected>Aucun</option>
@@ -200,6 +200,14 @@
                                                                                                 </div>
                                                                                                 <div class="modal-body">
                                                                                                     <textarea class="autoExpand form-control" rows="5" name="tests[{{ t.id }}][info]"></textarea>
+                                                                                                    <div id="myDropzone{{ t.id }}" class="myDropzone dropzone">
+
+                                                                                                        <div class="dz-message needsclick">
+                                                                                                            <p style="color: darkgrey;"><i>Déposer ou clicker</i></p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <a class="btn btn-success btn-block" style="display: block; margin: auto; margin-top: 1%" onclick="uploadFile({{ t.id }},{{ auditNumber }})"><span class="fa fa-upload fa-10x" style="color: white; font-size: 100%"></span></a>
+
                                                                                                 </div>
                                                                                                 <div class="modal-footer">
                                                                                                     <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>

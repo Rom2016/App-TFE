@@ -13,95 +13,30 @@
     {{ parent() }}
         <!-- page content -->
     <div class="right_col" role="main">
-        <div class="">
-            <div class="row top_tiles">
-                <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="tile-stats">
-                        <div class="icon"><i class="fa fa-caret-square-o-right"></i></div>
-                        <div class="count">0</div>
-                        <h3>Utilisateurs</h3>
-                        <a href="../voir/utilisateurs"><p style="color:blue">Visualiser</p></a>
-                    </div>
-                </div>
-                <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="tile-stats">
-                        <div class="icon"><i class="fa fa-caret-square-o-right"></i></div>
-                        <div class="count">0</div>
-                        <h3>Sociétés enregistrées</h3>
-                        <a href="../voir/sociétés"><p style="color:blue">Visualiser</p></a>
-                    </div>
+        <div class="container">
+            <div class="row" >
+                <div class="col-xs-12 col-md-12 text-center" style="background-color: white; padding: 5%">
+                    <h1>Securicheck</h1>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4 col-sm-4 col-xs-12">
-                <div class="x_panel">
-                    <div class="x_title">
-                        <h2>Activités récentes</h2>
-                        <div class="clearfix"></div>
-                    </div>
-                    <ul class="list-unstyled top_profiles scroll-view">
-                        <li class="media event">
-                            <a class="pull-left border-aero profile_thumb">
-                                <i class="fa fa-user aero"></i>
-                            </a>
-                            <div class="media-body">
-                                <a class="title" href="#">Ms. Mary Jane</a>
-                                <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                                <p> <small>12 Sales Today</small>
-                                </p>
-                            </div>
-                        </li>
-                        <li class="media event">
-                            <a class="pull-left border-green profile_thumb">
-                                <i class="fa fa-user green"></i>
-                            </a>
-                            <div class="media-body">
-                                <a class="title" href="#">Ms. Mary Jane</a>
-                                <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                                <p> <small>12 Sales Today</small>
-                                </p>
-                            </div>
-                        </li>
-                        <li class="media event">
-                            <a class="pull-left border-blue profile_thumb">
-                                <i class="fa fa-user blue"></i>
-                            </a>
-                            <div class="media-body">
-                                <a class="title" href="#">Ms. Mary Jane</a>
-                                <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                                <p> <small>12 Sales Today</small>
-                                </p>
-                            </div>
-                        </li>
-                        <li class="media event">
-                            <a class="pull-left border-aero profile_thumb">
-                                <i class="fa fa-user aero"></i>
-                            </a>
-                            <div class="media-body">
-                                <a class="title" href="#">Ms. Mary Jane</a>
-                                <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                                <p> <small>12 Sales Today</small>
-                                </p>
-                            </div>
-                        </li>
-                        <li class="media event">
-                            <a class="pull-left border-green profile_thumb">
-                                <i class="fa fa-user green"></i>
-                            </a>
-                            <div class="media-body">
-                                <a class="title" href="#">Ms. Mary Jane</a>
-                                <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                                <p> <small>12 Sales Today</small>
-                                </p>
-                            </div>
-                        </li>
-                    </ul>
+            <div class="row tile_count">
+                <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count text-center">
+                    <span class="count_top"><i class="fa fa-users"></i> Utilisateurs enregistrés</span>
+                    <div class="count green">{{ nbUser }}</div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count text-center">
+                    <span class="count_top"><i class="fa fa-file"></i>Audits enregistrés</span>
+                    <div class="count green">{{ nbCompany }}</div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count text-center">
+                    <span class="count_top"><i class="fa fa-folder-open"></i>Total phase</span>
+                    <div class="count green">{{ nbPhase }}</div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count text-center">
+                    <span class="count_top"><i class="fa fa-check-square-o"></i> Total test</span>
+                    <div class="count green">{{ nbTest }}</div>
                 </div>
             </div>
         </div>
     </div>
-
-
-
 {% endblock %}

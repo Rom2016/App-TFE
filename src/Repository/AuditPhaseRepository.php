@@ -19,6 +19,16 @@ class AuditPhaseRepository extends ServiceEntityRepository
         parent::__construct($registry, AuditPhase::class);
     }
 
+    public function getNb()
+    {
+        $qb = $this->createQueryBuilder('t');
+        return $qb
+            ->select('count(t.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+
 //    /**
 //     * @return AuditPhase[] Returns an array of AuditPhase objects
 //     */

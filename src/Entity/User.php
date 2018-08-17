@@ -95,8 +95,6 @@ class User
         return substr(str_shuffle($chars),0,$length);
     }
 
-    public function hachPassword($pass){
-    }
 
     public function updateProfile(){
         $this->setFirstName($_POST['fName']);
@@ -109,7 +107,7 @@ class User
     }
 
     public function getAll(){
-        $array=['fName'=>$this->first_name,'sName'=>$this->second_name,'email'=>$this->email,'profPic'=>$this->selectProfilePic(),'phone'=>$this->phone,'function'=>$this->function,'is_admin'=>$this->isAdmin];
+        $array=['id'=>$this->getId(),'fName'=>$this->first_name,'sName'=>$this->second_name,'email'=>$this->email,'profPic'=>$this->selectProfilePic(),'phone'=>$this->phone,'function'=>$this->function,'is_admin'=>$this->isAdmin];
         return $array;
     }
 

@@ -39,7 +39,7 @@
                                     </ul>
                                 </li>
                                 <li>
-                                    <a onclick="dialogConfirm(this.name)" role="button" aria-expanded="false" name="../supprimer-utilisateur"><i class="fa fa-close"></i></a>
+                                    <a onclick="deleteUser()" role="button" aria-expanded="false" name="../supprimer-utilisateur"><i class="fa fa-close"></i></a>
                                 </li>
                             </ul>
                             <div class="clearfix"></div>
@@ -60,6 +60,7 @@
                                 </thead>
                                 <tbody>
                                 {% for user in users %}
+                                    {% if user.id != id  %}
                                 <tr>
                                     <td><input type="checkbox" class="check-user" name="{{ user.id }}" onclick="checkboxSelect(this)"></td>
                                     <td>{{ user.id }}</td>
@@ -69,6 +70,7 @@
                                     <td>{{ user.function }}</td>
                                     <td>{{ user.phone }}</td>
                                 </tr>
+                                 {% endif %}
                                 {% endfor %}
                                 </tbody>
                             </table>

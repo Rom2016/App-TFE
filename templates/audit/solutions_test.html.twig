@@ -1,9 +1,41 @@
-<div id="solution{{ test.id }}" class="accordion col-md-6" >
+<div id="solution{{ test.id }}" class="accordion" xmlns="http://www.w3.org/1999/html">
     <h5>{{ test.name }}</h5>
-    <div class="text-center">
-        <img class="img-responsive" src="images/solution_pic/{{ solutions.id }}.jpg">
-        <h2 class="text-center"><b>{{ solutions.name }}</b></h2>
-        <h1 class="text-center" style="color:#1ABB9C">{{ solutions.cost }}€</h1>
-        <a data-toggle="tooltip" data-placement="top" title="{{ solutions.description }}"  style="border-bottom: 1px dashed">Description</a>
+    <div class="row">
+        <div class="text-center jumbotron">
+            <h4><em>{{ test.description }}</em></h4>
+        </div>
+        {% if solutions is not empty %}
+        <h4 class="page-header">Exemples de solution pour PME</h4>
+
+        {% for s in solutions %}
+        <div class="col-md-5" style="border: 1px dashed black; margin: 4%">
+            <div class="col-md-12">
+            <div class="text-center">
+                <img src="images/audit_result_pic/solution_pic/{{ s.product.solution.id }}.jpg">
+                <h1>{{ s.product.solution.name }}</h1>
+            </div>
+            <h2 class="page-header">Caractéristiques clés</h2>
+            <ul>
+            {% for feature in features %}
+                {% for f in feature %}
+                    {% if f.solution == s.product.solution %}
+                        <li>{{ f.feature }}</li>
+                    {% endif %}
+                 {% endfor %}
+             {% endfor %}
+            </ul>
+        </div>
+            {% if s.product.pic is not null %}
+        <div class="text-center col-md-4" style="border: solid 1px;">
+        <img src="images/audit_result_pic/product_pic/{{ s.product.id }}.jpg" style="border-bottom: solid 1px">
+        <h2 class="text-center"><b>{{ s.product.name }}</b></h2>
+        <h1 class="text-center" style="color:#1ABB9C">{{ s.product.cost }}€</h1>
+        <a class="link-solution" href="{{ s.product.link }}">Lien</a>
+        </div>
+            {% endif %}
     </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</hr>
 </div>

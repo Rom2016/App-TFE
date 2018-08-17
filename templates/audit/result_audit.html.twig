@@ -97,14 +97,10 @@
                 <div class="row">
                     <h1 class="danger col-md-12">Danger</h1>
                     <div class="clearfix"></div>
-                    <div id="accordion">
+                    <div id="accordion" style="height: 100px;">
                         <h3 class="text-center">Récapitulatif</h3>
                         <div class="row">
-                            <div id="container-solution" class="col-md-8">
-                                <h4 class="page-header">Solutions</h4>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="jumbotron"><h5>Estimation:</h5></div>
+                            <div id="container-solution" class="col-md-12">
                             </div>
                             <div class="clearfix"></div>
                             <div class="actionBar">
@@ -174,7 +170,7 @@
                                             {% set i = i+1 %}
 
                                             <tr>
-                                                <td><input type="checkbox" class="check-audit">{{ test.name }}</td>
+                                                <td><input type="checkbox" class="check-audit" value="{{ test.id }}">{{ test.name }}</td>
                                             </tr>
                                         {% endif %}
                                     {% endfor %}
@@ -217,7 +213,7 @@
                                         {% if test.idPhase == phase %}
                                             {% set i = i+1 %}
                                             <tr>
-                                                <td><input type="checkbox" class="check-audit">{{ test.name }}</td>
+                                                <td><input type="checkbox" class="check-audit" value="{{ test.id }}">{{ test.name }}</td>
                                             </tr>
                                         {% endif %}
                                     {% endfor %}

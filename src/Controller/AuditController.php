@@ -13,7 +13,10 @@ use App\Entity\AuditTestInfrastructure;
 use App\Entity\Company;
 use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
+use App\Entity\ProductCompanySize;
 use App\Entity\Solution;
+use App\Entity\SolutionCompanySize;
+use App\Entity\SolutionFeatures;
 use App\Entity\TestSelection;
 use App\Entity\TestsInfrastructure;
 use App\Entity\TestType;
@@ -435,7 +438,6 @@ class AuditController extends AbstractController
         $entityManager->flush();
 
         return new JsonResponse($_POST);
-
     }
 
 
@@ -551,17 +553,20 @@ class AuditController extends AbstractController
     public function getTestSolution()
     {
         $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
-        $repository_solution = $this->getDoctrine()->getRepository(Solution::class);
         $repository_size = $this->getDoctrine()->getRepository(CompanySize::class);
+        $repository_product_size = $this->getDoctrine()->getRepository(ProductCompanySize::class);
+        $repository_solution_features = $this->getDoctrine()->getRepository(SolutionFeatures::class);
+
         $size_company = explode("<", $_POST['size']);
         $size = $repository_size->findOneBy(['max_size' => $size_company[1]]);
         $test = $repository_test->findOneBy(['id' => $_POST['id']]);
-        $solutions = $repository_solution->findOneBy(array('id_test' => $test, 'id_size' => $size));
+        $array['solutions'] = $repository_product_size->findBy(array('test' => $test,'size'=>$size));
+        foreach ($array['solutions'] as $key => $value){
+            $array['features'][] = $repository_solution_features->findBy(['solution'=>$value->getProduct()->getSolution()]);
+        }
         $array['test'] = $test;
-        $array['solutions'] = $solutions;
         return $this->render('audit/solutions_test.html.twig',$array);
     }
-
     //jquery
     /**
      * @Route("/enregistrer-images", name="save_images_test", methods="POST" )

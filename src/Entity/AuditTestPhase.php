@@ -46,6 +46,11 @@ class AuditTestPhase
     public $id_parent;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
+    /**
      * AuditTestPhase constructor.
      * @param $name
      * @param $priority
@@ -167,6 +172,18 @@ class AuditTestPhase
     public function setIdParent($id_parent): void
     {
         $this->id_parent = $id_parent;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
     }
 
 

@@ -8,6 +8,8 @@
 
 namespace App\Controller;
 
+use App\Entity\AuditPhase;
+use App\Entity\AuditTestPhase;
 use App\Entity\Company;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,7 +35,15 @@ class UserController extends AbstractController
             }
         }
         elseif(isset($_SESSION['user'])){
+            $repository_user = $this->getDoctrine()->getRepository(User::class);
+            $repository_company = $this->getDoctrine()->getRepository(Company::class);
+            $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
+            $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
             $array = $_SESSION['user']->getAll();
+            $array['nbUser'] = $repository_user->getNb();
+            $array['nbCompany'] = $repository_company->getNb();
+            $array['nbPhase'] = $repository_phase->getNb();
+            $array['nbTest'] = $repository_test->getNb();
             return $this->render('user/homepage.html.twig',$array);
         }
         elseif(isset($_POST['user']) && isset($_POST['pass'])){
@@ -89,15 +99,22 @@ class UserController extends AbstractController
 
         $decode = json_decode(file_get_contents($api_url), true);
 
-
         $repositoryU = $this->getDoctrine()->getRepository(User::class);
         $user = $repositoryU->findOneBy(['email' => $email]);
-
 
         if($decode['success'] == true) {
             if ($user && password_verify($_POST['pass'], $user->getPass())) {
                 $user->startConnection();
+                $repository_user = $this->getDoctrine()->getRepository(User::class);
+                $repository_company = $this->getDoctrine()->getRepository(Company::class);
+                $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
+                $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
                 $array = $_SESSION['user']->getAll();
+                $array['nbUser'] = $repository_user->getNb();
+                $array['nbCompany'] = $repository_company->getNb();
+                $array['nbPhase'] = $repository_phase->getNb();
+                $array['nbTest'] = $repository_test->getNb();
+
                 return $this->render('user/homepage.html.twig', $array);
             } else {
                 return $this->render('user/login.html.twig', ['title' => "Bienvenue", 'error' => 'Identifiants invalides']);
@@ -113,7 +130,7 @@ class UserController extends AbstractController
 
         $user = new User($_POST['fName'],$_POST['sName'],$_POST['email'],$_POST['function'],$_POST['phone'],$this->setAdmin());
 
-        $user->setPass(password_hash('TFE_AUDIT_2018', PASSWORD_BCRYPT));
+        $user->setPass(password_hash('TF3_@UD1T-2018', PASSWORD_BCRYPT));
         $entityManager->persist($user);
         $entityManager->flush();
     }

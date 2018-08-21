@@ -22,7 +22,7 @@ class Product
     public $name;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     public $cost;
 

@@ -15,7 +15,6 @@ use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
 use App\Entity\ProductCompanySize;
 use App\Entity\Solution;
-use App\Entity\SolutionCompanySize;
 use App\Entity\SolutionFeatures;
 use App\Entity\TestSelection;
 use App\Entity\TestsInfrastructure;
@@ -26,40 +25,45 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+
 class AuditController extends AbstractController
 {
-    /*
-     *
-     */
+
     /**
+     * Méthode qui gère toute la partie Administration Audit
+     *
      * @Route("/administration-audit", name="admin_audit", options={"utf8": true})
      */
     public function adminAudit()
     {
         if (isset($_SESSION)) {
             if ($_SESSION['user']->isAdmin) {
+                /**
+                 * Gère les changements dans les phases de l'audit
+                 */
                 if ($_POST) {
                     switch ($_POST['submit']) {
+                        /**
+                         * Création d'une nouvelle phase
+                         */
                         case 'newPhase':
                             $this->saveNewPhase();
                             break;
-                        case 'addTest':
-                            $this->addTestPhase();
-                            break;
-                        case 'switchPhases':
-                            $this->switchPhases();
-                            break;
+                        /**
+                         * Gère les modifications d'une phase existante
+                         */
                         case 'submitModifPhase':
                             $this->saveModifPhase();
                             break;
                     }
                 }
-
+                /**
+                 * Toutes les informations nécessaire pour la page d'admin de l'audit de la base de données.
+                 */
                 $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
                 $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
                 $repository_test_type = $this->getDoctrine()->getRepository(TestType::class);
                 $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
-
 
                 $array = $_SESSION['user']->getAll();
                 $array['selection'] = $repository_selection->findAll();
@@ -70,8 +74,14 @@ class AuditController extends AbstractController
 
                 return $this->render('audit/administration_audit.html.twig', $array);
             } else {
+                /**
+                 * Pas les droits admin.
+                 */
                 return $this->render('error/error_403.html.twig');
             }
+        /**
+         * Utilisateur non connecté.
+         */
         } else {
             return $this->redirectToRoute('homepage');
         }
@@ -82,7 +92,7 @@ class AuditController extends AbstractController
      */
 
     /**
-     * @Route("/selection-test", name="selection-test", methods="POST", options={"utf8": true})
+     * @Route("/selection-test", name="selection-test", methods="POST")
      */
     public function selectionTest()
     {
@@ -393,21 +403,6 @@ class AuditController extends AbstractController
         }
     }
 
-    public function switchPhases()
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-        $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
-        $array['phases'] = $repository_phase->findBy([], ['number' => 'ASC']);
-
-        foreach ($_POST['name_phase'] as $key => $value) {
-            foreach ($array['phases'] as $k => $v)
-                if ($v->getPhaseName() == $k) {
-                    $v->setNumber($array['phases'][$k]->getNumber());
-                }
-            $entityManager->flush();
-        }
-    }
-
     /*
      * JQUERY
      */
@@ -440,20 +435,6 @@ class AuditController extends AbstractController
         return new JsonResponse($_POST);
     }
 
-
-    public function addTestPhase()
-    {
-        $idPhase = $_POST['idPhase'];
-        $entityManager = $this->getDoctrine()->getManager();
-        $phase = $this->getDoctrine()->getRepository(AuditPhase::class)->findOneBy(['id' => $idPhase]);
-
-
-        foreach ($_POST['test_phase'] as $key => $value) {
-            $test_phase = new AuditTestPhase($value, '1', $phase);
-            $entityManager->persist($test_phase);
-            $entityManager->flush();
-        }
-    }
 
     /**
      * @Route("/résultat-audit", name="result_audit", options={"utf8": true})

@@ -11,7 +11,7 @@
         <div class="col-md-5" style="border: 1px dashed black; margin: 4%">
             <div class="col-md-12">
             <div class="text-center">
-                <img src="images/audit_result_pic/solution_pic/{{ s.product.solution.id }}.jpg">
+                <img src="images/audit_result_pic/solution_pic/{{ s.product.solution.id }}.{{ s.product.solution.pic }}">
                 <h1>{{ s.product.solution.name }}</h1>
             </div>
             <h2 class="page-header">Caractéristiques clés</h2>
@@ -26,10 +26,10 @@
             </ul>
         </div>
             {% if s.product.pic is not null %}
-        <div class="text-center col-md-4" style="border: solid 1px;">
-        <img src="images/audit_result_pic/product_pic/{{ s.product.id }}.jpg" style="border-bottom: solid 1px">
-        <h2 class="text-center"><b>{{ s.product.name }}</b></h2>
-        <h1 class="text-center" style="color:#1ABB9C">{{ s.product.cost }}€</h1>
+        <div class="text-center col-md-4 col-md-offset-4" style="border: solid 1px;">
+        <img src="images/audit_result_pic/product_pic/{{ s.product.id }}.{{ s.product.pic }}" style="border-bottom: solid 1px">
+        <h2 class="text-center col-md-12"><b>{{ s.product.name }}</b></h2>
+        <h2 class="text-center" style="color:#1ABB9C">{{ s.product.cost }}</h2>
         <a class="link-solution" href="{{ s.product.link }}">Lien</a>
         </div>
             {% endif %}

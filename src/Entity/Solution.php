@@ -26,6 +26,11 @@ class Solution
      */
     private $description;
 
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private $pic;
+
     public function getId()
     {
         return $this->id;
@@ -51,6 +56,18 @@ class Solution
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getPic(): ?string
+    {
+        return $this->pic;
+    }
+
+    public function setPic(?string $pic): self
+    {
+        $this->pic = $pic;
 
         return $this;
     }

@@ -160,24 +160,7 @@
 
                                 </table>
                                 <br />
-                                <div class="row">
-                                <form id="input-new{{ phase.id }}" name="../ajouter-test-audit" style="display: none" method="post" action="../administration-audit">
-                                <div  class="form-group test-group">
-                                    <div class="col-md-6 col-sm-6">
-                                        <input type="hidden" name="idPhase" value="{{ phase.id }}">
-                                        <input type="text" name="test_phase[]" class="input_test" required>
-                                        <span class="highlight"></span>
-                                        <span class="bar"></span>
-                                        <label class="label_test">Test de phase</label>
-                                        <a class="fa fa-plus-square" onclick="addInput(this)"></a>
-                                        <a class="fa fa-minus-square" onclick="removeInput(this)"></a>
-                                    </div>
-                                </div>
-                                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                        <button type="submit" class="btn btn-success" name="submit" value="addTest">Soumettre</button>
-                                    </div>
-                                </form>
-                                </div>
+
                                 <div class="actionBar">
                                     <a class="btn btn-danger" id="{{ phase.id }}" onclick="deletePhase(this.id)">Supprimer la table</a>
                                     <a class="btn btn-primary" href="/modifier-phase?id={{ phase.id }}" name="{{ phase.id }}">Modifier la table</a>

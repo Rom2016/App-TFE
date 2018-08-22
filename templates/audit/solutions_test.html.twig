@@ -11,7 +11,9 @@
         <div class="col-md-5" style="border: 1px dashed black; margin: 4%">
             <div class="col-md-12">
             <div class="text-center">
+                {% if  s.product.solution.pic is not null %}
                 <img src="images/audit_result_pic/solution_pic/{{ s.product.solution.id }}.{{ s.product.solution.pic }}">
+                {% endif %}
                 <h1>{{ s.product.solution.name }}</h1>
             </div>
             <h2 class="page-header">Caractéristiques clés</h2>

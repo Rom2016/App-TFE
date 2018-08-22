@@ -551,6 +551,65 @@ class AuditController extends AbstractController
     }
 
 
+    /**
+     * Gère le traitement des images envoyées depuis les dropbox pendant un audit
+     * @Route("/enregistrer-images", name="save_images_test", methods="POST" )
+     */
+    function saveFiles()
+    {
+        $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
+
+        $test = $repository_test->findOneBy(['id'=>$_POST['id']]);
+        /**
+         * Initialise le dossier avec le num de l'audit et son sous-dossier avec le nom du test des images traitées
+         */
+        $auditFolder = 'images/test_pic/'.$_POST['auditNumber'];   //2
+        $testFolder = 'images/test_pic/'.$_POST['auditNumber'].'/'.$test->name.'/';   //2
+        $path = $_FILES['file']['name'];
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
+        // if folder doesn't exists, create it
+        /**
+         * Si ils n'existent pas, il faut les créer
+         */
+        if(!file_exists($auditFolder) && !is_dir($auditFolder)) {
+            mkdir($auditFolder);
+        }
+        if(!file_exists($testFolder) && !is_dir($testFolder)) {
+            mkdir($testFolder);
+            /**
+             * Le sous-dossier est créé, le nom de la première image sera '1'.
+             */
+            $fileName = '1.'.$ext;
+        }else {
+            /**
+             * Le sous dossier existe déjà, scan pour récupérer les nom des fichiers par la fin.
+             */
+            $count = scandir($testFolder, 1);
+            if ($count) {
+                /**
+                 * Récupère le premier nom du tableau qui est le plus grand du dossier étant donné qu'on le scan par la fin.
+                 * Récupère ce nombre et converti le en INT.
+                 */
+                $tab = explode('.', $count[0]);
+                $fileName = intval($tab[0]);
+                $fileName = $fileName+1;
+                $fileName = $fileName.'.'.$ext;
+            }
+        }
+        if(!empty($_FILES)){
+
+            $tempFile = $_FILES['file']['tmp_name'];          //3
+            $targetPath = $testFolder;  //4
+        }
+        $targetFile =  $targetPath.$fileName;  //5
+        /**
+         * Enregistre l'image avec son nouveau nom et dans le bon dossier.
+         */
+        if(move_uploaded_file($tempFile, $targetFile)){
+            return new Response('ok');
+        }; //6
+    }
+
 
 
 
@@ -711,64 +770,6 @@ class AuditController extends AbstractController
         return $this->render('audit/solutions_test.html.twig',$array);
     }
 
-    /**
-     * Gère le traitement des images envoyées depuis les dropbox pendant un audit
-     * @Route("/enregistrer-images", name="save_images_test", methods="POST" )
-     */
-    function saveFiles()
-    {
-        $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
-
-        $test = $repository_test->findOneBy(['id'=>$_POST['id']]);
-        /**
-         * Initialise le dossier avec le num de l'audit et son sous-dossier avec le nom du test des images traitées
-         */
-        $auditFolder = 'images/test_pic/'.$_POST['auditNumber'];   //2
-        $testFolder = 'images/test_pic/'.$_POST['auditNumber'].'/'.$test->name.'/';   //2
-        $path = $_FILES['file']['name'];
-        $ext = pathinfo($path, PATHINFO_EXTENSION);
-        // if folder doesn't exists, create it
-        /**
-         * Si ils n'existent pas, il faut les créer
-         */
-        if(!file_exists($auditFolder) && !is_dir($auditFolder)) {
-            mkdir($auditFolder);
-        }
-        if(!file_exists($testFolder) && !is_dir($testFolder)) {
-            mkdir($testFolder);
-            /**
-             * Le sous-dossier est créé, le nom de la première image sera '1'.
-             */
-            $fileName = '1.'.$ext;
-        }else {
-            /**
-             * Le sous dossier existe déjà, scan pour récupérer les nom des fichiers par la fin.
-             */
-            $count = scandir($testFolder, 1);
-            if ($count) {
-                /**
-                 * Récupère le premier nom du tableau qui est le plus grand du dossier étant donné qu'on le scan par la fin.
-                 * Récupère ce nombre et converti le en INT.
-                 */
-                $tab = explode('.', $count[0]);
-                $fileName = intval($tab[0]);
-                $fileName = $fileName+1;
-                $fileName = $fileName.'.'.$ext;
-            }
-        }
-        if(!empty($_FILES)){
-
-            $tempFile = $_FILES['file']['tmp_name'];          //3
-            $targetPath = $testFolder;  //4
-            }
-            $targetFile =  $targetPath.$fileName;  //5
-        /**
-         * Enregistre l'image avec son nouveau nom et dans le bon dossier.
-         */
-            if(move_uploaded_file($tempFile, $targetFile)){
-                return new Response('ok');
-            }; //6
-        }
 
 
 }

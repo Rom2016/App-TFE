@@ -24,17 +24,50 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="AuditController.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="AuditController.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Controller/AuditController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="779">
-              <caret line="765" column="74" lean-forward="false" selection-start-line="765" selection-start-column="74" selection-end-line="765" selection-end-column="74" />
+            <state relative-caret-position="-1907">
+              <caret line="610" column="5" lean-forward="false" selection-start-line="610" selection-start-column="5" selection-end-line="610" selection-end-column="5" />
               <folding>
-                <marker date="1534927202445" expanded="true" signature="22767:23123" ph="..." />
-                <marker date="1534927202445" expanded="true" signature="22982:23123" ph="..." />
-                <marker date="1534927202445" expanded="true" signature="26729:27001" ph="SELECT * FRO... audit_test_phase" />
-                <marker date="1534927202445" expanded="true" signature="26854:26966" ph="SELECT * FRO... tests_infrastructure" />
-                <marker date="1534927202445" expanded="true" signature="26854:27000" ph="SELECT * FRO... tests_infrastructure" />
+                <marker date="1534927283254" expanded="true" signature="22767:23123" ph="..." />
+                <marker date="1534927283254" expanded="true" signature="22982:23123" ph="..." />
+                <marker date="1534927283254" expanded="true" signature="26729:27001" ph="SELECT * FRO... audit_test_phase" />
+                <marker date="1534927283254" expanded="true" signature="26854:26966" ph="SELECT * FRO... tests_infrastructure" />
+                <marker date="1534927283254" expanded="true" signature="26854:27000" ph="SELECT * FRO... tests_infrastructure" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="solutions_test.html.twig" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/audit/solutions_test.html.twig">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="272">
+              <caret line="16" column="54" lean-forward="false" selection-start-line="16" selection-start-column="54" selection-end-line="16" selection-end-column="54" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="login_form.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/public/js/login_form.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="custom.min.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/public/js/custom.min.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="544">
+              <caret line="394" column="0" lean-forward="true" selection-start-line="394" selection-start-column="0" selection-end-line="394" selection-end-column="0" />
+              <folding>
+                <marker date="1534944061254" expanded="true" signature="26268:26275" ph="×" />
+                <marker date="1534944061254" expanded="true" signature="39286:39298" ph="..." />
               </folding>
             </state>
           </provider>
@@ -143,17 +176,17 @@
         <option value="$PROJECT_DIR$/src/Repository/AuditPhaseRepository.php" />
         <option value="$PROJECT_DIR$/templates/user/homepage.html.twig" />
         <option value="$PROJECT_DIR$/src/Entity/Solution.php" />
-        <option value="$PROJECT_DIR$/public/js/custom.min.js" />
         <option value="$PROJECT_DIR$/public/css/custom.min.css" />
         <option value="$PROJECT_DIR$/templates/audit/result_audit.html.twig" />
         <option value="$PROJECT_DIR$/config/routes/nelmio_api_doc.yaml" />
         <option value="$PROJECT_DIR$/config/packages/nelmio_api_doc.yaml" />
         <option value="$PROJECT_DIR$/vendor/symfony/framework-bundle/Tests/Functional/app/AppKernel.php" />
         <option value="$PROJECT_DIR$/src/Entity/Product.php" />
-        <option value="$PROJECT_DIR$/templates/audit/solutions_test.html.twig" />
         <option value="$PROJECT_DIR$/src/Controller/UserController.php" />
         <option value="$PROJECT_DIR$/templates/audit/administration_audit.html.twig" />
         <option value="$PROJECT_DIR$/src/Controller/AuditController.php" />
+        <option value="$PROJECT_DIR$/templates/audit/solutions_test.html.twig" />
+        <option value="$PROJECT_DIR$/public/js/custom.min.js" />
       </list>
     </option>
   </component>
@@ -264,8 +297,8 @@
     </include_path>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="73" />
-    <option name="y" value="770" />
+    <option name="x" value="-7" />
+    <option name="y" value="331" />
     <option name="width" value="1932" />
     <option name="height" value="353" />
   </component>
@@ -297,31 +330,13 @@
             <path>
               <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
               <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="src" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="public" type="2a2b976b:PhpTreeStructureProvider$1" />
             </path>
             <path>
               <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
               <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="src" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Controller" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="src" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Entity" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="src" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Migrations" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="src" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Repository" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="public" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="js" type="2a2b976b:PhpTreeStructureProvider$1" />
             </path>
             <path>
               <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
@@ -333,12 +348,6 @@
               <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
               <item name="templates" type="2a2b976b:PhpTreeStructureProvider$1" />
               <item name="audit" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="Audit" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Audit" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="templates" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="user" type="2a2b976b:PhpTreeStructureProvider$1" />
             </path>
           </expand>
           <select />
@@ -526,12 +535,12 @@
       <workItem from="1534839815977" duration="644000" />
       <workItem from="1534863813446" duration="4404000" />
       <workItem from="1534874619505" duration="2319000" />
-      <workItem from="1534924549376" duration="2653000" />
+      <workItem from="1534924549376" duration="7126000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="677118000" />
+    <option name="totallyTimeSpent" value="681591000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -566,20 +575,11 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/js/custom.min.js</url>
-          <line>183</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-      </breakpoints>
       <option name="time" value="6" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/L'entreprise dispose t-elle d'un pare-feuDfkhrO1XUAEYkdw.jpg" />
-    <entry file="file://$PROJECT_DIR$/public/images/test_pic/téléchargement.jpg" />
     <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/L'entreprise dispose t-elle d'un pare-feu/téléchargement.jpg" />
     <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/L'entreprise dispose t-elle d'un pare-feu/DfkhrO1XUAEYkdw.jpg" />
     <entry file="file://$PROJECT_DIR$/public/images/test_pic/3/L'entreprise dispose t-elle d'un pare-feu/3test.jpg" />
@@ -739,17 +739,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/images/solution_pic/1.jpg" />
-    <entry file="file://$PROJECT_DIR$/public/js/custom.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1581">
-          <caret line="113" column="0" lean-forward="false" selection-start-line="113" selection-start-column="0" selection-end-line="113" selection-end-column="0" />
-          <folding>
-            <marker date="1534510865227" expanded="true" signature="24411:24418" ph="×" />
-            <marker date="1534510865227" expanded="true" signature="37429:37441" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/css/custom.min.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2907">
@@ -823,13 +812,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/audit/solutions_test.html.twig">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="25" column="17" lean-forward="false" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Controller/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
@@ -847,16 +829,53 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/login_form.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/audit/new_phase.html.twig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-102">
+          <caret line="39" column="21" lean-forward="true" selection-start-line="39" selection-start-column="21" selection-end-line="39" selection-end-column="21" />
+          <folding>
+            <element signature="e#12#26#0#Twig" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Controller/AuditController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="779">
-          <caret line="765" column="74" lean-forward="false" selection-start-line="765" selection-start-column="74" selection-end-line="765" selection-end-column="74" />
+        <state relative-caret-position="-1907">
+          <caret line="610" column="5" lean-forward="false" selection-start-line="610" selection-start-column="5" selection-end-line="610" selection-end-column="5" />
           <folding>
-            <marker date="1534927202445" expanded="true" signature="22767:23123" ph="..." />
-            <marker date="1534927202445" expanded="true" signature="22982:23123" ph="..." />
-            <marker date="1534927202445" expanded="true" signature="26729:27001" ph="SELECT * FRO... audit_test_phase" />
-            <marker date="1534927202445" expanded="true" signature="26854:26966" ph="SELECT * FRO... tests_infrastructure" />
-            <marker date="1534927202445" expanded="true" signature="26854:27000" ph="SELECT * FRO... tests_infrastructure" />
+            <marker date="1534927283254" expanded="true" signature="22767:23123" ph="..." />
+            <marker date="1534927283254" expanded="true" signature="22982:23123" ph="..." />
+            <marker date="1534927283254" expanded="true" signature="26729:27001" ph="SELECT * FRO... audit_test_phase" />
+            <marker date="1534927283254" expanded="true" signature="26854:26966" ph="SELECT * FRO... tests_infrastructure" />
+            <marker date="1534927283254" expanded="true" signature="26854:27000" ph="SELECT * FRO... tests_infrastructure" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/audit/solutions_test.html.twig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="54" lean-forward="false" selection-start-line="16" selection-start-column="54" selection-end-line="16" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/custom.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="394" column="0" lean-forward="true" selection-start-line="394" selection-start-column="0" selection-end-line="394" selection-end-column="0" />
+          <folding>
+            <marker date="1534944061254" expanded="true" signature="26268:26275" ph="×" />
+            <marker date="1534944061254" expanded="true" signature="39286:39298" ph="..." />
           </folding>
         </state>
       </provider>

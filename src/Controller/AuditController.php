@@ -87,27 +87,86 @@ class AuditController extends AbstractController
         }
     }
 
-    /*
-     * JQUERY
+    /**
+     * Enregistre une nouvelle phase dans la partie admin>
      */
+    public function saveNewPhase()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $phase = new AuditPhase($_POST['name_phase']);
+        $entityManager->persist($phase);
+        $entityManager->flush();
+        /**
+         * Créé l'entrée dans la table audit_phase
+         */
+        $phase->setNumber($phase->getId());
+        $entityManager->persist($phase);
+        $entityManager->flush();
+
+        /**
+         * Gère l'enregistrement des tests de la phase
+         */
+
+        foreach ($_POST['test_phase'] as $key => $value) {
+            $type = $this->getDoctrine()->getRepository(TestType::class)->findOneBy(['type' => $value['type']]);
+            /**
+             * Créé l'objet test
+             */
+            $test_phase = new AuditTestPhase($value['parent'], $value['prio'], $phase, $type, null);
+            $entityManager->persist($test_phase);
+            $entityManager->flush();
+            /**
+             * Gère l'enregistrement des éventuels tests enfants
+             */
+            foreach ($value['child'] as $k => $v) {
+                if (!empty($value['child'][$k]['name'])) {
+                    $type = $this->getDoctrine()->getRepository(TestType::class)->findOneBy(['type' => $value['child'][$k]['type']]);
+                    $test_child = new AuditTestPhase($value['child'][$k]['name'], $value['child'][$k]['prio'], $phase, $type, $test_phase);
+                    $entityManager->persist($test_child);
+                }
+            }
+            $entityManager->flush();
+        }
+    }
+
+
 
     /**
+     * Méthode qui gère la soumission des choix pour les tests de type Sélection.
+     * Ils sont envoyés par une requête AJAX depuis l'administration.
+     *
      * @Route("/selection-test", name="selection-test", methods="POST")
      */
     public function selectionTest()
     {
         if (isset($_SESSION)) {
+            /**
+             * Besoin des repositories TestSelection et AuditTestPhase.
+             *
+             */
             $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
             $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
             $test = $repository_test->findOneBy(['id' => $_POST['id_test']]);
             $entityManager = $this->getDoctrine()->getManager();
 
+            /**
+             * Récupère les valeurs de toutes les inputs envoyées.
+             */
             foreach ($_POST['selection'] as $key => $value) {
                 if (isset($value['id'])) {
+                    /**
+                     * Récupère l'objet si existe déjà dans la base de données
+                     */
                     $selection = $repository_selection->findOneBy(['id' => $value['id']]);
+                    /**
+                     * Vérifie si le contenu a été modifié
+                     */
                     if ($value['name'] != $selection->getName()) {
                         $selection->setName($value['name']);
                     }
+                 /**
+                  * Si si il n'existe pas, il faut créer un nouvel objet.
+                  */
                 } elseif ($value['name']) {
                     $selection = new TestSelection($value['name'], $test);
                     $entityManager->persist($selection);
@@ -120,6 +179,46 @@ class AuditController extends AbstractController
         }
     }
 
+    /**
+     * Méthode qui retourne la vue pour la modification d'une phase dans l'administration.
+     * Elle est appelée lorsque l'utilisateur clique sur le bouton 'Modifier phase" pour une des phases.
+     *
+     * @Route("/modifier-phase", name="modif_phase")
+     */
+
+    public function modifPhase()
+    {
+        /**
+         * Si l'utilisateur est connecté.
+         */
+        if (isset($_SESSION)){
+            /**
+             * Si l'utilisateur dispose des droits admin.
+             */
+            if ($_SESSION['user']->isAdmin) {
+                $array = $_SESSION['user']->getAll();
+                $phase = $this->getDoctrine()->getRepository(AuditPhase::class)->findOneBy(['id' => $_GET['id']]);
+                $array['tests'] = $this->getDoctrine()->getRepository(AuditTestPhase::class)->findBy(['idPhase' => $phase]);
+                $array['type'] = $this->getDoctrine()->getRepository(TestType::class)->findAll();
+                $array['phase'] = $phase;
+                /**
+                 * Retourne le template de modif de phase avec les données nécessaires de la BDD.
+                 */
+                return $this->render('audit/new_phase.html.twig', $array);
+            } else {
+                /**
+                 * Accès refusé
+                 */
+                return $this->render('error/error_403.html.twig');
+            }
+        } else {
+            return $this->redirectToRoute('homepage');
+        }
+    }
+
+    /**
+     * Méthode qui gère les modifications d'une phase existante.
+     */
     public function saveModifPhase()
     {
         $entityManager = $this->getDoctrine()->getManager();
@@ -129,10 +228,18 @@ class AuditController extends AbstractController
 
         $phase = $repository_phase->findOneBy(['id' => $_GET['id']]);
 
+        /**
+         * Vérifie si le nom de la phase a été modifié.
+         */
         if ($phase->getPhaseName() != $_POST['name_phase']) {
+            /**
+             * Si oui, il faut mettre le nom de l'objet à jour avec le nouveau nom.
+             */
             $phase->setPhaseName($_POST['name_phase']);
         }
-
+        /**
+         * La partie suivant sert à gérer toutes les modifications éventuelles sur des tests existant qui se rapportent à la phase.
+         */
         foreach ($_POST['test_phase'] as $key => $value) {
             if (isset($value['id'])) {
                 $test = $repository_test->findOneBy(['id' => $value['id']]);
@@ -146,6 +253,9 @@ class AuditController extends AbstractController
                 if ($test->getPriority() != $value['prio']) {
                     $test->setPriority($value['prio']);
                 }
+                /**
+                 * Traîte la partie des enfants du test, si il en a.
+                 */
                 foreach ($value['child'] as $k => $v) {
                     if ($v['name'] && isset($v['id'])) {
                         $child = $repository_test->findOneBy(['id' => $v['id']]);
@@ -159,17 +269,26 @@ class AuditController extends AbstractController
                         if ($child->getPriority() != $v['prio']) {
                             $child->setPriority($v['prio']);
                         }
+                        /**
+                         * Créer les nouveaux enfants du test.
+                         */
                     } elseif ($v['name']) {
                         $type = $repository_test_type->findOneBy(['type' => $v['type']]);
                         $child = new AuditTestPhase($v['name'], $v['prio'], $phase, $type, $test);
                         $entityManager->persist($child);
                     }
                 }
+              /**
+               * Cette partie gère d'éventuels nouveaux tests qui viendraient d'être créer.
+               */
             } else {
                 $type = $repository_test_type->findOneBy(['type' => $value['type']]);
                 $test = new AuditTestPhase($value['parent'], $value['prio'], $phase, $type, null);
                 $entityManager->persist($test);
                 $entityManager->flush();
+                /**
+                 * Gère les nouveaux enfants du nouveau test.
+                 */
                 foreach ($value['child'] as $k => $v) {
                     if ($v['name']) {
                         $type = $repository_test_type->findOneBy(['type' => $v['type']]);
@@ -183,59 +302,97 @@ class AuditController extends AbstractController
     }
 
     /**
-     * @Route("/modifier-phase", name="modif_phase", options={"utf8": true})
+     * Supprime une phase complète avec ses tests
+     * Appelée par requête AJAX quand l'utilisteur clique sur 'Supprimer phase"
+     * @Route("/supprimer-phase-audit", name="delete_audit_phase", options={"utf8": true})
      */
-
-    public function modifPhase()
+    public function deletePhase()
     {
-        if (isset($_SESSION)) {
-            if ($_SESSION['user']->isAdmin) {
-                $array = $_SESSION['user']->getAll();
-                $phase = $this->getDoctrine()->getRepository(AuditPhase::class)->findOneBy(['id' => $_GET['id']]);
-                $array['tests'] = $this->getDoctrine()->getRepository(AuditTestPhase::class)->findBy(['idPhase' => $phase]);
-                $array['type'] = $this->getDoctrine()->getRepository(TestType::class)->findAll();
-                $array['phase'] = $phase;
-                return $this->render('audit/new_phase.html.twig', $array);
+        $idPhase = $_POST['id'];
+        $entityManager = $this->getDoctrine()->getManager();
+        /**
+         * Récupère la phase et ses tests.
+         */
+        $tests = $this->getDoctrine()->getRepository(AuditTestPhase::class)->findBy(['idPhase' => $idPhase]);
+        $phase = $this->getDoctrine()->getRepository(AuditPhase::class)->findOneBy(['id' => $idPhase]);
+
+        /**
+         * Supprime d'abord tous les enfants car ils ont une clé étrangère qui fait référence au test parent.
+         * Je ne pourrais supprimer le parent sans supprimer les enfants avant.
+         */
+        foreach ($tests as $key => $value) {
+            if ($value->getIdParent()) {
+                $entityManager->remove($value);
             } else {
-                return $this->render('error/error_403.html.twig');
+                $array[] = $value;
             }
-        } else {
-            return $this->redirectToRoute('homepage');
         }
+        if (isset($array)) {
+            foreach ($array as $key => $value) {
+                $entityManager->remove($value);
+            }
+        }
+        $entityManager->remove($phase);
+        $entityManager->flush();
+
+        return new Response('ok');
     }
 
     /**
-     * @Route("/supprimer-test-phase", name="delete_test", methods="POST", options={"utf8": true})
+     * Méthode appelée par requête AJAX et qui sert à supprimer une famille de tests ou un test enfant d'un test parent sur la page de modification d'un phase existante.
+     * La suppression de tests d'une phase existante se fait par requête AJAX afin de rendre la gestion de la modification d'une phase existante dans la méthode ci-dessus plus simple.
+     *
+     * @Route("/supprimer-test-phase", name="delete_test", methods="POST")
      */
     public function deleteTest()
     {
         $entityManager = $this->getDoctrine()->getManager();
         $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
         $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
+        /**
+         * Récupère les objets test parent et ses tests enfants.
+         */
         $parent = $repository_test->findOneBy(['id' => $_POST['id']]);
         $child = $repository_test->findBy(['id_parent' => $parent]);
+        /**
+         * Supprimer chaque enfant de la famille
+         */
         foreach ($child as $key => $value) {
             $selection = $repository_selection->findBy(['test' => $value]);
+            /**
+             * Supprime les sélections du choix multiple si l'enfant est de type Sélection
+             */
             if ($selection) {
                 foreach ($selection as $k => $v) {
                     $entityManager->remove($v);
                 }
             }
+            /**
+             * DELETE l'enfant.
+             */
             $entityManager->remove($value);
         }
+        /**
+         * Idem pour le parent
+         */
         $selection = $repository_selection->findBy(['test' => $parent]);
         if ($selection) {
             foreach ($selection as $k => $v) {
                 $entityManager->remove($v);
             }
         }
+        /**
+         * DELETE le parent
+         */
         $entityManager->remove($parent);
         $entityManager->flush();
-        $json['content'] = 'Ok';
-        return new JsonResponse($json);
+        return new Response('ok');
     }
 
     /**
+     * Méthode qui gère la partie Audit de l'application
+     * Elle s'occupe d'aller chercher les tests en réponse aux tests d'infrastructure et de les retourner.
+     *
      * @Route("/créer-audit", name="create_audit", options={"utf8": true})
      */
     public function newAudit()
@@ -256,6 +413,12 @@ class AuditController extends AbstractController
                 $tests = $repository_test_infra_audit->findBy(['test_infra'=>$testInfra]);
                 return new JsonResponse($tests);
             }
+            /**
+             * Cette partie s'occupe d'aller chercher les tests en réponse aux tests d'infrastructure et de les retourner.
+             * Je n'ai pas pu utiliser Twig pour générer un template car il peut il y'avoir plusieurs tests liés à un test d'infra.
+             * Je dois générer un template par test dans un tableau et l'envoyer en JSON
+             * Mais Twig a des problèmes lorsqu'on génère un template dans une variable au lieu de le renvoyer directement comme vue.
+             */
             if(isset($_POST['testId'])){
                 $repository_test_infra_audit = $this->getDoctrine()->getRepository(TestsInfrastructure::class);
 
@@ -263,6 +426,10 @@ class AuditController extends AbstractController
                 $tests = $repository_test_infra_audit->findBy(['test_infra'=>$testInfra]);
 
                 foreach($tests as $key => $value){
+                    /**
+                     * Si le n'est pas un enfant
+                     * Créer un nouveau groupe de tests.
+                     */
                     if(!$value->test_phase->id_parent) {
                         $test = $repository_test->findOneBy(['id'=>$value->test_phase]);
                     $selection = $repository_selection->findBy(['test'=>$test]);
@@ -301,7 +468,9 @@ class AuditController extends AbstractController
                                                                                 </div>
                                                                             </div>
                                                                         </div>';
-
+                        /**
+                         * Si le test a des enfants.
+                         */
                         if ($test_child) {
                             $html .= '<div class="group-child col-md-offset-1" id="group-child' . $test->id . '">';
                             foreach ($test_child as $k => $v) {
@@ -346,8 +515,15 @@ class AuditController extends AbstractController
                     }
                     }
                     return new JsonResponse($array);
+                /**
+                 * Si ce n'est pas la requête AJAX des tests d'infrastructure, retourne la vue pour un nouvel audit.
+                 */
             }else {
                 $em = $this->getDoctrine()->getManager();
+                /**
+                 * Requête personnalisée afin de chercher tous les tests qui ne sont pas liés à un test d'infrastrucuture.
+                 * Car cette partie démarre un nouvel audit, il faut donc uniquement les tests du modèle de base en attendant les réponses aux tests d'infra.
+                 */
                 $sql = 'SELECT  * 
                         FROM audit_test_phase 
                         WHERE NOT EXISTS 
@@ -374,69 +550,12 @@ class AuditController extends AbstractController
         }
     }
 
-    public function saveNewPhase()
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-        $phase = new AuditPhase($_POST['name_phase']);
-        $entityManager->persist($phase);
-        $entityManager->flush();
-
-        $phase->setNumber($phase->getId());
-        $entityManager->persist($phase);
-        $entityManager->flush();
 
 
-        foreach ($_POST['test_phase'] as $key => $value) {
-            $type = $this->getDoctrine()->getRepository(TestType::class)->findOneBy(['type' => $value['type']]);
-
-            $test_phase = new AuditTestPhase($value['parent'], $value['prio'], $phase, $type, null);
-            $entityManager->persist($test_phase);
-            $entityManager->flush();
-            foreach ($value['child'] as $k => $v) {
-                if (!empty($value['child'][$k]['name'])) {
-                    $type = $this->getDoctrine()->getRepository(TestType::class)->findOneBy(['type' => $value['child'][$k]['type']]);
-                    $test_child = new AuditTestPhase($value['child'][$k]['name'], $value['child'][$k]['prio'], $phase, $type, $test_phase);
-                    $entityManager->persist($test_child);
-                }
-            }
-            $entityManager->flush();
-        }
-    }
-
-    /*
-     * JQUERY
-     */
-    /**
-     * @Route("/supprimer-phase-audit", name="delete_audit_phase", options={"utf8": true})
-     */
-    public function deletePhase()
-    {
-        $idPhase = $_POST['id'];
-        $entityManager = $this->getDoctrine()->getManager();
-        $tests = $this->getDoctrine()->getRepository(AuditTestPhase::class)->findBy(['idPhase' => $idPhase]);
-        $phase = $this->getDoctrine()->getRepository(AuditPhase::class)->findOneBy(['id' => $idPhase]);
-
-
-        foreach ($tests as $key => $value) {
-            if ($value->getIdParent()) {
-                $entityManager->remove($value);
-            } else {
-                $array[] = $value;
-            }
-        }
-        if (isset($array)) {
-            foreach ($array as $key => $value) {
-                $entityManager->remove($value);
-            }
-        }
-        $entityManager->remove($phase);
-        $entityManager->flush();
-
-        return new JsonResponse($_POST);
-    }
 
 
     /**
+     * Retourne la vue du résultat de l'audit
      * @Route("/résultat-audit", name="result_audit", options={"utf8": true})
      */
 
@@ -455,6 +574,12 @@ class AuditController extends AbstractController
         $array['email_company'] = $_POST['email'];
         $array['size_company'] = $_POST['size'];
 
+        /**
+         * Initialise les variables pour les scores
+         * Les tableaux $avg servent à calculer la moyenne par priorité.
+         * Les tableaux $i servent à calculer le nombre de points obtenus par priorité
+         * $total_points sera le nombre de de point total obtenable et comparé avec les tableaux $i
+         */
         $avg['prio1'] = 0;
         $avg['prio2'] = 0;
         $avg['prio3'] = 0;
@@ -465,18 +590,34 @@ class AuditController extends AbstractController
         $total_points = 0;
         $test = $repository_test->findAll();
 
+        /**
+         * Compare tous les tests existants à ceux qui ont été passés durant l'audit.
+         */
         foreach ($test as $key => $value) {
+            /**
+             * Si le test est de priorité 1 et qu'il a été validé pendant l'audit
+             */
             if ($value->priority == 1) {
                 if (isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
+                    /**
+                     * Le test est passé, augmente les scores
+                     */
                     $avg['prio1'] = $avg['prio1'] + 1;
                     $i['prio1'] = $i['prio1'] + 1;
                     $points = $points+3;
                     $total_points = $total_points+3;
+
                 } elseif(isset($_POST['tests'][$value->getId()])) {
                     $i['prio1'] = $i['prio1'] + 1;
+                    /**
+                     * Le test n'est passé, ajoute au tableau qui se sera renvoyé par la vue pour la liste dans le résultat
+                     */
                     $array['prio1'][] = $value;
                     $total_points = $total_points+3;
                 }
+             /**
+              * Idem mais pour les P2
+              */
             } elseif ($value->priority == 2) {
                 if (isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
                     $avg['prio2'] = $avg['prio2'] + 1;
@@ -489,6 +630,9 @@ class AuditController extends AbstractController
                     $array['prio2'][] = $value;
                     $total_points = $total_points+2;
                 }
+             /**
+              * Idem mais pour les P3
+              */
             } elseif ($value->priority == 3) {
                 if (isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
                     $avg['prio3'] = $avg['prio3'] + 1;
@@ -504,9 +648,15 @@ class AuditController extends AbstractController
                 }
             }
         }
+        /**
+         * Calcule les moyennes
+         */
         $array['avg_prio1'] = number_format((float)$avg['prio1'] / $i['prio1'] * 100, 2, '.', '');
         $array['avg_prio2'] = number_format((float)$avg['prio2'] / $i['prio2'] * 100, 2, '.', '');
         $array['avg_prio3'] = number_format((float)$avg['prio3'] / $i['prio3'] * 100, 2, '.', '');
+        /**
+         * Calcule le score indexé suivant les priorités
+         */
         $array['avg'] = number_format((float)($points/$total_points)*100, 2, '.', '');
         return $this->render('audit/result_audit.html.twig', $array);
     }
@@ -527,8 +677,8 @@ class AuditController extends AbstractController
             return $this->redirectToRoute('homepage');
         }
     }
-    //jquery
     /**
+     * Récupère les solutions si elles existent qui seront affiché dans le Récpapitulatif du résultat
      * @Route("/solution-test", name="get_test_solution", methods="POST" )
      */
     public function getTestSolution()
@@ -539,17 +689,30 @@ class AuditController extends AbstractController
         $repository_solution_features = $this->getDoctrine()->getRepository(SolutionFeatures::class);
 
         $size_company = explode("<", $_POST['size']);
+        /**
+         * Récupère l'objet correspondant à la taille de l'entreprise
+         */
         $size = $repository_size->findOneBy(['max_size' => $size_company[1]]);
+        /**
+         * Récupère le test traité
+         */
         $test = $repository_test->findOneBy(['id' => $_POST['id']]);
+        /**
+         * Récupère toutes les solutions du taille correspondant à la taille de l'entreprise
+         */
         $array['solutions'] = $repository_product_size->findBy(array('test' => $test,'size'=>$size));
+        /**
+         * Récupère les caractéristiques des solutions cherchées
+         */
         foreach ($array['solutions'] as $key => $value){
             $array['features'][] = $repository_solution_features->findBy(['solution'=>$value->getProduct()->getSolution()]);
         }
         $array['test'] = $test;
         return $this->render('audit/solutions_test.html.twig',$array);
     }
-    //jquery
+
     /**
+     * Gère le traitement des images envoyées depuis les dropbox pendant un audit
      * @Route("/enregistrer-images", name="save_images_test", methods="POST" )
      */
     function saveFiles()
@@ -557,20 +720,36 @@ class AuditController extends AbstractController
         $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
 
         $test = $repository_test->findOneBy(['id'=>$_POST['id']]);
+        /**
+         * Initialise le dossier avec le num de l'audit et son sous-dossier avec le nom du test des images traitées
+         */
         $auditFolder = 'images/test_pic/'.$_POST['auditNumber'];   //2
         $testFolder = 'images/test_pic/'.$_POST['auditNumber'].'/'.$test->name.'/';   //2
         $path = $_FILES['file']['name'];
         $ext = pathinfo($path, PATHINFO_EXTENSION);
         // if folder doesn't exists, create it
+        /**
+         * Si ils n'existent pas, il faut les créer
+         */
         if(!file_exists($auditFolder) && !is_dir($auditFolder)) {
             mkdir($auditFolder);
         }
         if(!file_exists($testFolder) && !is_dir($testFolder)) {
             mkdir($testFolder);
+            /**
+             * Le sous-dossier est créé, le nom de la première image sera '1'.
+             */
             $fileName = '1.'.$ext;
         }else {
+            /**
+             * Le sous dossier existe déjà, scan pour récupérer les nom des fichiers par la fin.
+             */
             $count = scandir($testFolder, 1);
             if ($count) {
+                /**
+                 * Récupère le premier nom du tableau qui est le plus grand du dossier étant donné qu'on le scan par la fin.
+                 * Récupère ce nombre et converti le en INT.
+                 */
                 $tab = explode('.', $count[0]);
                 $fileName = intval($tab[0]);
                 $fileName = $fileName+1;
@@ -583,7 +762,9 @@ class AuditController extends AbstractController
             $targetPath = $testFolder;  //4
             }
             $targetFile =  $targetPath.$fileName;  //5
-
+        /**
+         * Enregistre l'image avec son nouveau nom et dans le bon dossier.
+         */
             if(move_uploaded_file($tempFile, $targetFile)){
                 return new Response('ok');
             }; //6

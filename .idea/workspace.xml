@@ -27,14 +27,14 @@
       <file leaf-file-name="AuditController.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Controller/AuditController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="544">
-              <caret line="211" column="33" lean-forward="true" selection-start-line="211" selection-start-column="33" selection-end-line="211" selection-end-column="33" />
+            <state relative-caret-position="779">
+              <caret line="765" column="74" lean-forward="false" selection-start-line="765" selection-start-column="74" selection-end-line="765" selection-end-column="74" />
               <folding>
-                <element signature="e#2770#2808#0#PHP" expanded="true" />
-                <marker date="1534868280772" expanded="true" signature="15958:16314" ph="..." />
-                <marker date="1534868280772" expanded="true" signature="16173:16314" ph="..." />
-                <marker date="1534868280772" expanded="true" signature="19442:19714" ph="SELECT * FRO... audit_test_phase" />
-                <marker date="1534868280772" expanded="true" signature="19567:19713" ph="SELECT * FRO... tests_infrastructure" />
+                <marker date="1534927202445" expanded="true" signature="22767:23123" ph="..." />
+                <marker date="1534927202445" expanded="true" signature="22982:23123" ph="..." />
+                <marker date="1534927202445" expanded="true" signature="26729:27001" ph="SELECT * FRO... audit_test_phase" />
+                <marker date="1534927202445" expanded="true" signature="26854:26966" ph="SELECT * FRO... tests_infrastructure" />
+                <marker date="1534927202445" expanded="true" signature="26854:27000" ph="SELECT * FRO... tests_infrastructure" />
               </folding>
             </state>
           </provider>
@@ -43,8 +43,8 @@
       <file leaf-file-name="administration_audit.html.twig" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/audit/administration_audit.html.twig">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="458">
-              <caret line="165" column="99" lean-forward="true" selection-start-line="165" selection-start-column="99" selection-end-line="165" selection-end-column="99" />
+            <state relative-caret-position="2805">
+              <caret line="165" column="99" lean-forward="false" selection-start-line="165" selection-start-column="99" selection-end-line="165" selection-end-column="99" />
               <folding>
                 <marker date="1534868258536" expanded="true" signature="31543:31555" ph="..." />
               </folding>
@@ -264,8 +264,8 @@
     </include_path>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-192" />
-    <option name="y" value="406" />
+    <option name="x" value="73" />
+    <option name="y" value="770" />
     <option name="width" value="1932" />
     <option name="height" value="353" />
   </component>
@@ -285,6 +285,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -342,8 +344,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -525,11 +525,13 @@
       <workItem from="1534753763327" duration="2929000" />
       <workItem from="1534839815977" duration="644000" />
       <workItem from="1534863813446" duration="4404000" />
+      <workItem from="1534874619505" duration="2319000" />
+      <workItem from="1534924549376" duration="2653000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="672146000" />
+    <option name="totallyTimeSpent" value="677118000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -825,7 +827,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="25" column="17" lean-forward="false" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -833,25 +834,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
           <caret line="26" column="34" lean-forward="false" selection-start-line="26" selection-start-column="34" selection-end-line="26" selection-end-column="34" />
-          <folding>
-            <element signature="e#1136#1158#1#PHP" expanded="false" />
-            <element signature="e#1217#1239#1#PHP" expanded="false" />
-            <element signature="e#2404#2429#0#PHP" expanded="false" />
-            <element signature="e#2778#2800#1#PHP" expanded="false" />
-            <element signature="e#4836#4861#0#PHP" expanded="false" />
-            <element signature="e#5009#5031#0#PHP" expanded="false" />
-            <element signature="e#5159#5181#0#PHP" expanded="false" />
-            <element signature="e#6284#6320#0#PHP" expanded="false" />
-            <element signature="e#6509#6536#1#PHP" expanded="false" />
-            <element signature="e#9667#9696#0#PHP" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/audit/administration_audit.html.twig">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="458">
-          <caret line="165" column="99" lean-forward="true" selection-start-line="165" selection-start-column="99" selection-end-line="165" selection-end-column="99" />
+        <state relative-caret-position="2805">
+          <caret line="165" column="99" lean-forward="false" selection-start-line="165" selection-start-column="99" selection-end-line="165" selection-end-column="99" />
           <folding>
             <marker date="1534868258536" expanded="true" signature="31543:31555" ph="..." />
           </folding>
@@ -860,14 +849,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Controller/AuditController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="211" column="33" lean-forward="true" selection-start-line="211" selection-start-column="33" selection-end-line="211" selection-end-column="33" />
+        <state relative-caret-position="779">
+          <caret line="765" column="74" lean-forward="false" selection-start-line="765" selection-start-column="74" selection-end-line="765" selection-end-column="74" />
           <folding>
-            <element signature="e#2770#2808#0#PHP" expanded="true" />
-            <marker date="1534868280772" expanded="true" signature="15958:16314" ph="..." />
-            <marker date="1534868280772" expanded="true" signature="16173:16314" ph="..." />
-            <marker date="1534868280772" expanded="true" signature="19442:19714" ph="SELECT * FRO... audit_test_phase" />
-            <marker date="1534868280772" expanded="true" signature="19567:19713" ph="SELECT * FRO... tests_infrastructure" />
+            <marker date="1534927202445" expanded="true" signature="22767:23123" ph="..." />
+            <marker date="1534927202445" expanded="true" signature="22982:23123" ph="..." />
+            <marker date="1534927202445" expanded="true" signature="26729:27001" ph="SELECT * FRO... audit_test_phase" />
+            <marker date="1534927202445" expanded="true" signature="26854:26966" ph="SELECT * FRO... tests_infrastructure" />
+            <marker date="1534927202445" expanded="true" signature="26854:27000" ph="SELECT * FRO... tests_infrastructure" />
           </folding>
         </state>
       </provider>

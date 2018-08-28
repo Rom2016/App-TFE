@@ -64,9 +64,9 @@
                             <div style="padding: 1%">
                                {{ i }}. {{ t.name }}</label><br>
                                 <label for="radioPos{{ t.id }}">Oui</label>
-                                <input type="radio" id="radioPos{{ t.id }}" class="" name="test[radio][{{ t.name }}]" onchange="getInfraTest({{ t.id }})">
+                                <input type="radio" id="radioPos{{ t.id }}" class="" name="test[radio][{{ t.name }}]" value="pos" onchange="getInfraTest({{ t.id }})">
                                 <label for="radioNeg{{ t.id }}">Non</label>
-                                <input type="radio" id="radioNeg{{ t.id }}" class="" name="test[radio][{{ t.name }}]" onchange="removeInfraTest({{ t.id }})" checked>
+                                <input type="radio" id="radioNeg{{ t.id }}" class="" name="test[radio][{{ t.name }}]" value="neg" onchange="removeInfraTest({{ t.id }})" checked>
                             </div>
                             <br>
                             {% set i = i+1 %}

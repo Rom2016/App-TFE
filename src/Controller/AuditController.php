@@ -9,10 +9,12 @@
 namespace App\Controller;
 
 use App\Entity\AuditCompany;
+use App\Entity\AuditCompanyResult;
 use App\Entity\AuditTestInfrastructure;
 use App\Entity\Company;
 use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
+use App\Entity\CompanyInfrastructure;
 use App\Entity\ProductCompanySize;
 use App\Entity\Solution;
 use App\Entity\SolutionFeatures;
@@ -621,103 +623,166 @@ class AuditController extends AbstractController
     public function resultAudit()
     {
 
+
         $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
         $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
+        $repository_audit_result = $this->getDoctrine()->getRepository(AuditCompanyResult::class);
+        $em = $this->getDoctrine()->getManager();
 
-        $array = $_SESSION['user']->getAll();
-        $last_company = $this->getDoctrine()->getRepository(Company::class)->findOneBy([], ['id' => 'DESC']);
-        $array['auditNumber'] = $last_company->getId() + 1;
-        $array['phases'] = $repository_phase->findAll();
-        $array['name_company'] = $_POST['name'];
-        $array['phone_company'] = $_POST['phone'];
-        $array['email_company'] = $_POST['email'];
-        $array['size_company'] = $_POST['size'];
 
-        /**
-         * Initialise les variables pour les scores
-         * Les tableaux $avg servent à calculer la moyenne par priorité.
-         * Les tableaux $i servent à calculer le nombre de points obtenus par priorité
-         * $total_points sera le nombre de de point total obtenable et comparé avec les tableaux $i
-         */
-        $avg['prio1'] = 0;
-        $avg['prio2'] = 0;
-        $avg['prio3'] = 0;
-        $i['prio1'] = 0;
-        $i['prio2'] = 0;
-        $i['prio3'] = 0;
-        $points = 0;
-        $total_points = 0;
-        $test = $repository_test->findAll();
-
-        /**
-         * Compare tous les tests existants à ceux qui ont été passés durant l'audit.
-         */
-        foreach ($test as $key => $value) {
+            $array = $_SESSION['user']->getAll();
+            $last_company = $this->getDoctrine()->getRepository(Company::class)->findOneBy([], ['id' => 'DESC']);
+            $array['auditNumber'] = $last_company->getId();
+            $array['phases'] = $repository_phase->findAll();
+            $array['name_company'] = $_POST['name'];
+            $array['phone_company'] = $_POST['phone'];
+            $array['email_company'] = $_POST['email'];
+            $array['size_company'] = $_POST['size'];
             /**
-             * Si le test est de priorité 1 et qu'il a été validé pendant l'audit
+             * Initialise les variables pour les scores
+             * Les tableaux $avg servent à calculer la moyenne par priorité.
+             * Les tableaux $i servent à calculer le nombre de points obtenus par priorité
+             * $total_points sera le nombre de de point total obtenable et comparé avec les tableaux $i
              */
-            if ($value->priority == 1) {
-                if (isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
+            $avg['prio1'] = 0;
+            $avg['prio2'] = 0;
+            $avg['prio3'] = 0;
+            $i['prio1'] = 0;
+            $i['prio2'] = 0;
+            $i['prio3'] = 0;
+            $points = 0;
+            $total_points = 0;
+            $test = $repository_test->findAll();
+            $company = $this->saveInfoCompany();
+            $array['id_company'] = $company->getId();
+
+        /**
+             * Compare tous les tests existants à ceux qui ont été passés durant l'audit.
+             */
+            foreach ($test as $key => $value) {
+                /**
+                 * Si le test est de priorité 1 et qu'il a été validé pendant l'audit
+                 */
+                if ($value->priority == 1) {
+                    if (isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
+                        /**
+                         * Le test est passé, augmente les scores
+                         */
+                        $avg['prio1'] = $avg['prio1'] + 1;
+                        $i['prio1'] = $i['prio1'] + 1;
+                        $points = $points + 3;
+                        $total_points = $total_points + 3;
+                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, false);
+                        $em->persist($audit_result);
+
+                    } elseif (isset($_POST['tests'][$value->getId()])) {
+                        $i['prio1'] = $i['prio1'] + 1;
+                        /**
+                         * Le test n'est passé, ajoute au tableau qui se sera renvoyé par la vue pour la liste dans le résultat
+                         */
+                        $array['prio1'][] = $value;
+                        $total_points = $total_points + 3;
+                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, false);
+                        $em->persist($audit_result);
+                    }
                     /**
-                     * Le test est passé, augmente les scores
+                     * Idem mais pour les P2
                      */
-                    $avg['prio1'] = $avg['prio1'] + 1;
-                    $i['prio1'] = $i['prio1'] + 1;
-                    $points = $points+3;
-                    $total_points = $total_points+3;
+                } elseif ($value->priority == 2) {
+                    if (isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
+                        $avg['prio2'] = $avg['prio2'] + 1;
+                        $i['prio2'] = $i['prio2'] + 1;
+                        $points = $points + 2;
+                        $total_points = $total_points + 2;
+                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, false);
+                        $em->persist($audit_result);
 
-                } elseif(isset($_POST['tests'][$value->getId()])) {
-                    $i['prio1'] = $i['prio1'] + 1;
+                    } elseif (isset($_POST['tests'][$value->getId()])) {
+                        $i['prio2'] = $i['prio2'] + 1;
+                        $array['prio2'][] = $value;
+                        $total_points = $total_points + 2;
+                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, false);
+                        $em->persist($audit_result);
+
+                    }
                     /**
-                     * Le test n'est passé, ajoute au tableau qui se sera renvoyé par la vue pour la liste dans le résultat
+                     * Idem mais pour les P3
                      */
-                    $array['prio1'][] = $value;
-                    $total_points = $total_points+3;
-                }
-             /**
-              * Idem mais pour les P2
-              */
-            } elseif ($value->priority == 2) {
-                if (isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
-                    $avg['prio2'] = $avg['prio2'] + 1;
-                    $i['prio2'] = $i['prio2'] + 1;
-                    $points = $points+2;
-                    $total_points = $total_points+2;
-
-                } elseif(isset($_POST['tests'][$value->getId()])) {
-                    $i['prio2'] = $i['prio2'] + 1;
-                    $array['prio2'][] = $value;
-                    $total_points = $total_points+2;
-                }
-             /**
-              * Idem mais pour les P3
-              */
-            } elseif ($value->priority == 3) {
-                if (isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
-                    $avg['prio3'] = $avg['prio3'] + 1;
-                    $i['prio3'] = $i['prio3'] + 1;
-                    $points = $points+1;
-                    $total_points = $total_points+1;
-                } elseif(isset($_POST['tests'][$value->getId()])) {
-                    $i['prio3'] = $i['prio3'] + 1;
-                    $array['prio3'][] = $value;
-                    $total_points = $total_points+1;
-
-
+                } elseif ($value->priority == 3) {
+                    if (isset($_POST['tests'][$value->getId()]['check']) or isset($_POST['tests'][$value->getId()]['selection']) and $_POST['tests'][$value->getId()]['selection']) {
+                        $avg['prio3'] = $avg['prio3'] + 1;
+                        $i['prio3'] = $i['prio3'] + 1;
+                        $points = $points + 1;
+                        $total_points = $total_points + 1;
+                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, false);
+                        $em->persist($audit_result);
+                    } elseif (isset($_POST['tests'][$value->getId()])) {
+                        $i['prio3'] = $i['prio3'] + 1;
+                        $array['prio3'][] = $value;
+                        $total_points = $total_points + 1;
+                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, false);
+                        $em->persist($audit_result);
+                    }
                 }
             }
+            /**
+             * Calcule les moyennes
+             */
+            $array['avg_prio1'] = number_format((float)$avg['prio1'] / $i['prio1'] * 100, 2, '.', '');
+            $array['avg_prio2'] = number_format((float)$avg['prio2'] / $i['prio2'] * 100, 2, '.', '');
+            $array['avg_prio3'] = number_format((float)$avg['prio3'] / $i['prio3'] * 100, 2, '.', '');
+            /**
+             * Calcule le score indexé suivant les priorités
+             */
+            $array['avg'] = number_format((float)($points / $total_points) * 100, 2, '.', '');
+            $em->flush();
+            return $this->render('audit/result_audit.html.twig', $array);
+
+    }
+
+    /**
+     * @Route("/finalisation-audit", name="finish_audit", options={"utf8": true})
+     */
+    public function finishAudit()
+    {
+        $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
+        $repository_audit_result = $this->getDoctrine()->getRepository(AuditCompanyResult::class);
+        $repository_company =  $this->getDoctrine()->getRepository(Company::class);
+        $em = $this->getDoctrine()->getManager();
+        $company = $repository_company->findOneBy(['id'=>$_POST['id_company']]);
+
+        foreach ($_POST['tests'] as $key => $value) {
+            $test = $repository_test->findOneBy(['id' => $value]);
+            $companyTest = $repository_audit_result->findOneBy(['test' => $test,'company'=>$company]);
+            $companyTest->setSelected(true);
+            $em->persist($companyTest);
         }
+        $em->flush();
+        return new Response('ok');
+    }
+
+    public function saveInfoCompany()
+    {
+        $repository_size = $this->getDoctrine()->getRepository(CompanySize::class);
+        $em = $this->getDoctrine()->getManager();
+        $size_company = explode("<", $_POST['size']);
+        $repository_test_infra = $this->getDoctrine()->getRepository(AuditTestInfrastructure::class);
         /**
-         * Calcule les moyennes
+         * Récupère l'objet correspondant à la taille de l'entreprise
          */
-        $array['avg_prio1'] = number_format((float)$avg['prio1'] / $i['prio1'] * 100, 2, '.', '');
-        $array['avg_prio2'] = number_format((float)$avg['prio2'] / $i['prio2'] * 100, 2, '.', '');
-        $array['avg_prio3'] = number_format((float)$avg['prio3'] / $i['prio3'] * 100, 2, '.', '');
-        /**
-         * Calcule le score indexé suivant les priorités
-         */
-        $array['avg'] = number_format((float)($points/$total_points)*100, 2, '.', '');
-        return $this->render('audit/result_audit.html.twig', $array);
+        $size = $repository_size->findOneBy(['max_size' => $size_company[1]]);
+
+        $company = new Company($_POST['name'],$_POST['phone'],$_POST['email'], $size);
+        $em->persist($company);
+        foreach ($_POST['test']['radio'] as $key => $value){
+            if($value == 'pos'){
+                $testInfra = $repository_test_infra->findOneBy(['name'=>$key]);
+                $infra = new CompanyInfrastructure($company, $testInfra);
+                $em->persist($infra);
+            }
+        }
+        $em->flush();
+        return $company;
     }
 
     /**

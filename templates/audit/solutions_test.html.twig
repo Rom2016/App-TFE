@@ -3,12 +3,14 @@
     <div class="row">
         <div class="text-center jumbotron">
             <h4><em>{{ test.description }}</em></h4>
+
         </div>
         {% if solutions is not empty %}
         <h4 class="page-header">Exemples de solution pour PME</h4>
 
         {% for s in solutions %}
         <div class="col-md-5" style="border: 1px dashed black; margin: 4%">
+
             <div class="col-md-12">
             <div class="text-center">
                 {% if  s.product.solution.pic is not null %}

@@ -43,11 +43,12 @@ class Company
      * @param $phone
      * @param $email
      */
-    public function __construct($name, $phone, $email)
+    public function __construct($name, $phone, $email, $size)
     {
         $this->name = $name;
         $this->phone = $phone;
         $this->email = $email;
+        $this->size = $size;
     }
 
 

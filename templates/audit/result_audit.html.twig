@@ -15,6 +15,7 @@
     <div class="right_col" role="main">
 
         <div class="container">
+            <form action="../finalisation-audit" method="post">
 
             <div class="row row-container col-md-10">
                 <div class="col-md-4 col-md-offset-8" >
@@ -40,6 +41,8 @@
                         <span class="glyphicon glyphicon-user"></span>
                         <span>{{ size_company }} personnes</span>
                         <input type="hidden" name="size" id="size-company" value="{{ size_company }}">
+                        <input type="hidden" name="id_company"  value="{{ id_company }}">
+
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -100,12 +103,15 @@
                     <div id="accordion" style="height: 100px;">
                         <h3 class="text-center">Récapitulatif</h3>
                         <div class="row">
+
                             <div id="container-solution" class="col-md-12">
+
                             </div>
                             <div class="clearfix"></div>
                             <div class="actionBar">
-                                <button type="submit" class="btn btn-success" name="submit" value="confirmAudit">Confirmer</button>
+                                <button type="submit" class="btn btn-success" name="submit" value="saveAudit">Confirmer</button>
                             </div>
+
                         </div>
                     </div>
                     {% for phase in phases %}
@@ -127,8 +133,9 @@
                                     {% if test.idPhase == phase %}
                                         {% set i = i+1 %}
                                         <tr>
-                                        <td><input type="checkbox" class="check-audit" value="{{ test.id }}"/>{{ test.name }}<span class="fa fa-warning" style="color: indianred"></span></td>
-                                    </tr>
+                                        <td><input type="checkbox"  name="tests[]" class="check-audit" value="{{ test.id }}"/>{{ test.name }}<span class="fa fa-warning" style="color: indianred"></span></td>
+
+                                        </tr>
                                         {% else %}
                                     {% endif %}
                                 {% endfor %}
@@ -170,7 +177,8 @@
                                             {% set i = i+1 %}
 
                                             <tr>
-                                                <td><input type="checkbox" class="check-audit" value="{{ test.id }}">{{ test.name }}</td>
+                                                <td><input type="checkbox" class="check-audit"  name="tests[]" value="{{ test.id }}">{{ test.name }}</td>
+
                                             </tr>
                                         {% endif %}
                                     {% endfor %}
@@ -213,7 +221,7 @@
                                         {% if test.idPhase == phase %}
                                             {% set i = i+1 %}
                                             <tr>
-                                                <td><input type="checkbox" class="check-audit" value="{{ test.id }}">{{ test.name }}</td>
+                                                <td><input type="checkbox" class="check-audit" name="tests[]" value="{{ test.id }}">{{ test.name }}</td>
                                             </tr>
                                         {% endif %}
                                     {% endfor %}
@@ -232,6 +240,8 @@
 
                 </div>
             </div>
+            </form>
+
         </div>
         <div id="test"></div>
     </div>

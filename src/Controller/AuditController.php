@@ -16,7 +16,6 @@ use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
 use App\Entity\CompanyInfrastructure;
 use App\Entity\ProductCompanySize;
-use App\Entity\Solution;
 use App\Entity\SolutionFeatures;
 use App\Entity\TestSelection;
 use App\Entity\TestsInfrastructure;
@@ -323,6 +322,12 @@ class AuditController extends AbstractController
          * Je ne pourrais supprimer le parent sans supprimer les enfants avant.
          */
         foreach ($tests as $key => $value) {
+            $testResult = $this->getDoctrine()->getRepository(AuditCompanyResult::class)->findBy(['test' => $value]);
+            if($testResult) {
+                foreach ($testResult as $k => $v) {
+                    $entityManager->remove($v);
+                }
+            }
             if ($value->getIdParent()) {
                 $entityManager->remove($value);
             } else {
@@ -672,7 +677,7 @@ class AuditController extends AbstractController
                         $i['prio1'] = $i['prio1'] + 1;
                         $points = $points + 3;
                         $total_points = $total_points + 3;
-                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, false);
+                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, true);
                         $em->persist($audit_result);
 
                     } elseif (isset($_POST['tests'][$value->getId()])) {
@@ -694,7 +699,7 @@ class AuditController extends AbstractController
                         $i['prio2'] = $i['prio2'] + 1;
                         $points = $points + 2;
                         $total_points = $total_points + 2;
-                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, false);
+                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, true);
                         $em->persist($audit_result);
 
                     } elseif (isset($_POST['tests'][$value->getId()])) {
@@ -714,7 +719,7 @@ class AuditController extends AbstractController
                         $i['prio3'] = $i['prio3'] + 1;
                         $points = $points + 1;
                         $total_points = $total_points + 1;
-                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, false);
+                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, true);
                         $em->persist($audit_result);
                     } elseif (isset($_POST['tests'][$value->getId()])) {
                         $i['prio3'] = $i['prio3'] + 1;
@@ -750,15 +755,19 @@ class AuditController extends AbstractController
         $repository_company =  $this->getDoctrine()->getRepository(Company::class);
         $em = $this->getDoctrine()->getManager();
         $company = $repository_company->findOneBy(['id'=>$_POST['id_company']]);
-
-        foreach ($_POST['tests'] as $key => $value) {
-            $test = $repository_test->findOneBy(['id' => $value]);
-            $companyTest = $repository_audit_result->findOneBy(['test' => $test,'company'=>$company]);
-            $companyTest->setSelected(true);
-            $em->persist($companyTest);
+        if(isset($_POST['tests'])) {
+            foreach ($_POST['tests'] as $key => $value) {
+                $test = $repository_test->findOneBy(['id' => $value]);
+                $companyTest = $repository_audit_result->findOneBy(['test' => $test, 'company' => $company]);
+                $companyTest->setSelected(true);
+                $companyTest->setDone(false);
+                $em->persist($companyTest);
+            }
         }
         $em->flush();
-        return new Response('ok');
+        $array = $_SESSION['user']->getAll();
+        $array['company'] = $company->getId();
+        return $this->render('audit/finalisation_audit.html.twig', $array);
     }
 
     public function saveInfoCompany()

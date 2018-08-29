@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Visualiser audit entreprise
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="../vendor/jquery-ui-1.12.1/jquery-ui.min.css" rel="stylesheet">
+    <style>
+        #sortable1, #sortable2 {
+            min-height: 20px;
+            list-style-type: none;
+            margin: 0;
+            padding: 5px 0 0 0;
+            margin-right: 10px;
+        }
+        #sortable1 li, #sortable2 li {
+            margin: 0 5px 5px 5px;
+            padding: 2%;
+            font-size: 1.2em;
+            border-radius: 10px;
+        }
+        .to-do-container{
+            background-color: lightgrey;
+            border: solid 1px lightgrey;
+            border-radius: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    <div class="right_col" id="{{ idCompany }}" role="main">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5 to-do-container">
+                        <h1 class="text-center">A faire</h1>
+                    <ul id="sortable1" class="connectedSortable">
+                        {% for t in testsSelected %}
+                            {% if t.done == false %}
+                            <li class="ui-state-default" id="{{ t.test.id }}">{{ t.test.name }}</li>
+                                <!-- Modal -->
+                                <div id="myModal{{ t.test.id }}" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title">Créer une note</h4>
+                                            </div>
+                                            <div class="modal-body" id="modal-body{{ t.test.id }}">
+                                                <textarea class="autoExpand form-control" rows="5" id="note{{ t.test.id }}"></textarea>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" id="{{ t.test.id }}" onclick="modalNote({{ t.test.id }})" class="btn btn-primary">Envoyer</button>
+                                                <button type="button"  class="btn btn-default close-modal" data-dismiss="modal">Fermer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-md-5 col-md-offset-2 to-do-container">
+                    <h1 class="text-center">Fait</h1>
+
+                    <ul id="sortable2" class="connectedSortable">
+                        {% for t in testsSelected %}
+                            {% if t.done == true %}
+                                <li class="ui-state-default" id="{{ t.test.id }}">{{ t.test.name }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="../vendor/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+    <script>
+        $( function() {
+            $( "#sortable1, #sortable2" ).sortable({
+                connectWith: ".connectedSortable"
+            }).disableSelection();
+
+            $('.connectedSortable').sortable({
+                receive: function (event, ui) {
+                    data = {'id' : ui.item.attr('id'), 'idCompany' : $('.right_col').attr('id')};
+                    $.ajax({
+                        method: 'POST',
+                        url: '../to-do?rq=testChange',
+                        data: data
+                    }).done(function(data){
+                        if(data.done)
+                            $('#myModal'+data.id).modal('show');
+                    })
+                }
+            })
+
+        } );
+    </script>
+
+{% endblock %}

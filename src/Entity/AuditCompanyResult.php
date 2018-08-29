@@ -39,8 +39,25 @@ class AuditCompanyResult
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
-     */
+*/
     private $selected;
+
+    
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $done;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $passed;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $note;
 
     /**
      * AuditCompanyResult constructor.
@@ -56,7 +73,6 @@ class AuditCompanyResult
         $this->information = $information;
         $this->selection = $selection;
         $this->passed = $passed;
-
     }
 
 
@@ -133,6 +149,30 @@ class AuditCompanyResult
     public function setSelected(?bool $selected): self
     {
         $this->selected = $selected;
+
+        return $this;
+    }
+
+    public function getDone(): ?bool
+    {
+        return $this->done;
+    }
+
+    public function setDone(bool $done): self
+    {
+        $this->done = $done;
+
+        return $this;
+    }
+
+    public function getNote(): ?string
+    {
+        return $this->note;
+    }
+
+    public function setNote(?string $note): self
+    {
+        $this->note = $note;
 
         return $this;
     }

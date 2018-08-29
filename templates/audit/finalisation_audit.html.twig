@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Finalisation audit
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    <div class="right_col" role="main">
+        <div class="row">
+            <div class="col-xs-2 col-md-1 text-center" style="background-color: #1ABB9C; padding: .6%; border-radius: 10px 0px 0px 10px">
+                <span class="glyphicon glyphicon-ok" style=" color: white; font-size: 5em; "></span>
+            </div>
+            <div class="col-xs-10 col-md-6" style="background-color: white;">
+                <h1>Votre audit a bien été enregistré.</h1>
+                <p>Pour le consulter, dirigez-vous vers <b><a href="../visualiser-audit-entreprise?entreprise={{ company }}" style="color: #1ABB9C">cette adresse </a></b> ou utiliser l'onglet prévu à cet effet.</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

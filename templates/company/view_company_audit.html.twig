@@ -22,12 +22,14 @@
             border-radius: 10px;
         }
         .to-do-container{
-            background-color: lightgrey;
+            background-color: #EDEDED;
             border: solid 1px lightgrey;
             border-radius: 10px;
         }
         .box {
             box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+            cursor: -webkit-grab; cursor: grab;
+
         }
 
         /* Create the hidden pseudo-element */
@@ -46,6 +48,13 @@
             opacity: 1;
         }
 
+        .fa-pencil{
+            cursor: pointer;
+        }
+
+        .ui-state-default{
+            background-color: white;
+        }
     </style>
 {% endblock %}
 
@@ -53,7 +62,7 @@
     {{ parent() }}
     <div class="right_col" id="{{ idCompany }}" role="main">
 
-        <div class="container">
+        <div class="container" style="background-color: white">
             <div class="row">
                 <div class="col-md-5 to-do-container">
                         <h1 class="text-center">A faire</h1>
@@ -67,7 +76,6 @@
                                         <!-- Modal content-->
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
                                                 <h4 class="modal-title">Créer une note</h4>
                                             </div>
                                             <div class="modal-body" id="modal-body{{ t.test.id }}">
@@ -75,7 +83,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" id="modalSend{{ t.test.id }}" onclick="modalNote({{ t.test.id }})" class="btn btn-primary">Envoyer</button>
-                                                <button type="button"  class="btn btn-default close-modal" data-dismiss="modal" onclick="">Fermer</button>
+                                                <button type="button"  class="btn btn-default close-modal" data-dismiss="modal" onclick="modifyModal({{ t.test.id }})">Fermer</button>
                                             </div>
                                         </div>
                                     </div>
@@ -90,7 +98,26 @@
                     <ul id="sortable2" class="connectedSortable">
                         {% for t in testsSelected %}
                             {% if t.done == true %}
-                                <li class="ui-state-default box" id="{{ t.test.id }}">{{ t.test.name }}<span id="noteIcon{{ t.id }}" class="fa fa-pencil" style="float: right"></span></li>
+                                <li class="ui-state-default box" id="{{ t.test.id }}">{{ t.test.name }}<span id="noteIcon{{ t.id }}" class="fa fa-pencil " style="float: right" data-toggle="modal" data-target="#myModal{{ t.test.id }}" title="Modifier la note"></span></li>
+                                <!-- Modal -->
+                                <div id="myModal{{ t.test.id }}" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title">Modifier une note</h4>
+                                            </div>
+                                            <div class="modal-body" id="modal-body{{ t.test.id }}">
+                                                <textarea class="autoExpand form-control" rows="5" id="note{{ t.test.id }}">{{ t.note }}</textarea>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" id="modalSend{{ t.test.id }}" onclick="setModalNote({{ t.test.id }})" class="btn btn-primary">Modifier</button>
+                                                <button type="button"  class="btn btn-default close-modal" data-dismiss="modal" onclick="">Fermer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             {% endif %}
                         {% endfor %}
                     </ul>
@@ -120,12 +147,13 @@
                     }).done(function(data){
                         if(data.done)
                             $('#myModal'+data.id).modal('show');
-                            $('#'+data.id).html(data.name+'<span id="noteIcon'+data.id+'" class="fa fa-pencil" style="float: right"></span>');
-
-
+                            $('#'+data.id).html(data.name+'<span id="noteIcon'+data.id+'" class="fa fa-pencil" style="float: right" data-toggle="modal" data-target="#myModal'+data.id+'"></span>');
+                            $('#noteIcon'+data.id).attr('title','Modifier la note');
+                            $('#noteIcon'+data.id).tooltip();
                     })
                 }
             })
+            $('.fa-pencil').tooltip();
 
         } );
     </script>

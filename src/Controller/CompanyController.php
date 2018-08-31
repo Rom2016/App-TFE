@@ -80,6 +80,18 @@ class CompanyController extends abstractController
 
                     return new JsonResponse($json);
                     break;
+                case 'getNote':
+                    $json['id'] = $result_test->getTest()->getId();
+                    $json['note'] = $result_test->getNote();
+                    return new JsonResponse($json);
+                    break;
+                case 'setNote':
+                    $json['id'] = $test->getId();
+                    $result_test->setNote($_POST['note']);
+                    $em->persist($result_test);
+                    $em->flush();
+                    return new JsonResponse($json);
+                    break;
             }
         }
     }

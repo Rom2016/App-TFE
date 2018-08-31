@@ -11,16 +11,29 @@
     {{ parent() }}
     <link href="../vendor/iCheck/skins/flat/green.css" rel="stylesheet" xmlns="http://www.w3.org/1999/html">
     <link rel="stylesheet" type="text/css" href="../vendor/bootstrap-select/dist/css/bootstrap-select.css">
+    <link href="../vendor/jquery-ui-1.12.1/jquery-ui.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../css/dropzone.css">
-
     <style>
         .myDropzone{
             border: #337ab7 dashed 1px;
             margin-top: 2%;
-
-
+        }
+        .ui-checkboxradio-label.ui-corner-all.ui-button.ui-widget.ui-checkboxradio-checked.ui-state-active {
+            background: #1ABB9C;!important;
+            color: white;
 
         }
+
+                 .ui-checkboxradio-label.ui-corner-all.ui-button.ui-widget.ui-checkboxradio-checked.ui-state-active{
+                     border: 2px solid lightgreen !important;
+                 }
+
+        .ui-button.ui-corner-all.ui-widget{
+            background-color: whitesmoke;
+            color: black;
+        }
+
+
     </style>
 
 {% endblock %}
@@ -64,9 +77,9 @@
                             <div style="padding: 1%">
                                {{ i }}. {{ t.name }}</label><br>
                                 <label for="radioPos{{ t.id }}">Oui</label>
-                                <input type="radio" id="radioPos{{ t.id }}" class="" name="test[radio][{{ t.name }}]" value="pos" onchange="getInfraTest({{ t.id }})">
+                                <input type="radio" id="radioPos{{ t.id }}" class="radioBox" name="test[radio][{{ t.name }}]" value="pos" onchange="getInfraTest({{ t.id }})">
                                 <label for="radioNeg{{ t.id }}">Non</label>
-                                <input type="radio" id="radioNeg{{ t.id }}" class="" name="test[radio][{{ t.name }}]" value="neg" onchange="removeInfraTest({{ t.id }})" checked>
+                                <input type="radio" id="radioNeg{{ t.id }}" class="radioBox" name="test[radio][{{ t.name }}]" value="neg" onchange="removeInfraTest({{ t.id }})" checked>
                             </div>
                             <br>
                             {% set i = i+1 %}
@@ -257,16 +270,12 @@
         <script src="../vendor/iCheck/icheck.min.js"></script>
         <script type="text/javascript" src="../vendor/bootstrap-select/dist/js/bootstrap-select.js"></script>
         <script type="text/javascript" src="../js/dropzone.js"></script>
-
+        <script src="../vendor/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 
         <script>
             $('.check-audit').iCheck({
                 checkboxClass: 'icheckbox_flat-green',
             });
-            $('.radio-audit').iCheck({
-                radioClass: 'iradio_flat-green',
-            });
-
 
 
             $('#name-company').focusout(function(){
@@ -284,12 +293,12 @@
                 addRemoveLinks: true,
                 dictRemoveFile: 'Supprimer fichier',
                 dictCancelUpload: 'Annuler le transfert'
-
-
-
             });
 
+                $( ".radioBox" ).checkboxradio({
+                    icon: false
 
+                });
 
         </script>
 

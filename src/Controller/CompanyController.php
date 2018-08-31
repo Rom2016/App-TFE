@@ -61,6 +61,8 @@ class CompanyController extends abstractController
                     $em->persist($result_test);
                     $em->flush();
                     $json['id'] = $test->getId();
+                    $json['name'] = $test->getName();
+                    $json['note'] = $_POST['note'];
                     return new JsonResponse($json);
                     break;
                 case 'testChange':
@@ -74,6 +76,8 @@ class CompanyController extends abstractController
                     $em->persist($result_test);
                     $em->flush();
                     $json['id'] = $test->getId();
+                    $json['name'] = $test->getName();
+
                     return new JsonResponse($json);
                     break;
             }

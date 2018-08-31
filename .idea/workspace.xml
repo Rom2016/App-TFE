@@ -3,7 +3,7 @@
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/templates/base.html.twig" line="30" />
     <bookmark url="file://$PROJECT_DIR$/src/Entity/User.php" line="108" />
-    <bookmark url="file://$PROJECT_DIR$/templates/audit/new_audit.html.twig" line="146" />
+    <bookmark url="file://$PROJECT_DIR$/templates/audit/new_audit.html.twig" line="159" />
     <bookmark url="file://$PROJECT_DIR$/templates/audit/result_audit.html.twig" line="199" />
     <bookmark url="file://$PROJECT_DIR$/templates/user/homepage.html.twig" line="29" />
   </component>
@@ -27,32 +27,77 @@
       <file leaf-file-name="view_company_audit.html.twig" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/company/view_company_audit.html.twig">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="53" column="119" lean-forward="false" selection-start-line="53" selection-start-column="119" selection-end-line="53" selection-end-column="119" />
+            <state relative-caret-position="1564">
+              <caret line="92" column="152" lean-forward="false" selection-start-line="92" selection-start-column="152" selection-end-line="92" selection-end-column="152" />
+              <folding>
+                <element signature="e#3964#3984#0#HTML" expanded="true" />
+                <marker date="1535658256599" expanded="true" signature="5094:5106" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="new_audit.html.twig" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/audit/new_audit.html.twig">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="357">
+              <caret line="21" column="31" lean-forward="false" selection-start-line="21" selection-start-column="24" selection-end-line="21" selection-end-column="31" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="custom.min.css" pinned="false" current-in-tab="false">
+      <file leaf-file-name="result_audit.html.twig" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/audit/result_audit.html.twig">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="663">
+              <caret line="39" column="37" lean-forward="false" selection-start-line="39" selection-start-column="37" selection-end-line="39" selection-end-column="37" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="administration_audit.html.twig" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/audit/administration_audit.html.twig">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="391">
+              <caret line="23" column="27" lean-forward="false" selection-start-line="23" selection-start-column="20" selection-end-line="23" selection-end-column="27" />
+              <folding>
+                <marker date="1535651958721" expanded="true" signature="32193:32205" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="select_audit.html.twig" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/audit/select_audit.html.twig">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="476">
+              <caret line="28" column="73" lean-forward="false" selection-start-line="28" selection-start-column="73" selection-end-line="28" selection-end-column="73" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="custom.min.css" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/css/custom.min.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="115" column="29" lean-forward="false" selection-start-line="115" selection-start-column="23" selection-end-line="115" selection-end-column="29" />
+            <state relative-caret-position="296">
+              <caret line="136" column="29" lean-forward="false" selection-start-line="136" selection-start-column="29" selection-end-line="136" selection-end-column="29" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="custom.min.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="custom.min.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/js/custom.min.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="410" column="135" lean-forward="false" selection-start-line="410" selection-start-column="135" selection-end-line="410" selection-end-column="135" />
+            <state relative-caret-position="617">
+              <caret line="415" column="27" lean-forward="false" selection-start-line="415" selection-start-column="27" selection-end-line="415" selection-end-column="27" />
               <folding>
-                <marker date="1535561708403" expanded="true" signature="11293:11307" ph="..." />
-                <marker date="1535561708403" expanded="true" signature="26665:26672" ph="×" />
-                <marker date="1535561708403" expanded="true" signature="39683:39695" ph="..." />
+                <marker date="1535656560726" expanded="true" signature="11366:11380" ph="..." />
+                <marker date="1535656560726" expanded="true" signature="26878:26885" ph="×" />
+                <marker date="1535656560726" expanded="true" signature="39896:39908" ph="..." />
               </folding>
             </state>
           </provider>
@@ -61,7 +106,7 @@
       <file leaf-file-name="AuditCompanyResult.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Entity/AuditCompanyResult.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1411">
+            <state relative-caret-position="17">
               <caret line="83" column="26" lean-forward="false" selection-start-line="83" selection-start-column="26" selection-end-line="83" selection-end-column="26" />
               <folding />
             </state>
@@ -71,8 +116,8 @@
       <file leaf-file-name="CompanyController.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Controller/CompanyController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="748">
-              <caret line="64" column="0" lean-forward="false" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
+            <state relative-caret-position="495">
+              <caret line="64" column="51" lean-forward="false" selection-start-line="64" selection-start-column="51" selection-end-line="64" selection-end-column="51" />
               <folding>
                 <element signature="e#117#151#0#PHP" expanded="true" />
               </folding>
@@ -83,7 +128,7 @@
       <file leaf-file-name="AuditController.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Controller/AuditController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="561">
+            <state relative-caret-position="5219">
               <caret line="328" column="17" lean-forward="false" selection-start-line="328" selection-start-column="17" selection-end-line="328" selection-end-column="17" />
               <folding>
                 <marker date="1535561136224" expanded="true" signature="23095:23451" ph="..." />
@@ -91,16 +136,6 @@
                 <marker date="1535561136224" expanded="true" signature="27057:27329" ph="SELECT * FRO... audit_test_phase" />
                 <marker date="1535561136224" expanded="true" signature="27182:27328" ph="SELECT * FRO... tests_infrastructure" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="base.html.twig" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/base.html.twig">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="527">
-              <caret line="58" column="81" lean-forward="false" selection-start-line="58" selection-start-column="81" selection-end-line="58" selection-end-column="81" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -118,7 +153,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>button</find>
       <find>previous</find>
       <find>actio</find>
       <find>step</find>
@@ -148,6 +182,7 @@
       <find>get</find>
       <find>voir</find>
       <find>sortab</find>
+      <find>left</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -182,14 +217,11 @@
         <option value="$PROJECT_DIR$/src/Repository/AuditPhaseRepository.php" />
         <option value="$PROJECT_DIR$/templates/user/homepage.html.twig" />
         <option value="$PROJECT_DIR$/src/Entity/Solution.php" />
-        <option value="$PROJECT_DIR$/public/css/custom.min.css" />
         <option value="$PROJECT_DIR$/config/routes/nelmio_api_doc.yaml" />
         <option value="$PROJECT_DIR$/config/packages/nelmio_api_doc.yaml" />
         <option value="$PROJECT_DIR$/vendor/symfony/framework-bundle/Tests/Functional/app/AppKernel.php" />
         <option value="$PROJECT_DIR$/src/Entity/Product.php" />
         <option value="$PROJECT_DIR$/src/Controller/UserController.php" />
-        <option value="$PROJECT_DIR$/templates/audit/administration_audit.html.twig" />
-        <option value="$PROJECT_DIR$/templates/audit/new_audit.html.twig" />
         <option value="$PROJECT_DIR$/src/Entity/Company.php" />
         <option value="$PROJECT_DIR$/templates/audit/solutions_test.html.twig" />
         <option value="$PROJECT_DIR$/src/Entity/CompanyInfrastructure.php" />
@@ -199,14 +231,17 @@
         <option value="$PROJECT_DIR$/config/bundles.php" />
         <option value="$PROJECT_DIR$/config/routes/dev/consolebundle.yaml" />
         <option value="$PROJECT_DIR$/templates/audit/finalisation_audit.html.twig" />
-        <option value="$PROJECT_DIR$/templates/audit/select_audit.html.twig" />
         <option value="$PROJECT_DIR$/src/Entity/AuditCompanyResult.php" />
         <option value="$PROJECT_DIR$/templates/audit/new_phase.html.twig" />
-        <option value="$PROJECT_DIR$/src/Controller/CompanyController.php" />
-        <option value="$PROJECT_DIR$/templates/company/view_company_audit.html.twig" />
         <option value="$PROJECT_DIR$/templates/base.html.twig" />
         <option value="$PROJECT_DIR$/src/Controller/AuditController.php" />
+        <option value="$PROJECT_DIR$/templates/audit/select_audit.html.twig" />
+        <option value="$PROJECT_DIR$/templates/audit/administration_audit.html.twig" />
+        <option value="$PROJECT_DIR$/src/Controller/CompanyController.php" />
         <option value="$PROJECT_DIR$/public/js/custom.min.js" />
+        <option value="$PROJECT_DIR$/templates/audit/new_audit.html.twig" />
+        <option value="$PROJECT_DIR$/templates/company/view_company_audit.html.twig" />
+        <option value="$PROJECT_DIR$/public/css/custom.min.css" />
       </list>
     </option>
   </component>
@@ -322,10 +357,10 @@
     </include_path>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-364" />
-    <option name="y" value="428" />
-    <option name="width" value="1932" />
-    <option name="height" value="1100" />
+    <option name="x" value="-145" />
+    <option name="y" value="653" />
+    <option name="width" value="1936" />
+    <option name="height" value="1096" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -343,6 +378,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -406,14 +442,13 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="Symfony2.SettingsForm" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -600,18 +635,19 @@
       <workItem from="1535452682454" duration="788000" />
       <workItem from="1535472366847" duration="8631000" />
       <workItem from="1535534379574" duration="12534000" />
-      <workItem from="1535560288160" duration="1419000" />
+      <workItem from="1535560288160" duration="2208000" />
+      <workItem from="1535644377467" duration="8648000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="729684000" />
+    <option name="totallyTimeSpent" value="739121000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-364" y="428" width="1932" height="1100" extended-state="0" />
+    <frame x="-145" y="653" width="1936" height="1096" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32672232" sideWeight="0.49628845" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32604167" sideWeight="0.49628845" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.03711559" sideWeight="0.5125" order="7" side_tool="true" content_ui="tabs" />
@@ -672,14 +708,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="561">
           <caret line="33" column="20" lean-forward="false" selection-start-line="33" selection-start-column="20" selection-end-line="33" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/audit/result_audit.html.twig">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="663">
-          <caret line="39" column="37" lean-forward="false" selection-start-line="39" selection-start-column="37" selection-end-line="39" selection-end-column="37" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -907,20 +935,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/audit/select_audit.html.twig">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="25" column="101" lean-forward="false" selection-start-line="25" selection-start-column="101" selection-end-line="25" selection-end-column="101" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/audit/administration_audit.html.twig">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4914">
-          <caret line="60" column="80" lean-forward="false" selection-start-line="60" selection-start-column="80" selection-end-line="60" selection-end-column="80" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/audit/new_phase.html.twig">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="714">
@@ -935,35 +949,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/audit/new_audit.html.twig">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="419">
-          <caret line="142" column="115" lean-forward="true" selection-start-line="142" selection-start-column="115" selection-end-line="142" selection-end-column="115" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Entity/AuditCompanyResult.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1411">
-          <caret line="83" column="26" lean-forward="false" selection-start-line="83" selection-start-column="26" selection-end-line="83" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Controller/CompanyController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="64" column="0" lean-forward="false" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
-          <folding>
-            <element signature="e#117#151#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/base.html.twig">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
+        <state relative-caret-position="986">
           <caret line="58" column="81" lean-forward="false" selection-start-line="58" selection-start-column="81" selection-end-line="58" selection-end-column="81" />
           <folding />
         </state>
@@ -971,7 +959,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Controller/AuditController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
+        <state relative-caret-position="5219">
           <caret line="328" column="17" lean-forward="false" selection-start-line="328" selection-start-column="17" selection-end-line="328" selection-end-column="17" />
           <folding>
             <marker date="1535561136224" expanded="true" signature="23095:23451" ph="..." />
@@ -982,31 +970,86 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/css/custom.min.css">
+    <entry file="file://$PROJECT_DIR$/templates/audit/select_audit.html.twig">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="115" column="29" lean-forward="false" selection-start-line="115" selection-start-column="23" selection-end-line="115" selection-end-column="29" />
+        <state relative-caret-position="476">
+          <caret line="28" column="73" lean-forward="false" selection-start-line="28" selection-start-column="73" selection-end-line="28" selection-end-column="73" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/company/view_company_audit.html.twig">
+    <entry file="file://$PROJECT_DIR$/src/Entity/AuditCompanyResult.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
-          <caret line="53" column="119" lean-forward="false" selection-start-line="53" selection-start-column="119" selection-end-line="53" selection-end-column="119" />
+          <caret line="83" column="26" lean-forward="false" selection-start-line="83" selection-start-column="26" selection-end-line="83" selection-end-column="26" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Controller/CompanyController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="64" column="51" lean-forward="false" selection-start-line="64" selection-start-column="51" selection-end-line="64" selection-end-column="51" />
+          <folding>
+            <element signature="e#117#151#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/custom.min.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="410" column="135" lean-forward="false" selection-start-line="410" selection-start-column="135" selection-end-line="410" selection-end-column="135" />
+        <state relative-caret-position="617">
+          <caret line="415" column="27" lean-forward="false" selection-start-line="415" selection-start-column="27" selection-end-line="415" selection-end-column="27" />
           <folding>
-            <marker date="1535561708403" expanded="true" signature="11293:11307" ph="..." />
-            <marker date="1535561708403" expanded="true" signature="26665:26672" ph="×" />
-            <marker date="1535561708403" expanded="true" signature="39683:39695" ph="..." />
+            <marker date="1535656560726" expanded="true" signature="11366:11380" ph="..." />
+            <marker date="1535656560726" expanded="true" signature="26878:26885" ph="×" />
+            <marker date="1535656560726" expanded="true" signature="39896:39908" ph="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/audit/administration_audit.html.twig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="23" column="27" lean-forward="false" selection-start-line="23" selection-start-column="20" selection-end-line="23" selection-end-column="27" />
+          <folding>
+            <marker date="1535651958721" expanded="true" signature="32193:32205" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/company/view_company_audit.html.twig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1564">
+          <caret line="92" column="152" lean-forward="false" selection-start-line="92" selection-start-column="152" selection-end-line="92" selection-end-column="152" />
+          <folding>
+            <element signature="e#3964#3984#0#HTML" expanded="true" />
+            <marker date="1535658256599" expanded="true" signature="5094:5106" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/audit/new_audit.html.twig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" column="31" lean-forward="false" selection-start-line="21" selection-start-column="24" selection-end-line="21" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/audit/result_audit.html.twig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="663">
+          <caret line="39" column="37" lean-forward="false" selection-start-line="39" selection-start-column="37" selection-end-line="39" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/css/custom.min.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="296">
+          <caret line="136" column="29" lean-forward="false" selection-start-line="136" selection-start-column="29" selection-end-line="136" selection-end-column="29" />
+          <folding />
         </state>
       </provider>
     </entry>

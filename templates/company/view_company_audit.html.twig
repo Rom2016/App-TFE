@@ -26,6 +26,26 @@
             border: solid 1px lightgrey;
             border-radius: 10px;
         }
+        .box {
+            box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+        }
+
+        /* Create the hidden pseudo-element */
+        /* include the shadow for the end state */
+        .box::after {
+            content: '';
+            opacity: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .box:hover {
+            transform: scale(1.1, 1.1);
+        }
+
+        /* Fade in the pseudo-element with the bigger shadow */
+        .box:hover::after {
+            opacity: 1;
+        }
+
     </style>
 {% endblock %}
 
@@ -40,7 +60,7 @@
                     <ul id="sortable1" class="connectedSortable">
                         {% for t in testsSelected %}
                             {% if t.done == false %}
-                            <li class="ui-state-default" id="{{ t.test.id }}">{{ t.test.name }}</li>
+                            <li class="ui-state-default box" id="{{ t.test.id }}">{{ t.test.name }}</li>
                                 <!-- Modal -->
                                 <div id="myModal{{ t.test.id }}" class="modal fade" role="dialog">
                                     <div class="modal-dialog">
@@ -54,8 +74,8 @@
                                                 <textarea class="autoExpand form-control" rows="5" id="note{{ t.test.id }}"></textarea>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" id="{{ t.test.id }}" onclick="modalNote({{ t.test.id }})" class="btn btn-primary">Envoyer</button>
-                                                <button type="button"  class="btn btn-default close-modal" data-dismiss="modal">Fermer</button>
+                                                <button type="button" id="modalSend{{ t.test.id }}" onclick="modalNote({{ t.test.id }})" class="btn btn-primary">Envoyer</button>
+                                                <button type="button"  class="btn btn-default close-modal" data-dismiss="modal" onclick="">Fermer</button>
                                             </div>
                                         </div>
                                     </div>
@@ -70,7 +90,7 @@
                     <ul id="sortable2" class="connectedSortable">
                         {% for t in testsSelected %}
                             {% if t.done == true %}
-                                <li class="ui-state-default" id="{{ t.test.id }}">{{ t.test.name }}</li>
+                                <li class="ui-state-default box" id="{{ t.test.id }}">{{ t.test.name }}<span id="noteIcon{{ t.id }}" class="fa fa-pencil" style="float: right"></span></li>
                             {% endif %}
                         {% endfor %}
                     </ul>
@@ -100,6 +120,9 @@
                     }).done(function(data){
                         if(data.done)
                             $('#myModal'+data.id).modal('show');
+                            $('#'+data.id).html(data.name+'<span id="noteIcon'+data.id+'" class="fa fa-pencil" style="float: right"></span>');
+
+
                     })
                 }
             })

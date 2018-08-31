@@ -134,7 +134,7 @@ input[type=text]:focus, textarea:focus, input[type=email]:focus {
 
 
 #accordion h3{
-    background-color: navy; !important;
+    background-color: #1ABB9C; !important;
     color: white; !important;
     margin: 0px; !important;
     font-size: 175%; !important;

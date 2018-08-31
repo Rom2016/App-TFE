@@ -7,6 +7,17 @@
 {% block stylesheets %}
     {{ parent() }}
     <link href="../vendor/jquery-ui-1.12.1/jquery-ui.min.css" rel="stylesheet">
+    <link href="../vendor/jQuery-popover/css/bootstrap-popover-x.css" rel="stylesheet">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="../vendor/Table_Fixed_header/vendor/animate/animate.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="../vendor/Table_Fixed_header/vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="../vendor/Table_Fixed_header/vendor/perfect-scrollbar/perfect-scrollbar.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="../vendor/Table_Fixed_header/css/util.css">
+<link rel="stylesheet" type="text/css" href="../vendor/Table_Fixed_header/css/main.css">
+
     <style>
         #sortable1, #sortable2 {
             min-height: 20px;
@@ -55,6 +66,33 @@
         .ui-state-default{
             background-color: white;
         }
+
+        .wrap-table100{
+            margin: 2%
+        }
+
+        .table100.ver5 .ps__rail-y .ps__thumb-y::before{
+            background-color: #1ABB9C;
+        }
+
+        .passedIcon{
+            float: right;
+            font-size: 1.75em;
+        }
+
+        .score{
+            background-color: #1ABB9C;
+            color: white;
+            padding: 2%;
+            border-radius: 10px 10px 0px 0px;
+        }
+
+        .itemTable:hover{
+            border-bottom: solid 2px #1ABB9C;!important;
+            cursor: pointer;
+        }
+
+        .progress {height: 50px !important;}
     </style>
 {% endblock %}
 
@@ -63,6 +101,182 @@
     <div class="right_col" id="{{ idCompany }}" role="main">
 
         <div class="container" style="background-color: white">
+                    <div class="wrap-table100">
+                        <h1 class="page-header">Priorité 1</h1>
+                        <div class="table100 ver5 m-b-110">
+                            <div class="table100-head">
+                                <table>
+                                    <thead>
+                                    <tr class="row100 head">
+                                        <th class="cell100 column1"></th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+
+                            <div class="table100-body js-pscroll">
+                                <table>
+                                    <tbody>
+                                    {% for p1 in prio1 %}
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1"><span class="itemTable">{{ p1.test.name }}</span>
+                                            {% if p1.passed == 'true' %}
+                                                <span class="glyphicon glyphicon-ok passedIcon"></span>
+                                                {% else %}
+                                                    <span class="glyphicon glyphicon-remove passedIcon"></span>
+
+                                            {% endif %}
+                                        </td>
+
+                                    </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td><h2>Nombre de tests réussis</h2></td>
+                                    <td><h4>{{ passed1 }}</h4></td>
+                                </tr>
+                                <tr>
+                                    <td><h2>Nombre de tests passés</h2></td>
+                                    <td><h4>{{ count1 }}</h4></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="jumbotron text-center">
+                                <h4>Moyenne: </h4>
+                                <h1>{{ avg1 }}%</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wrap-table100">
+                        <h1 class="page-header">Priorité 2</h1>
+
+                        <div class="table100 ver5 m-b-110">
+                            <div class="table100-head">
+                                <table>
+                                    <thead>
+                                    <tr class="row100 head">
+                                        <th class="cell100 column1"></th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+
+                            <div class="table100-body js-pscroll">
+                                <table>
+                                    <tbody>
+                                    {% for p2 in prio2 %}
+                                        <tr class="row100 body">
+                                            <td class="cell100 column1"><span class="itemTable">{{ p2.test.name }}</span>
+                                                {% if p2.passed == 'true' %}
+                                                    <span class="glyphicon glyphicon-ok passedIcon"></span>
+                                                {% else %}
+                                                    <span class="glyphicon glyphicon-remove passedIcon"></span>
+
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td><h2>Nombre de tests réussis</h2></td>
+                                    <td><h4>{{ passed2 }}</h4></td>
+                                </tr>
+                                <tr>
+                                    <td><h2>Nombre de tests passés</h2></td>
+                                    <td><h4>{{ count2 }}</h4></td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="jumbotron text-center">
+                                <h4>Moyenne: </h4>
+                                <h1>{{ avg2 }}%</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wrap-table100">
+                        <h1 class="page-header">Priorité 3</h1>
+
+                        <div class="table100 ver5 m-b-110">
+                            <div class="table100-head">
+                                <table>
+                                    <thead>
+                                    <tr class="row100 head">
+                                        <th class="cell100 column1"></th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+
+                            <div class="table100-body js-pscroll">
+                                <table>
+                                    <tbody>
+                                    {% for p3 in prio3 %}
+                                        <tr class="row100 body">
+                                            <td class="cell100 column1"><span class="itemTable">{{ p3.test.name }}</span>
+                                                {% if p3.passed == 'true' %}
+                                                    <span class="glyphicon glyphicon-ok passedIcon"></span>
+                                                {% else %}
+                                                    <span class="glyphicon glyphicon-remove passedIcon"></span>
+
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td><h2>Nombre de tests réussis</h2></td>
+                                    <td><h4>{{ passed3 }}</h4></td>
+                                </tr>
+                                <tr>
+                                    <td><h2>Nombre de tests passés</h2></td>
+                                    <td><h4>{{ count3 }}</h4></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="jumbotron text-center">
+                                <h4>Moyenne: </h4>
+                                <h1>{{ avg3 }}%</h1>
+                            </div>
+                        </div>
+                    </div>
+            <div class="col-xs-12 col-md-12">
+
+                <h1 class="text-center score">Score obtenu</h1>
+                <div class="progress">
+                <div class="progress-bar  bg-{% if score < 35 %}red{% elseif score < 60%}orange{% else %}green{% endif %}" role="progressbar" data-transitiongoal="{{ score }}" aria-valuenow="56">
+                    <h1>{{ score }}%</h1>
+                </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-md-5 to-do-container">
                         <h1 class="text-center">A faire</h1>
@@ -83,7 +297,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" id="modalSend{{ t.test.id }}" onclick="modalNote({{ t.test.id }})" class="btn btn-primary">Envoyer</button>
-                                                <button type="button"  class="btn btn-default close-modal" data-dismiss="modal" onclick="modifyModal({{ t.test.id }})">Fermer</button>
+                                                <button type="button"  class="btn btn-default close-modal" data-dismiss="modal">Fermer</button>
                                             </div>
                                         </div>
                                     </div>
@@ -98,39 +312,39 @@
                     <ul id="sortable2" class="connectedSortable">
                         {% for t in testsSelected %}
                             {% if t.done == true %}
-                                <li class="ui-state-default box" id="{{ t.test.id }}">{{ t.test.name }}<span id="noteIcon{{ t.id }}" class="fa fa-pencil " style="float: right" data-toggle="modal" data-target="#myModal{{ t.test.id }}" title="Modifier la note"></span></li>
-                                <!-- Modal -->
-                                <div id="myModal{{ t.test.id }}" class="modal fade" role="dialog">
-                                    <div class="modal-dialog">
-                                        <!-- Modal content-->
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                <h4 class="modal-title">Modifier une note</h4>
-                                            </div>
-                                            <div class="modal-body" id="modal-body{{ t.test.id }}">
-                                                <textarea class="autoExpand form-control" rows="5" id="note{{ t.test.id }}">{{ t.note }}</textarea>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" id="modalSend{{ t.test.id }}" onclick="setModalNote({{ t.test.id }})" class="btn btn-primary">Modifier</button>
-                                                <button type="button"  class="btn btn-default close-modal" data-dismiss="modal" onclick="">Fermer</button>
-                                            </div>
-                                        </div>
+                                <li class="ui-state-default box" id="{{ t.test.id }}">{{ t.test.name }}<span id="noteIcon{{ t.id }}" class="fa fa-pencil " style="float: right" data-toggle="popover-x"  data-placement="left" data-target="#myPopover{{ t.test.id }}"></span></li>
+                                <div id="myPopover{{ t.test.id }}" class="popover popover-default">
+                                    <div class="arrow"></div>
+                                    <h1 class="popover-title">
+                                        <span class="close pull-right" data-dismiss="popover-x">&times;</span>
+                                       <b>Note</b>
+                                        <p>{{ t.test.name }}</p>
+                                    </h1>
+                                    <div class="popover-content">
+                                        <textarea id="note{{ t.test.id }}" class="autoExpand form-control" rows="5">{{ t.note }}</textarea>
+                                    </div>
+                                    <div class="popover-footer">
+                                        <button type="button" class="btn btn-success" onclick="setModalNote({{ t.test.id }})">Modifier la note</button>
                                     </div>
                                 </div>
+
                             {% endif %}
                         {% endfor %}
                     </ul>
                 </div>
-
             </div>
         </div>
     </div>
+
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="../vendor/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+    <script src="../vendor/jQuery-popover/js/bootstrap-popover-x.js"></script>
+    <script src="../vendor/Table_Fixed_header/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+
+    <!--===============================================================================================-->
     <script>
         $( function() {
             $( "#sortable1, #sortable2" ).sortable({
@@ -147,15 +361,34 @@
                     }).done(function(data){
                         if(data.done)
                             $('#myModal'+data.id).modal('show');
-                            $('#'+data.id).html(data.name+'<span id="noteIcon'+data.id+'" class="fa fa-pencil" style="float: right" data-toggle="modal" data-target="#myModal'+data.id+'"></span>');
-                            $('#noteIcon'+data.id).attr('title','Modifier la note');
-                            $('#noteIcon'+data.id).tooltip();
+                            $('#'+data.id).html(data.name+'<span id="noteIcon'+data.id+'" class="fa fa-pencil" style="float: right" data-toggle="popover-x"  data-placement="left" data-target="#myPopover'+data.id+'"></span>' +
+                                '\n' +
+                                '                                <div id="myPopover'+data.id+'" class="popover popover-default">\n' +
+                                '                                    <div class="arrow"></div>\n' +
+                                '                                    <h1 class="popover-title">\n' +
+                                '                                        <span class="close pull-right" data-dismiss="popover-x">&times;</span>\n' +
+                                '                                       <b>Note</b>\n' +
+                                '                                        <p>'+data.name+'</p>\n' +
+                                '                                    </h1>\n' +
+                                '                                    <div class="popover-content">\n' +
+                                '                                        <textarea id="note'+data.id+'" class="autoExpand form-control" rows="5">'+data.note+'</textarea>\n' +
+                                '                                    </div>\n' +
+                                '                                    <div class="popover-footer">\n' +
+                                '                                        <button type="button" class="btn btn-success" onclick="setModalNote('+data.id+')">Modifier la note</button>\n' +
+                                '                                    </div>\n' +
+                                '                                </div>');
                     })
                 }
             })
-            $('.fa-pencil').tooltip();
+            $('.js-pscroll').each(function(){
+                var ps = new PerfectScrollbar(this);
 
-        } );
+                $(window).on('resize', function(){
+                    ps.update();
+                })
+            });
+
+        });
     </script>
 
 {% endblock %}

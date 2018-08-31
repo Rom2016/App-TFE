@@ -39,6 +39,39 @@ class CompanyController extends abstractController
         $array = $_SESSION['user']->getAll();
         $array['idCompany'] = $_GET['entreprise'];
         $array['testsSelected'] = $repository_audit_result->findBy(['company' => $company, 'selected'=>true]);
+        $tests = $repository_audit_result->findBy(['company' => $company]);
+        $array['passed1'] = 0;
+        $array['passed2'] = 0;
+        $array['passed3'] = 0;
+        foreach ($tests as $key => $value){
+            if($value->getTest()->priority == 1) {
+                $array['prio1'][] = $value;
+                if ($value->getPassed())
+                    $array['passed1'] = $array['passed1'] + 1;
+            }
+            if($value->getTest()->priority == 2) {
+                $array['prio2'][] = $value;
+                if ($value->getPassed())
+                    $array['passed2'] = $array['passed2'] + 1;
+            }
+            if($value->getTest()->priority == 3) {
+                $array['prio3'][] = $value;
+                if ($value->getPassed())
+                    $array['passed3'] = $array['passed3'] + 1;
+            }
+        }
+        $array['count1'] = sizeof($array['prio1']);
+        $array['count2'] = sizeof($array['prio2']);
+        $array['count3'] = sizeof($array['prio3']);
+
+        $array['avg1'] = number_format((float)$array['passed1'] / $array['count1'] * 100, 2, '.', '');
+        $array['avg2'] = number_format((float)$array['passed2'] / $array['count2'] * 100, 2, '.', '');
+        $array['avg3'] = number_format((float)$array['passed3'] / $array['count3'] * 100, 2, '.', '');
+
+        $totalPoints = ($array['count1']*3)+($array['count2']*2)+($array['count3']);
+        $points = ($array['passed1']*3)+($array['passed2']*2)+($array['passed3']);
+
+        $array['score'] = number_format((float)$points / $totalPoints * 100, 2, '.', '');
         return $this->render('company/view_company_audit.html.twig', $array);
     }
 
@@ -77,7 +110,7 @@ class CompanyController extends abstractController
                     $em->flush();
                     $json['id'] = $test->getId();
                     $json['name'] = $test->getName();
-
+                    $json['note'] = $result_test->getNote();
                     return new JsonResponse($json);
                     break;
                 case 'getNote':

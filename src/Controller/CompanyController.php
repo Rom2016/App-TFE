@@ -43,19 +43,30 @@ class CompanyController extends abstractController
         $array['passed1'] = 0;
         $array['passed2'] = 0;
         $array['passed3'] = 0;
+        $picDir = 'images/test_pic/'.$company->getId().'/';
         foreach ($tests as $key => $value){
             if($value->getTest()->priority == 1) {
-                $array['prio1'][] = $value;
+                $array['prio1'][$value->getTest()->getName()] = $value;
+                if (file_exists($picDir.$value->getTest()->getId())){
+                    $array['pic'][$value->getTest()->getName()] =  array_slice(scandir($picDir.$value->getTest()->getId()), 2);
+                }
                 if ($value->getPassed())
                     $array['passed1'] = $array['passed1'] + 1;
             }
             if($value->getTest()->priority == 2) {
-                $array['prio2'][] = $value;
+                $array['prio2'][$value->getTest()->getName()] = $value;
+                if (file_exists($picDir.$value->getTest()->getId())){
+                    $array['pic'][$value->getTest()->getName()] =  array_slice(scandir($picDir.$value->getTest()->getId()), 2);
+                }
                 if ($value->getPassed())
                     $array['passed2'] = $array['passed2'] + 1;
             }
             if($value->getTest()->priority == 3) {
-                $array['prio3'][] = $value;
+                $array['prio3'][$value->getTest()->getName()] = $value;
+                if (file_exists($picDir.$value->getTest()->getId())){
+                    $array['pic'][$value->getTest()->getName()] =  array_slice(scandir($picDir.$value->getTest()->getId()), 2);
+                }
+
                 if ($value->getPassed())
                     $array['passed3'] = $array['passed3'] + 1;
             }
@@ -72,6 +83,8 @@ class CompanyController extends abstractController
         $points = ($array['passed1']*3)+($array['passed2']*2)+($array['passed3']);
 
         $array['score'] = number_format((float)$points / $totalPoints * 100, 2, '.', '');
+
+        $array['idCompany'] = $company->getId();
         return $this->render('company/view_company_audit.html.twig', $array);
     }
 

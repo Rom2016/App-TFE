@@ -571,7 +571,7 @@ class AuditController extends AbstractController
          * Initialise le dossier avec le num de l'audit et son sous-dossier avec le nom du test des images traitées
          */
         $auditFolder = 'images/test_pic/'.$_POST['auditNumber'];   //2
-        $testFolder = 'images/test_pic/'.$_POST['auditNumber'].'/'.$test->name.'/';   //2
+        $testFolder = 'images/test_pic/'.$_POST['auditNumber'].'/'.$test->id.'/';   //2
         $path = $_FILES['file']['name'];
         $ext = pathinfo($path, PATHINFO_EXTENSION);
         // if folder doesn't exists, create it

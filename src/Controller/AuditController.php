@@ -356,6 +356,8 @@ class AuditController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
         $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
+        $repository_infra = $this->getDoctrine()->getRepository(TestsInfrastructure::class);
+
         /**
          * Récupère les objets test parent et ses tests enfants.
          */
@@ -365,7 +367,19 @@ class AuditController extends AbstractController
          * Supprimer chaque enfant de la famille
          */
         foreach ($child as $key => $value) {
+            $testResult = $this->getDoctrine()->getRepository(AuditCompanyResult::class)->findBy(['test' => $value]);
             $selection = $repository_selection->findBy(['test' => $value]);
+            $infraTest = $repository_infra->findBy(['test_phase' => $value]);
+            if($infraTest) {
+                foreach ($infraTest as $k => $v) {
+                    $entityManager->remove($v);
+                }
+            }
+            if($testResult) {
+                foreach ($testResult as $k => $v) {
+                    $entityManager->remove($v);
+                }
+            }
             /**
              * Supprime les sélections du choix multiple si l'enfant est de type Sélection
              */
@@ -382,7 +396,20 @@ class AuditController extends AbstractController
         /**
          * Idem pour le parent
          */
+
+        $infraTest = $repository_infra->findOneBy(['test_phase' => $parent]);
         $selection = $repository_selection->findBy(['test' => $parent]);
+        $testResult = $this->getDoctrine()->getRepository(AuditCompanyResult::class)->findBy(['test' => $parent]);
+        if($testResult) {
+            foreach ($testResult as $k => $v) {
+                $entityManager->remove($v);
+            }
+        }
+        if($infraTest) {
+            foreach ($infraTest as $k => $v) {
+                $entityManager->remove($v);
+            }
+        }
         if ($selection) {
             foreach ($selection as $k => $v) {
                 $entityManager->remove($v);

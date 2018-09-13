@@ -5,7 +5,7 @@
         <div class="">
             <div class="clearfix"></div>
             <div class="row">
-                {% for c in company %}
+                {% for audit in audits %}
 
                 <div class="col-md-3 col-xs-12 widget widget_tally_box">
                                     <div class="x_panel fixed_height_390">
@@ -19,15 +19,16 @@
                                                 </ul>
                                             </div>
 
-                                            <h3 class="name">{{ c.name }}</h3>
+                                            <h3 class="name">{{ audit.company.name }}</h3>
                                             <div class="col-md-6 col-sm-6 col-xs-12" style="width: 100%; padding: 0%; border-bottom: solid 1px; border-top: solid 1px">
-                                            <h4 class="fa fa-envelope" aria-hidden="true" style="padding: auto">{{ c.email }}</h4>
+                                            <h4 class="fa fa-envelope" aria-hidden="true" style="padding: auto">{{ audit.company.email }}</h4>
                                             </br>
-                                                <h4 class="fa fa-phone" aria-hidden="true" style="">{{ c.phone }}</h4>
                                             </div>
+                                            {% if is_granted('ROLE_AUDIT_RO') or  audit.owner.id == app.user.id  %}
                                             <div class="actionBar">
-                                                <a class="btn btn-primary" href="../visualiser-audit-entreprise?entreprise={{ c.id }}" style="margin: 10%">Visualiser</a>
+                                                <a class="btn btn-primary" href="../visualiser-audit-entreprise?audit={{ audit.id }}" style="margin: 10%">Visualiser</a>
                                             </div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>

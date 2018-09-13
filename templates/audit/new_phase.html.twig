@@ -17,7 +17,7 @@
     {{ parent() }}
     <div class="right_col" role="main">
     <div class="container" style="background-color: white; border-radius: 1%; padding: 1%">
-        <form method="post" action="../administration-audit?id={{ phase.id }}" class="">
+        <form method="post" action="../administration/audit?id={{ phase.id }}" class="">
         <div class="row">
             <div class="form-group col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                 <h3 class="col-xs-offset-3 col-md-offset-4" >Intitulé de la phase</h3>
@@ -220,7 +220,7 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <h5>Voulez-vous supprimer ce test?</h5>
-                                    <p class=" alert alert-danger">Attention, supprimer ce test supprimer également ses tests enfants!</p>
+                                    <p class=" alert alert-danger">Attention, supprimer ce test supprime également ses tests enfants!</p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" onclick="deleteTest({{ test.id }},'tr')" class="btn btn-primary">Oui</button>

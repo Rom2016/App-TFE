@@ -21,7 +21,7 @@
                                 <div class="profile_img">
                                     <div id="crop-avatar">
                                         <!-- Current avatar -->
-                                        <img class="img-responsive avatar-view" id="profile_pic" src="../images/profile_pic/{{ profPic }}" alt="Avatar" title="Change the avatar">
+                                        <img class="img-responsive avatar-view" id="profile_pic" src="../images/profile_pic/" alt="Avatar" title="Change the avatar">
                                     </div>
                                 </div>
                             </div>
@@ -29,26 +29,22 @@
                                     <form class="form-horizontal form-label-left input_mask" method="post" action="../profile">
 
                                         <div class="col-md-12 col-sm-6 col-xs-12 form-group has-feedback">
-                                            <input type="text" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Prénom" name="fName" value="{{ fName }}">
+                                            <input type="text" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Prénom" name="fName" value="{{ app.user.first_name }}">
                                             <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
                                         </div>
 
                                         <div class="col-md-12 col-sm-6 col-xs-12 form-group has-feedback">
-                                            <input type="text" class="form-control" id="inputSuccess3" placeholder="Nom" name="sName" value="{{ sName }}">
+                                            <input type="text" class="form-control" id="inputSuccess3" placeholder="Nom" name="sName" value="{{  app.user.second_name }}">
                                             <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
                                         </div>
 
                                         <div class="col-md-12 col-sm-6 col-xs-12 form-group has-feedback">
-                                            <input type="text" class="form-control has-feedback-left" id="inputSuccess4" placeholder="Email" name="email" value="{{ email }}">
+                                            <input type="text" class="form-control has-feedback-left" id="inputSuccess4" placeholder="Email" name="email" value="{{  app.user.username }}">
                                             <span class="fa fa-envelope form-control-feedback left" aria-hidden="true"></span>
                                         </div>
 
                                         <div class="col-md-12 col-sm-6 col-xs-12 form-group has-feedback">
-                                            <input type="text" class="form-control" id="inputSuccess5" placeholder="Téléphone" name="phone" value="{{ phone }}">
-                                            <span class="fa fa-phone form-control-feedback right" aria-hidden="true"></span>
-                                        </div>
-                                        <div class="col-md-12 col-sm-6 col-xs-12 form-group has-feedback">
-                                            <input type="text" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Fonction" name="function" value="{{ function }}">
+                                            <input type="text" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Fonction" name="function" value="{{  app.user.function }}">
                                             <span class="fa fa-briefcase form-control-feedback left" aria-hidden="true"></span>
                                         </div>
                                         <div class="col-md-12 col-sm-6 col-xs-12 col-md-offset-4 col-xs-offset-4">

@@ -17,11 +17,6 @@ class AuditCompanyResult
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Company")
-     */
-    private $company;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AuditTestPhase")
      */
     private $test;
@@ -60,120 +55,163 @@ class AuditCompanyResult
     private $note;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\AuditCompany", inversedBy="auditCompanyResults")
+     */
+    private $audit;
+
+    /**
      * AuditCompanyResult constructor.
-     * @param $company
      * @param $test
      * @param $information
      * @param $selection
+     * @param $passed
      */
-    public function __construct($company, $test, $information, $selection, $passed)
+    public function __construct($test, $information, $selection, $passed, $audit)
     {
-        $this->company = $company;
         $this->test = $test;
         $this->information = $information;
         $this->selection = $selection;
         $this->passed = $passed;
+        $this->audit = $audit;
+
     }
 
-
+    /**
+     * @return mixed
+     */
     public function getId()
     {
         return $this->id;
     }
 
-    public function getCompany(): ?Company
-    {
-        return $this->company;
-    }
-
-    public function setCompany(?Company $company): self
-    {
-        $this->company = $company;
-
-        return $this;
-    }
-
-    public function getTest(): ?AuditTestPhase
+    /**
+     * @return mixed
+     */
+    public function getTest()
     {
         return $this->test;
     }
 
-    public function setTest(?AuditTestPhase $test): self
+    /**
+     * @param mixed $test
+     */
+    public function setTest($test): void
     {
         $this->test = $test;
-
-        return $this;
     }
 
-    public function getInformation(): ?string
+    /**
+     * @return mixed
+     */
+    public function getInformation()
     {
         return $this->information;
     }
 
-    public function setInformation(?string $information): self
+    /**
+     * @param mixed $information
+     */
+    public function setInformation($information): void
     {
         $this->information = $information;
-
-        return $this;
     }
 
-    public function getSelection(): ?string
+    /**
+     * @return mixed
+     */
+    public function getSelection()
     {
         return $this->selection;
     }
 
-    public function setSelection(?string $selection): self
+    /**
+     * @param mixed $selection
+     */
+    public function setSelection($selection): void
     {
         $this->selection = $selection;
-
-        return $this;
     }
 
-    public function getPassed(): ?bool
-    {
-        return $this->passed;
-    }
-
-    public function setPassed(bool $passed): self
-    {
-        $this->passed = $passed;
-
-        return $this;
-    }
-
-    public function getSelected(): ?bool
+    /**
+     * @return mixed
+     */
+    public function getSelected()
     {
         return $this->selected;
     }
 
-    public function setSelected(?bool $selected): self
+    /**
+     * @param mixed $selected
+     */
+    public function setSelected($selected): void
     {
         $this->selected = $selected;
-
-        return $this;
     }
 
-    public function getDone(): ?bool
+    /**
+     * @return mixed
+     */
+    public function getDone()
     {
         return $this->done;
     }
 
-    public function setDone(bool $done): self
+    /**
+     * @param mixed $done
+     */
+    public function setDone($done): void
     {
         $this->done = $done;
-
-        return $this;
     }
 
-    public function getNote(): ?string
+    /**
+     * @return mixed
+     */
+    public function getPassed()
+    {
+        return $this->passed;
+    }
+
+    /**
+     * @param mixed $passed
+     */
+    public function setPassed($passed): void
+    {
+        $this->passed = $passed;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNote()
     {
         return $this->note;
     }
 
-    public function setNote(?string $note): self
+    /**
+     * @param mixed $note
+     */
+    public function setNote($note): void
     {
         $this->note = $note;
-
-        return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getAudit()
+    {
+        return $this->audit;
+    }
+
+    /**
+     * @param mixed $audit
+     */
+    public function setAudit($audit): void
+    {
+        $this->audit = $audit;
+    }
+
+
+
 }

@@ -36,11 +36,11 @@
                     <!-- menu profile quick info -->
                     <div class="profile clearfix" >
                         <div class="profile_pic">
-                            <img src="../images/profile_pic/{{ profPic }}" alt="..." class="img-circle profile_img">
+                            <img src="../images/profile_pic/" alt="..." class="img-circle profile_img">
                         </div>
                         <div class="profile_info">
                             <span>Bienvenue,</span>
-                            <h2>{{ fName }} {{ sName }} </h2>
+                            <h2>{{ app.user.first_name }} {{ app.user.second_name }} </h2>
                         </div>
                     </div>
                     <!-- /menu profile quick info -->
@@ -59,11 +59,11 @@
                                         <li><a href="../voir-audit">Visualiser un audit existant</a></li>
                                     </ul>
                                 </li>
-                                {% if is_admin %}
+                                {% if is_granted('ROLE_ADMIN')  %}
                                 <li><a><i class="fa fa-edit"></i> Administration <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="../administration-utilisateur">Utilisateurs</a></li>
-                                        <li><a href="../administration-audit">Audit</a></li>
+                                        <li><a href="../administration/utilisateur">Utilisateurs</a></li>
+                                        <li><a href="../administration/audit">Audit</a></li>
                                     </ul>
                                 </li>
                                 {% endif %}
@@ -85,12 +85,12 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <img src="../images/profile_pic/{{ profPic }}" alt="">{{ fName }} {{ sName }}
+                                    <img src="../images/profile_pic/" alt="">{{ app.user.first_name }} {{ app.user.second_name }}
                                     <span class=" fa fa-angle-down"></span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
                                     <li><a href="../profile">Profile</a></li>
-                                    <li><a href="../?rq=deconnexion"><i class="fa fa-sign-out pull-right"></i>Se déconnecter</a></li>
+                                    <li><a href="{{ logout_path('main') }}"><i class="fa fa-sign-out pull-right"></i>Se déconnecter</a></li>
                                 </ul>
                             </li>
                         </ul>

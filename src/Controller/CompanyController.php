@@ -8,6 +8,7 @@
 
 namespace App\Controller;
 
+use App\Entity\AuditCompany;
 use App\Entity\AuditCompanyResult;
 use App\Entity\AuditTestInfrastructure;
 use App\Entity\Company;
@@ -32,18 +33,19 @@ class CompanyController extends abstractController
      */
     public function viewCompanyAudit()
     {
-        $repository_audit_result = $this->getDoctrine()->getRepository(AuditCompanyResult::class);
-        $repository_company =  $this->getDoctrine()->getRepository(Company::class);
-        $company = $repository_company->findOneBy(['id'=>$_GET['entreprise']]);
 
-        $array = $_SESSION['user']->getAll();
-        $array['idCompany'] = $_GET['entreprise'];
-        $array['testsSelected'] = $repository_audit_result->findBy(['company' => $company, 'selected'=>true]);
-        $tests = $repository_audit_result->findBy(['company' => $company]);
+        $repository_audit =  $this->getDoctrine()->getRepository(AuditCompany::class);
+        $audit = $repository_audit->findOneBy(['id'=> $_GET['audit']]);
+        $this->denyAccessUnlessGranted('AUDIT_RO', $audit);
+
+        $repository_audit_result = $this->getDoctrine()->getRepository(AuditCompanyResult::class);
+
+        $array['testsSelected'] = $repository_audit_result->findBy(['audit' => $audit , 'selected'=>true]);
+        $tests = $repository_audit_result->findBy(['audit' => $audit]);
         $array['passed1'] = 0;
         $array['passed2'] = 0;
         $array['passed3'] = 0;
-        $picDir = 'images/test_pic/'.$company->getId().'/';
+        $picDir = 'images/test_pic/'.$audit->getId().'/';
         foreach ($tests as $key => $value){
             if($value->getTest()->priority == 1) {
                 $array['prio1'][$value->getTest()->getName()] = $value;
@@ -84,7 +86,7 @@ class CompanyController extends abstractController
 
         $array['score'] = number_format((float)$points / $totalPoints * 100, 2, '.', '');
 
-        $array['idCompany'] = $company->getId();
+        $array['idCompany'] = $audit->getId();
         return $this->render('company/view_company_audit.html.twig', $array);
     }
 

@@ -8,6 +8,7 @@
 
 namespace App\Controller;
 
+use App\Entity\AppUser;
 use App\Entity\AuditCompany;
 use App\Entity\AuditCompanyResult;
 use App\Entity\AuditTestInfrastructure;
@@ -33,12 +34,10 @@ class AuditController extends AbstractController
     /**
      * Méthode qui gère toute la partie Administration Audit
      *
-     * @Route("/administration-audit", name="admin_audit", options={"utf8": true})
+     * @Route("/administration/audit", name="admin_audit", options={"utf8": true})
      */
     public function adminAudit()
     {
-        if (isset($_SESSION)) {
-            if ($_SESSION['user']->isAdmin) {
                 /**
                  * Gère les changements dans les phases de l'audit
                  */
@@ -65,8 +64,6 @@ class AuditController extends AbstractController
                 $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
                 $repository_test_type = $this->getDoctrine()->getRepository(TestType::class);
                 $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
-
-                $array = $_SESSION['user']->getAll();
                 $array['selection'] = $repository_selection->findAll();
                 $array['type'] = $repository_test_type->findAll();
                 $array['phases'] = $repository_phase->findBy([], ['number' => 'ASC']);
@@ -74,18 +71,10 @@ class AuditController extends AbstractController
                 $array['test_type'] = $repository_test_type->findAll();
 
                 return $this->render('audit/administration_audit.html.twig', $array);
-            } else {
                 /**
                  * Pas les droits admin.
                  */
-                return $this->render('error/error_403.html.twig');
-            }
-        /**
-         * Utilisateur non connecté.
-         */
-        } else {
-            return $this->redirectToRoute('homepage');
-        }
+
     }
 
     /**
@@ -189,15 +178,7 @@ class AuditController extends AbstractController
 
     public function modifPhase()
     {
-        /**
-         * Si l'utilisateur est connecté.
-         */
-        if (isset($_SESSION)){
-            /**
-             * Si l'utilisateur dispose des droits admin.
-             */
-            if ($_SESSION['user']->isAdmin) {
-                $array = $_SESSION['user']->getAll();
+
                 $phase = $this->getDoctrine()->getRepository(AuditPhase::class)->findOneBy(['id' => $_GET['id']]);
                 $array['tests'] = $this->getDoctrine()->getRepository(AuditTestPhase::class)->findBy(['idPhase' => $phase]);
                 $array['type'] = $this->getDoctrine()->getRepository(TestType::class)->findAll();
@@ -206,15 +187,6 @@ class AuditController extends AbstractController
                  * Retourne le template de modif de phase avec les données nécessaires de la BDD.
                  */
                 return $this->render('audit/new_phase.html.twig', $array);
-            } else {
-                /**
-                 * Accès refusé
-                 */
-                return $this->render('error/error_403.html.twig');
-            }
-        } else {
-            return $this->redirectToRoute('homepage');
-        }
     }
 
     /**
@@ -431,7 +403,6 @@ class AuditController extends AbstractController
      */
     public function newAudit()
     {
-        if (isset($_SESSION)) {
             $repository_test_infra = $this->getDoctrine()->getRepository(AuditTestInfrastructure::class);
             $repository_type = $this->getDoctrine()->getRepository(TestType::class);
             $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
@@ -439,8 +410,10 @@ class AuditController extends AbstractController
             $repository_company = $this->getDoctrine()->getRepository(Company::class);
             $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
             $repository_size = $this->getDoctrine()->getRepository(CompanySize::class);
+            $repository_audit = $this->getDoctrine()->getRepository(AuditCompany::class);
 
-            if(isset($_GET['rq'])){
+
+        if(isset($_GET['rq'])){
                 $repository_test_infra_audit = $this->getDoctrine()->getRepository(TestsInfrastructure::class);
 
                 $testInfra = $repository_test_infra->findOneBy(['id'=>$_POST['testId']]);
@@ -564,24 +537,24 @@ class AuditController extends AbstractController
                         (SELECT * 
                         FROM tests_infrastructure
                         WHERE audit_test_phase.id = tests_infrastructure.test_phase_id)';
-                $array = $_SESSION['user']->getAll();
                 $array['tests'] =  $em->getConnection()->query($sql)->fetchAll();
 
                 $array['selection'] = $repository_selection->findAll();
                 $array['phases'] = $repository_phase->findAll();
                 $array['tests_infra'] = $repository_test_infra->findAll();
-                $last_id = $repository_company->findOneBy([], ['id' => 'DESC']);
-                $array['auditNumber'] = $last_id->getId();
-                $array['auditNumber'] = $array['auditNumber'] + 1;
+                $last_audit = $repository_audit->findOneBy([], ['id' => 'DESC']);
+                if($last_audit){
+                    $array['auditNumber'] = $last_audit->getId();
+                    $array['auditNumber'] = $array['auditNumber'] + 1;
+                }else{
+                    $array['auditNumber'] = 1;
+                }
                 $array['type'] = $repository_type->findAll();
                 $array['size'] = $repository_size->findAll();
 
 
                 return $this->render('audit/new_audit.html.twig', $array);
             }
-        } else {
-            return $this->redirectToRoute('homepage');
-        }
     }
 
 
@@ -659,36 +632,52 @@ class AuditController extends AbstractController
         $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
         $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
         $repository_audit_result = $this->getDoctrine()->getRepository(AuditCompanyResult::class);
+        $repository_audit = $this->getDoctrine()->getRepository(AuditCompany::class);
+        $repository_user = $this->getDoctrine()->getRepository(AppUser::class);
+
         $em = $this->getDoctrine()->getManager();
 
+        $last_audit = $repository_audit->findOneBy([], ['id' => 'DESC']);
+        $array['auditNumber'] = $last_audit->getId();
 
-            $array = $_SESSION['user']->getAll();
-            $last_company = $this->getDoctrine()->getRepository(Company::class)->findOneBy([], ['id' => 'DESC']);
-            $array['auditNumber'] = $last_company->getId();
-            $array['phases'] = $repository_phase->findAll();
-            $array['name_company'] = $_POST['name'];
-            $array['phone_company'] = $_POST['phone'];
-            $array['email_company'] = $_POST['email'];
-            $array['size_company'] = $_POST['size'];
-            /**
-             * Initialise les variables pour les scores
-             * Les tableaux $avg servent à calculer la moyenne par priorité.
-             * Les tableaux $i servent à calculer le nombre de points obtenus par priorité
-             * $total_points sera le nombre de de point total obtenable et comparé avec les tableaux $i
-             */
-            $avg['prio1'] = 0;
-            $avg['prio2'] = 0;
-            $avg['prio3'] = 0;
-            $i['prio1'] = 0;
-            $i['prio2'] = 0;
-            $i['prio3'] = 0;
-            $points = 0;
-            $total_points = 0;
-            $test = $repository_test->findAll();
-            $company = $this->saveInfoCompany();
-            $array['id_company'] = $company->getId();
-
+        $array['phases'] = $repository_phase->findAll();
+        $array['name_company'] = $_POST['name'];
+        $array['phone_company'] = $_POST['phone'];
+        $array['email_company'] = $_POST['email'];
+        $array['size_company'] = $_POST['size'];
         /**
+         * Initialise les variables pour les scores
+         * Les tableaux $avg servent à calculer la moyenne par priorité.
+         * Les tableaux $i servent à calculer le nombre de points obtenus par priorité
+         * $total_points sera le nombre de de point total obtenable et comparé avec les tableaux $i
+         */
+        $avg['prio1'] = 0;
+        $avg['prio2'] = 0;
+        $avg['prio3'] = 0;
+        $i['prio1'] = 0;
+        $i['prio2'] = 0;
+        $i['prio3'] = 0;
+        $points = 0;
+        $total_points = 0;
+        $test = $repository_test->findAll();
+        $company = $this->saveInfoCompany();
+        $user = $repository_user->findOneBy(['id'=>$this->getUser()->getId()]);
+        $date = date('Y-m-d H:i:s');
+        $date = new \DateTime($date);
+        $array['id_company'] = $company->getId();
+       /* if($array['auditNumber'] == $_POST['number-audit']){
+            $audit = $repository_audit->findOneBy(['id' => $_POST['number-audit']]);
+            foreach ($test as $key => $value) {
+                if(isset($_POST['tests'][$value->getId()])){
+                    $result = $repository_audit_result->findOneBy(['audit' => $audit, 'test' => $value]);
+
+                }
+            }
+        }else{*/
+            $audit = new AuditCompany($company, $user, $date);
+            $em->persist($audit);
+
+            /**
              * Compare tous les tests existants à ceux qui ont été passés durant l'audit.
              */
             foreach ($test as $key => $value) {
@@ -704,7 +693,7 @@ class AuditController extends AbstractController
                         $i['prio1'] = $i['prio1'] + 1;
                         $points = $points + 3;
                         $total_points = $total_points + 3;
-                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, true);
+                        $audit_result = new AuditCompanyResult($value, $_POST['tests'][$value->getId()]['info'], null, true, $audit);
                         $em->persist($audit_result);
 
                     } elseif (isset($_POST['tests'][$value->getId()])) {
@@ -714,7 +703,7 @@ class AuditController extends AbstractController
                          */
                         $array['prio1'][] = $value;
                         $total_points = $total_points + 3;
-                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, false);
+                        $audit_result = new AuditCompanyResult($value, $_POST['tests'][$value->getId()]['info'], null, false, $audit);
                         $em->persist($audit_result);
                     }
                     /**
@@ -726,14 +715,14 @@ class AuditController extends AbstractController
                         $i['prio2'] = $i['prio2'] + 1;
                         $points = $points + 2;
                         $total_points = $total_points + 2;
-                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, true);
+                        $audit_result = new AuditCompanyResult($value, $_POST['tests'][$value->getId()]['info'], null, true, $audit);
                         $em->persist($audit_result);
 
                     } elseif (isset($_POST['tests'][$value->getId()])) {
                         $i['prio2'] = $i['prio2'] + 1;
                         $array['prio2'][] = $value;
                         $total_points = $total_points + 2;
-                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, false);
+                        $audit_result = new AuditCompanyResult($value, $_POST['tests'][$value->getId()]['info'], null, false, $audit);
                         $em->persist($audit_result);
 
                     }
@@ -746,17 +735,18 @@ class AuditController extends AbstractController
                         $i['prio3'] = $i['prio3'] + 1;
                         $points = $points + 1;
                         $total_points = $total_points + 1;
-                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, true);
+                        $audit_result = new AuditCompanyResult($value, $_POST['tests'][$value->getId()]['info'], null, true, $audit);
                         $em->persist($audit_result);
                     } elseif (isset($_POST['tests'][$value->getId()])) {
                         $i['prio3'] = $i['prio3'] + 1;
                         $array['prio3'][] = $value;
                         $total_points = $total_points + 1;
-                        $audit_result = new AuditCompanyResult($company, $value, $_POST['tests'][$value->getId()]['info'], null, false);
+                        $audit_result = new AuditCompanyResult($value, $_POST['tests'][$value->getId()]['info'], null, false, $audit);
                         $em->persist($audit_result);
                     }
                 }
             }
+        //}
             /**
              * Calcule les moyennes
              */
@@ -780,19 +770,21 @@ class AuditController extends AbstractController
         $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
         $repository_audit_result = $this->getDoctrine()->getRepository(AuditCompanyResult::class);
         $repository_company =  $this->getDoctrine()->getRepository(Company::class);
+        $repository_audit =  $this->getDoctrine()->getRepository(AuditCompany::class);
+
         $em = $this->getDoctrine()->getManager();
         $company = $repository_company->findOneBy(['id'=>$_POST['id_company']]);
+        $audit = $repository_audit->findOneBy(['company'=>$company]);
         if(isset($_POST['tests'])) {
             foreach ($_POST['tests'] as $key => $value) {
                 $test = $repository_test->findOneBy(['id' => $value]);
-                $companyTest = $repository_audit_result->findOneBy(['test' => $test, 'company' => $company]);
+                $companyTest = $repository_audit_result->findOneBy(['test' => $test, 'audit' => $audit]);
                 $companyTest->setSelected(true);
                 $companyTest->setDone(false);
                 $em->persist($companyTest);
             }
         }
         $em->flush();
-        $array = $_SESSION['user']->getAll();
         $array['company'] = $company->getId();
         return $this->render('audit/finalisation_audit.html.twig', $array);
     }
@@ -807,8 +799,10 @@ class AuditController extends AbstractController
          * Récupère l'objet correspondant à la taille de l'entreprise
          */
         $size = $repository_size->findOneBy(['max_size' => $size_company[1]]);
+        $date = date('Y-m-d H:i:s');
+        $date = new \DateTime($date);
 
-        $company = new Company($_POST['name'],$_POST['phone'],$_POST['email'], $size);
+        $company = new Company($_POST['name'],$_POST['phone'],$_POST['email'], $size, $date);
         $em->persist($company);
         foreach ($_POST['test']['radio'] as $key => $value){
             if($value == 'pos'){
@@ -827,15 +821,11 @@ class AuditController extends AbstractController
 
     public function viewAudits()
     {
-        if (isset($_SESSION)) {
-            $repository_company = $this->getDoctrine()->getRepository(Company::class);
-            $array = $_SESSION['user']->getAll();
-            $array['company'] = $repository_company->findAll();
+            $repository_audit = $this->getDoctrine()->getRepository(AuditCompany::class);
+            $array['audits'] = $repository_audit->findAll();
 
             return $this->render('audit/select_audit.html.twig', $array);
-        } else {
-            return $this->redirectToRoute('homepage');
-        }
+
     }
     /**
      * Récupère les solutions si elles existent qui seront affiché dans le Récpapitulatif du résultat

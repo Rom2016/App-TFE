@@ -1,3 +1,2 @@
-#Login:
-#   path: /
-#   controller: App\Controller\LoginController::Portal
+logout:
+   path: /deconnexion

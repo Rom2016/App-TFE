@@ -1,42 +1,100 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-
-    Accueil
-
+    Tableau de bord
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .dash-header{
+            background: white;
+            padding: .5%;
+            color: purple;
+        }
+
+        .purple{
+            color: purple;
+        }
+    </style>
+{% endblock %}
 
 
 {% block body %}
 
     {{ parent() }}
         <!-- page content -->
-    <div class="right_col" role="main">
-        <div class="container">
-            <div class="row" >
-                <div class="col-xs-12 col-md-12 text-center" style="background-color: white; padding: 5%">
-                    <h1>Securicheck</h1>
+<div class="content">
+    <div class="container-fluid">
+        <div class="row dash-header">
+            <h3>Tableau de bord</h3>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats">
+                    <div class="card-header card-header-info card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">account_circle</i>
+                        </div>
+                        <p class="card-category">Utilisateurs enregistrés</p>
+                        <h3 class="card-title purple" style="color: purple">{{ nbUser }}
+                        </h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">link</i>
+                            <a href="#pablo">Visualiser</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="row tile_count">
-                <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count text-center">
-                    <span class="count_top"><i class="fa fa-users"></i> Utilisateurs enregistrés</span>
-                    <div class="count green">{{ nbUser }}</div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats">
+                    <div class="card-header card-header-info card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">description</i>
+                        </div>
+                        <p class="card-category">Audits Créés</p>
+                        <h3 class="card-title purple" style="color: purple">{{ nbCompany }}
+                        </h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">link</i>
+                            <a href="#pablo">Visualiser</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count text-center">
-                    <span class="count_top"><i class="fa fa-file"></i>Audits enregistrés</span>
-                    <div class="count green">{{ nbCompany }}</div>
-                </div>
-                <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count text-center">
-                    <span class="count_top"><i class="fa fa-folder-open"></i>Total phase</span>
-                    <div class="count green">{{ nbPhase }}</div>
-                </div>
-                <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count text-center">
-                    <span class="count_top"><i class="fa fa-check-square-o"></i> Total test</span>
-                    <div class="count green">{{ nbTest }}</div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats">
+                    <div class="card-header card-header-info card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">check_box</i>
+                        </div>
+                        <p class="card-category">Nombre de tests créés</p>
+                        <h3 class="card-title purple" style="color: purple">{{ nbTest }}
+                        </h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">link</i>
+                            <a href="#pablo">Visualiser</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('.nav-item.active').removeClass('active');
+        $('#nav-dash').addClass('active');
+
+    </script>
 {% endblock %}

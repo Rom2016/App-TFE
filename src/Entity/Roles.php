@@ -23,10 +23,16 @@ class Roles
      */
     private $role;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\AppUser", mappedBy="role")
+     */
+    private $appUsers;
+
 
     public function __construct()
     {
         $this->roles = new ArrayCollection();
+        $this->appUsers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -42,6 +48,37 @@ class Roles
     public function setRole(string $role): self
     {
         $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|AppUser[]
+     */
+    public function getAppUsers(): Collection
+    {
+        return $this->appUsers;
+    }
+
+    public function addAppUser(AppUser $appUser): self
+    {
+        if (!$this->appUsers->contains($appUser)) {
+            $this->appUsers[] = $appUser;
+            $appUser->setRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAppUser(AppUser $appUser): self
+    {
+        if ($this->appUsers->contains($appUser)) {
+            $this->appUsers->removeElement($appUser);
+            // set the owning side to null (unless already changed)
+            if ($appUser->getRole() === $this) {
+                $appUser->setRole(null);
+            }
+        }
 
         return $this;
     }

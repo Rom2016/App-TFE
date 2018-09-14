@@ -1,43 +1,94 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Administration utilisateurs
+Administration
 {% endblock %}
-
 {% block stylesheets %}
-    <!-- Datatables -->
     {{ parent() }}
+    <link href="../css/table_user.css" rel="stylesheet" />
 
-    <link href="../vendor/jquery-ui-1.12.1/jquery-ui.min.css" rel="stylesheet">
-    <link href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="../vendor/iCheck/skins/flat/green.css" rel="stylesheet">
 
-{% endblock %}
+    <style>
+
+
+    .table-data tbody tr:hover td .more {
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    transform: scale(1);
+}
+
+
+.more {
+    display: inline-block;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    background: #e5e5e5;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
+    position: relative;
+    -webkit-transition: all 0.4s ease;
+    -o-transition: all 0.4s ease;
+    -moz-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+    -webkit-transform: scale(0);
+    -moz-transform: scale(0);
+    -ms-transform: scale(0);
+    -o-transform: scale(0);
+    transform: scale(0);
+}
+
+   .more i {
+    font-size: 20px;
+    color: #808080;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+ .tr-user{
+            transition: all 0.2s ease-in-out;
+
+        }
+        .tr-user:hover{
+            transform: scale(1.02, 1.02);
+        }
+        .adm-link{
+        font-size: 150%;
+        }
+    </style>
+
+{% endblock%}
 {% block body %}
     {{ parent() }}
-      <div class="row">
-            <div class="col-lg-6 col-md-12">
+    <div class="content">
+
+        <div class="container-fluid">
+             <div class="row">
+            <div class="col-lg-12 col-md-12">
               <div class="card">
                 <div class="card-header card-header-tabs card-header-primary">
                   <div class="nav-tabs-navigation">
                     <div class="nav-tabs-wrapper">
-                      <span class="nav-tabs-title">Tasks:</span>
+                      <span class="nav-tabs-title">Administrer:</span>
                       <ul class="nav nav-tabs" data-tabs="tabs">
                         <li class="nav-item">
                           <a class="nav-link active" href="#profile" data-toggle="tab">
-                            <i class="material-icons">bug_report</i> Bugs
+                            <p class="adm-link"><i class="fa fa-user"></i> Les utilisateurs</p>
                             <div class="ripple-container"></div>
                           </a>
                         </li>
                         <li class="nav-item">
                           <a class="nav-link" href="#messages" data-toggle="tab">
-                            <i class="material-icons">code</i> Website
-                            <div class="ripple-container"></div>
-                          </a>
-                        </li>
-                        <li class="nav-item">
-                          <a class="nav-link" href="#settings" data-toggle="tab">
-                            <i class="material-icons">cloud</i> Server
+                            <p class="adm-link"><i class="material-icons">security</i> Le contenu de l'audit</p>
                             <div class="ripple-container"></div>
                           </a>
                         </li>
@@ -48,95 +99,51 @@
                 <div class="card-body">
                   <div class="tab-content">
                     <div class="tab-pane active" id="profile">
-                      <table class="table">
-                        <tbody>
-                          <tr>
-                            <td>
-                              <div class="form-check">
-                                <label class="form-check-label">
-                                  <input class="form-check-input" type="checkbox" value="" checked>
-                                  <span class="form-check-sign">
-                                    <span class="check"></span>
-                                  </span>
-                                </label>
-                              </div>
-                            </td>
-                            <td>Sign contract for "What are conference organizers afraid of?"</td>
-                            <td class="td-actions text-right">
-                              <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-link btn-sm">
-                                <i class="material-icons">edit</i>
-                              </button>
-                              <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-link btn-sm">
-                                <i class="material-icons">close</i>
-                              </button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="form-check">
-                                <label class="form-check-label">
-                                  <input class="form-check-input" type="checkbox" value="">
-                                  <span class="form-check-sign">
-                                    <span class="check"></span>
-                                  </span>
-                                </label>
-                              </div>
-                            </td>
-                            <td>Lines From Great Russian Literature? Or E-mails From My Boss?</td>
-                            <td class="td-actions text-right">
-                              <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-link btn-sm">
-                                <i class="material-icons">edit</i>
-                              </button>
-                              <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-link btn-sm">
-                                <i class="material-icons">close</i>
-                              </button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="form-check">
-                                <label class="form-check-label">
-                                  <input class="form-check-input" type="checkbox" value="">
-                                  <span class="form-check-sign">
-                                    <span class="check"></span>
-                                  </span>
-                                </label>
-                              </div>
-                            </td>
-                            <td>Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit
-                            </td>
-                            <td class="td-actions text-right">
-                              <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-link btn-sm">
-                                <i class="material-icons">edit</i>
-                              </button>
-                              <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-link btn-sm">
-                                <i class="material-icons">close</i>
-                              </button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="form-check">
-                                <label class="form-check-label">
-                                  <input class="form-check-input" type="checkbox" value="" checked>
-                                  <span class="form-check-sign">
-                                    <span class="check"></span>
-                                  </span>
-                                </label>
-                              </div>
-                            </td>
-                            <td>Create 4 Invisible User Experiences you Never Knew About</td>
-                            <td class="td-actions text-right">
-                              <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-link btn-sm">
-                                <i class="material-icons">edit</i>
-                              </button>
-                              <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-link btn-sm">
-                                <i class="material-icons">close</i>
-                              </button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                    <div class="row">
+                            <div class="col-md-12">
+                                <!-- DATA TABLE -->
+
+                                <div class="table-responsive table-responsive-data2">
+                                    <table class="table table-data2">
+                                        <thead>
+                                            <tr>
+                                                <th>Nom</th>
+                                                <th>email</th>
+                                                <th>Fonction</th>
+                                                <th>Rôle</th>
+                                                <th>Utilisateur depuis</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for user in users %}
+                                            <tr class="tr-shadow tr-user">
+                                                <td>{{ user.first_name }} {{ user.secondName }}</td>
+                                                <td>
+                                                    <span class="block-email">{{ user.username }}</span>
+                                                </td>
+                                                <td class="desc">{{ user.function }}</td>
+                                                <td><span class="alert {% if user.role.role== 'ROLE_SUPER_ADMIN' %}alert-danger{% elseif user.role.role== 'ROLE_ADMIN'  %}alert-warning{% elseif user.role.role== 'ROLE_USER'  %}alert-info{% endif %}" >{{ user.role.role }}</span></td>
+                                                <td>
+                                                    <span class="status--process">{{ user.dateCreation|date('Y-m-d H:i:s') }}</span>
+                                                </td>
+                                                <td>
+                                                        <span class="more">
+                                                               <i class="material-icons">delete</i>
+                                                        </span>
+                                                         <span class="more">
+                                                              <i class="material-icons">lock</i>
+                                                        </span>
+                                                </td>
+                                            </tr>
+                                            <tr class="spacer"></tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- END DATA TABLE -->
+                    </div>
+                    </div>
                     </div>
                     <div class="tab-pane" id="messages">
                       <table class="table">
@@ -261,44 +268,17 @@
                 </div>
               </div>
             </div>
+        </div>
+
+    </div>
+
+
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-    <script src="../vendor/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-
     <script>
-        $( function() {
-            $('#myTable').DataTable({
-                "language": {
-                    "sProcessing": "Traitement en cours ...",
-                    "sLengthMenu": "Afficher _MENU_ lignes",
-                    "sZeroRecords": "Aucun résultat trouvé",
-                    "sEmptyTable": "Aucune donnée disponible",
-                    "sInfo": "Lignes _START_ à _END_ sur _TOTAL_",
-                    "sInfoEmpty": "Aucune ligne affichée",
-                    "sInfoFiltered": "(Filtrer un maximum de_MAX_)",
-                    "sInfoPostFix": "",
-                    "sSearch": "Chercher:",
-                    "sUrl": "",
-                    "sInfoThousands": ",",
-                    "sLoadingRecords": "Chargement...",
-                    "oPaginate": {
-                        "sFirst": "Premier", "sLast": "Dernier", "sNext": "Suivant", "sPrevious": "Précédent"
-                    },
-                    "oAria": {
-                        "sSortAscending": ": Trier par ordre croissant", "sSortDescending": ": Trier par ordre décroissant"
-                    }
-                }
-            });
-        });
-    </script>
-
-    <script src="../vendor/iCheck/icheck.min.js"></script>
-    <script>
-        $('.check-user').iCheck({
-            checkboxClass: 'icheckbox_flat-green'
-        })
+        $('.nav-item.active').removeClass('active');
+        $('#nav-adm').addClass('active');
     </script>
 {% endblock %}

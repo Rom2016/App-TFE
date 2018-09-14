@@ -49,15 +49,16 @@ class AppUser implements UserInterface, \Serializable
      */
     private $date_creation;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserRole", mappedBy="user")
-     */
-    private $userRoles;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\AuditCompany", mappedBy="owner")
      */
     private $audit;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Roles", inversedBy="appUsers")
+     */
+    private $role;
 
     /**
      * AppUser constructor.
@@ -158,9 +159,7 @@ class AppUser implements UserInterface, \Serializable
 
     public function getRoles()
     {
-        foreach ($this->getUserRoles() as $key => $value){
-            $roles[] = $value->getRole()->getRole();
-        }
+            $roles[] =$this->getRole()->getRole();
         return $roles;
     }
 
@@ -207,36 +206,7 @@ class AppUser implements UserInterface, \Serializable
         return null;
     }
 
-    /**
-     * @return Collection|UserRole[]
-     */
-    public function getUserRoles(): Collection
-    {
-        return $this->userRoles;
-    }
-
-    public function addUserRole(UserRole $userRole): self
-    {
-        if (!$this->userRoles->contains($userRole)) {
-            $this->userRoles[] = $userRole;
-            $userRole->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserRole(UserRole $userRole): self
-    {
-        if ($this->userRoles->contains($userRole)) {
-            $this->userRoles->removeElement($userRole);
-            // set the owning side to null (unless already changed)
-            if ($userRole->getUser() === $this) {
-                $userRole->setUser(null);
-            }
-        }
-
-        return $this;
-    }
+   
 
     /**
      * @return Collection|AuditCompany[]
@@ -265,6 +235,18 @@ class AppUser implements UserInterface, \Serializable
                 $audit->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRole(): ?Roles
+    {
+        return $this->role;
+    }
+
+    public function setRole(?Roles $role): self
+    {
+        $this->role = $role;
 
         return $this;
     }

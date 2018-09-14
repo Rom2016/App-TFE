@@ -34,7 +34,7 @@ class AuditController extends AbstractController
     /**
      * Méthode qui gère toute la partie Administration Audit
      *
-     * @Route("/administration/audit", name="admin_audit", options={"utf8": true})
+     * @Route("/adminidedestration", name="admin_audit", options={"utf8": true})
      */
     public function adminAudit()
     {
@@ -70,7 +70,7 @@ class AuditController extends AbstractController
                 $array['tests'] = $repository_test->findAll();
                 $array['test_type'] = $repository_test_type->findAll();
 
-                return $this->render('audit/administration_audit.html.twig', $array);
+                return $this->render('administration/administration.html.twig', $array);
                 /**
                  * Pas les droits admin.
                  */

@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 use App\Entity\AppUser;
+use App\Entity\AuditCompany;
 use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
 use App\Entity\Company;
@@ -140,7 +141,16 @@ class UserController extends AbstractController
         if(isset($_POST)) {
             $entityManager = $this->getDoctrine()->getManager();
             $repository_roles = $this->getDoctrine()->getRepository(UserRole::class);
+            $repository_audit = $this->getDoctrine()->getRepository(AuditCompany::class);
+
             $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(['id' => $_POST['id']]);
+            $audit = $repository_audit->findBy(['owner' => $user]);
+            if($audit){
+                foreach ($audit as $key => $value){
+                    $value->setOwner($this->getUser());
+                    $entityManager->persist($value);
+                }
+            }
             $role = $repository_roles->findOneBy(['user'=>$user]);
             $entityManager->remove($role);
             $entityManager->remove($user);

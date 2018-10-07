@@ -10,7 +10,6 @@
         .dash-header{
             background: white;
             padding: .5%;
-            color: purple;
         }
 
         .purple{
@@ -27,7 +26,7 @@
 <div class="content">
     <div class="container-fluid">
         <div class="row dash-header">
-            <h3>Tableau de bord</h3>
+            <h2>Tableau de bord</h2>
         </div>
         <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-6">
@@ -85,6 +84,44 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header card-header-warning">
+                        <h3 class="card-title">Emails envoyés</h3>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chartEmails"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+            <div class="card">
+                <div class="card-header card-header-primary">
+                    <h3 class="card-title">Audits réalisés</h3>
+                    <p class="card-category"></p>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartAudit"></canvas>
+                </div>
+            </div>
+        </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header card-header-info">
+                        <h3 class="card-title">Prises de contact demandées</h3>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chartAppoint"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div id="map"></div>
     </div>
 </div>
 
@@ -92,9 +129,130 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="../vendor/Chart.js/dist/Chart.js"></script>
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBugC8GAYi9NRF7IHPn0_kMv3yZXNJbp8"></script>
     <script>
         $('.nav-item.active').removeClass('active');
         $('#nav-dash').addClass('active');
+        var ctxEmail = $('#chartEmails');
+        var ctxAudit = $('#chartAudit');
+        var ctxAppoint = $('#chartAppoint');
 
+           var myCharEmails = new Chart(ctxEmail, {
+            type: 'line',
+            data: {
+                labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin"],
+                datasets: [
+                    {
+                        label : 'Nombre d\'audits réalisés',
+                        data : [20,15,35,20,10,25],
+                        backgroundColor : 'rgba(255, 167, 38, 0.1)',
+                        borderColor : '#ffa726',
+                        fill : true,
+                        lineTension : .4
+                    }
+                ]
+            },
+            options: {
+                legend: {
+                    display : false
+                },
+                title: {
+                    display : false,
+                    position : 'top',
+                    text : 'Nombre d\'audits réalisés par semestre',
+                    fontSize : 18,
+                },
+                scales:
+                    {
+
+                        yAxes: [{
+                            gridLines : {
+                                display : false
+                            }
+                        }],
+                    }
+            }
+
+        })
+        var myCharAudit = new Chart(ctxAudit, {
+            type: 'line',
+            data: {
+                labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin"],
+                datasets: [
+                    {
+                        label : 'Nombre d\'audits réalisés',
+                        data : [10,5,15,8,6,20],
+                        backgroundColor : 'rgba(156, 39, 175, 0.1)',
+                        borderColor : '#9c27b0',
+                        fill : true,
+                        lineTension : .4
+                    }
+                ]
+            },
+            options: {
+                legend: {
+                    display : false
+                },
+                title: {
+                    display : false,
+                    position : 'top',
+                    text : 'Nombre d\'audits réalisés par semestre',
+                    fontSize : 18,
+                },
+                scales:
+                    {
+
+                        yAxes: [{
+                            gridLines : {
+                                display : false
+                            }
+                        }],
+                    }
+            }
+
+        })
+        var myChartAppoint = new Chart(ctxAppoint, {
+            type: 'line',
+            data: {
+                labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin"],
+                datasets: [
+                    {
+                        label : 'Nombre de rendez-vous pris',
+                        data : [2,1,8,6,4,12],
+                        backgroundColor : 'rgba(156, 188, 212, 0.1)',
+                        borderColor : '#00bcd4',
+                        fill : true,
+                        lineTension : .4
+                    }
+                ]
+            },
+            options: {
+                legend: {
+                    display : false
+                },
+                title: {
+                    display : false,
+                    position : 'top',
+                    text : 'Nombre d\'audits réalisés par semestre',
+                    fontSize : 18,
+                },
+                scales:
+                    {
+
+                        yAxes: [{
+                            gridLines : {
+                                display : false
+                            }
+                        }],
+                    }
+            }
+
+        })
+          $(document).ready(function() {
+      // Javascript method's body can be found in assets/js/demos.js
+      demo.initGoogleMaps();
+    });
     </script>
+
 {% endblock %}

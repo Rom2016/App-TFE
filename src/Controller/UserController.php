@@ -14,12 +14,13 @@ use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
 use App\Entity\Company;
 use App\Entity\Roles;
-use App\Entity\UserRole;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use LasseRafn\InitialAvatarGenerator\InitialAvatar;
+
 
 
 class UserController extends AbstractController
@@ -106,59 +107,9 @@ class UserController extends AbstractController
          */
     }
 
-    /**
-     * Méthode appelée dans la celle ci-dessus lors de la soumission d'un nouvel utilisateur
-     */
-    public function newUser()
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-        $repository_roles = $this->getDoctrine()->getRepository(Roles::class);
-        $role = $repository_roles->findOneBy(['role'=>'ROLE_USER']);
-        $pwd = password_hash('TF3_@UD1T-2018', PASSWORD_BCRYPT);
-        $date = date('Y-m-d H:i:s');
-        $date = new \DateTime($date);
-        $user = new AppUser($_POST['email'], $pwd, $_POST['fName'],$_POST['sName'],$_POST['function'], $date, $role);
-        $user_role = new UserRole($user, $role);
-        /**
-         * L'EntityManager de Doctrine s'occupe de faire la conversion objet->base de données relationnelle.
-         */
-        $entityManager->persist($user);
-        $entityManager->persist($user_role);
-        $entityManager->flush();
-    }
 
 
-    /**
-     * Appelée par requête AJAX pour la suppression d'utilisateurs sur la page d'administration des utilisateurs.
-     * La requête envoie l'ID par POST de chaque utilisateur coché dans la table.
-     * La méthode boucle sur cette variable pour les récupérer et supprime l'utilisateur.
-     *
-     * @Route("/administration/utilisateur/supprimer-utilisateur", name="delete_user", methods="POST")
-     */
-    public function deleteUser()
-    {
 
-        if(isset($_POST)) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $repository_roles = $this->getDoctrine()->getRepository(UserRole::class);
-            $repository_audit = $this->getDoctrine()->getRepository(AuditCompany::class);
-
-            $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(['id' => $_POST['id']]);
-            $audit = $repository_audit->findBy(['owner' => $user]);
-            if($audit){
-                foreach ($audit as $key => $value){
-                    $value->setOwner($this->getUser());
-                    $entityManager->persist($value);
-                }
-            }
-            $role = $repository_roles->findOneBy(['user'=>$user]);
-            $entityManager->remove($role);
-            $entityManager->remove($user);
-            $entityManager->flush();
-        }
-        $array['id'] = $_POST['id'];
-        return new JsonResponse($array);
-    }
 
 
     /**
@@ -186,5 +137,17 @@ class UserController extends AbstractController
                 $array = $_SESSION['user']->getAll();
             }
             return $this->render('user/profile_user.html.twig');
+    }
+
+    /**
+     *
+     * @Route("/génèrer-avatar", name="generate_avatar", options={"utf8": true})
+     */
+    public function generateAvatar()
+    {
+        $avatar = new InitialAvatar();
+        $name = $this->getUser()->first_name.' '.$this->getUser()->second_name;
+        $image = $avatar->size(120)->name($name)->background('#9124a3')->generate();
+        return new Response($image->stream('png', 100));
     }
 }

@@ -61,6 +61,26 @@ class AppUser implements UserInterface, \Serializable
     private $role;
 
     /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    public $profile_pic;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\AppUser")
+     */
+    private $creator;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastModifiedDate;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\AppUser")
+     */
+    private $lastModifiedBy;
+
+    /**
      * AppUser constructor.
      * @param $username
      * @param $password
@@ -68,8 +88,10 @@ class AppUser implements UserInterface, \Serializable
      * @param $second_name
      * @param $function
      * @param $date_creation
+     * @param $role
+     * @param $creator
      */
-    public function __construct($username, $password, $first_name, $second_name, $function, $date_creation)
+    public function __construct($username, $password, $first_name, $second_name, $function, $date_creation, $role, $creator)
     {
         $this->username = $username;
         $this->password = $password;
@@ -77,6 +99,8 @@ class AppUser implements UserInterface, \Serializable
         $this->second_name = $second_name;
         $this->function = $function;
         $this->date_creation = $date_creation;
+        $this->role = $role;
+        $this->creator = $creator;
     }
 
 
@@ -177,7 +201,9 @@ class AppUser implements UserInterface, \Serializable
             $this->first_name,
             $this->second_name,
             $this->function,
-            $this->date_creation
+            $this->date_creation,
+            $this->profile_pic
+
             // see section on salt below
             // $this->salt,
         ));
@@ -193,7 +219,8 @@ class AppUser implements UserInterface, \Serializable
             $this->first_name,
             $this->second_name,
             $this->function,
-            $this->date_creation
+            $this->date_creation,
+            $this->profile_pic
             // see section on salt below
             // $this->salt
             ) = unserialize($serialized, array('allowed_classes' => false));
@@ -247,6 +274,54 @@ class AppUser implements UserInterface, \Serializable
     public function setRole(?Roles $role): self
     {
         $this->role = $role;
+
+        return $this;
+    }
+
+    public function getProfilePic(): ?string
+    {
+        return $this->profile_pic;
+    }
+
+    public function setProfilePic(?string $profile_pic): self
+    {
+        $this->profile_pic = $profile_pic;
+
+        return $this;
+    }
+
+    public function getCreator(): ?self
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?self $creator): self
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
+
+    public function getLastModifiedDate(): ?\DateTimeInterface
+    {
+        return $this->lastModifiedDate;
+    }
+
+    public function setLastModifiedDate(?\DateTimeInterface $lastModifiedDate): self
+    {
+        $this->lastModifiedDate = $lastModifiedDate;
+
+        return $this;
+    }
+
+    public function getLastModifiedBy(): ?self
+    {
+        return $this->lastModifiedBy;
+    }
+
+    public function setLastModifiedBy(?self $lastModifiedBy): self
+    {
+        $this->lastModifiedBy = $lastModifiedBy;
 
         return $this;
     }

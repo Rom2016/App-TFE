@@ -8,8 +8,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Roles;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use App\Entity\AppUser;
+use App\Entity\AuditCompany;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
@@ -32,7 +36,7 @@ class AdministrationController extends AbstractController
         if ($_POST){
             switch ($_POST['submit']) {
                 case 'newUser':
-                    //$this->newUser();
+                    $this->newUser();
                     break;
             }
         }
@@ -47,4 +51,71 @@ class AdministrationController extends AbstractController
          */
     }
 
+    /**
+     *
+     * @Route("/supprimer-utilisateur", name="ajax_delete_user")
+     */
+    public function deleteUser()
+    {
+        if(isset($_POST)) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $repository_audit = $this->getDoctrine()->getRepository(AuditCompany::class);
+
+            $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(['id' => $_POST['id']]);
+            $audit = $repository_audit->findBy(['owner' => $user]);
+            if($audit){
+                foreach ($audit as $key => $value){
+                    $value->setOwner($this->getUser());
+                    $entityManager->persist($value);
+                }
+            }
+            $entityManager->remove($user);
+            $entityManager->flush();
+        }
+        $array['response'] = 'Utilisateur supprimé!';
+        return new JsonResponse($array);
+    }
+
+    public function newUser()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $repository_user =  $this->getDoctrine()->getRepository(AppUser::class);
+        $repository_role = $this->getDoctrine()->getRepository(Roles::class);
+        $role = $repository_role->findOneBy(['role'=>$_POST['selectRole']]);
+        $date = new \DateTime(date('Y-m-d H:i:s'));
+        $user = new AppUser($_POST['email'],password_hash('test', PASSWORD_BCRYPT),$_POST['fName'],$_POST['sName'],$_POST['function'],$date,$role,$this->getUser());
+        $entityManager->persist($user);
+        $entityManager->flush();
+    }
+
+    /**
+     *
+     * @Route("/roles", name="ajax_get_role")
+     */
+    public function getRole()
+    {
+        $repository_role = $this->getDoctrine()->getRepository(Roles::class);
+        $array = $repository_role->findAll();
+        foreach ($array as $key => $value){
+            $array['role'][] = $value->getRole();
+        }
+        return new JsonResponse($array['role']);
+    }
+
+    /**
+     *
+     * @Route("/changer-role", name="ajax_save_role", methods="POST")
+     */
+    public function saveRole()
+    {
+        $repository_role = $this->getDoctrine()->getRepository(Roles::class);
+        $entityManager = $this->getDoctrine()->getManager();
+        $repository_user =  $this->getDoctrine()->getRepository(AppUser::class);
+        $role = $repository_role->findOneBy(['role'=>$_POST['role']]);
+        $user = $repository_user->findOneBy(['id'=>$_POST['id']]);
+        $user->setRole($role);
+        $entityManager->persist($user);
+        $entityManager->flush();
+        return new Response($_POST['role']);
+    }
 }

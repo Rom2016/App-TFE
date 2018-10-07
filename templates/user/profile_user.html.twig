@@ -7,55 +7,171 @@
 {% block stylesheets %}
     {{ parent() }}
     <link href="../vendor/jquery-cropbox-master/jquery.cropbox.css" rel="stylesheet">
+    <style>
+        .card-profile{
+            text-align: left;
+        }
+
+        /* The overlay effect (full height and width) - lays on top of the container and over the image */
+        .overlay {
+            position: absolute;
+            opacity: 0;
+            transition: .3s ease;
+            background-color: red;
+        }
+
+        /* When you mouse over the container, fade in the overlay icon*/
+        .card-avatar:hover .overlay {
+            opacity: 1;
+        }
+
+        /* The icon inside the overlay is positioned in the middle vertically and horizontally */
+        .icon {
+            color: white;
+            font-size: 40px;
+            position: absolute;
+            transform: translate(90%, -190%);
+        }
+
+        /* When you move the mouse over the icon, change color */
+        .fa-camera:hover {
+            color: #eee;
+        }
+
+        #nav-profile .nav-item{
+            background-color: #eee;
+            border: solid 2px white;
+        }
+
+        .nav-link{
+            color: black;
+        }
+
+        .nav-link:hover{
+            color: black;
+            background-color: lightgrey;
+        }
+        .nav-link.active{
+            background-color: white;
+            color: black;
+
+        }
+
+        ::placeholder {
+            color: black;
+        }
+    </style>
 
 {% endblock %}
 
 {% block body %}
 
     {{ parent() }}
-    <div class="right_col" role="main">
-                <div class="row">
-                    <div class="col-md-6 col-sm-3 col-xs-12 col-md-offset-3 small-container" style="padding: 2%">
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-1"></div>
+                                        <div class="col-md-2">
 
-                    <div class="col-md-6 col-sm-3 col-xs-12">
-                                <div class="profile_img">
-                                    <div id="crop-avatar">
-                                        <!-- Current avatar -->
-                                        <img class="img-responsive avatar-view" id="profile_pic" src="../images/profile_pic/" alt="Avatar" title="Change the avatar">
+                <ul class="nav flex-column" id="nav-profile" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="pill" href="#home">Mes informations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="pill" href="#menu1">Projet</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="pill" href="#menu2">Menu 2</a>
+                    </li>
+                </ul>
+               </div>
+                <!-- Tab panes -->
+                <div class="col-md-6">
+
+                <div class="tab-content">
+                    <div id="home" class="container tab-pane active"><br>
+                            <div class="card card-profile">
+                                <div class="card-avatar">
+                                    <img class="img" {% if not app.user.profile_pic %}src="../génèrer-avatar"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} />
+                                    <div class="overlay">
+                                        <a href="#" class="icon" title="Modifier la photo de profile">
+                                            <i class="fa fa-camera"></i>
+                                        </a>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-sm-3 col-xs-12">
-                                    <form class="form-horizontal form-label-left input_mask" method="post" action="../profile">
-
-                                        <div class="col-md-12 col-sm-6 col-xs-12 form-group has-feedback">
-                                            <input type="text" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Prénom" name="fName" value="{{ app.user.first_name }}">
-                                            <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                                <div class="card-body">
+                                    <form>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="bmd-label-floating">{{ app.user.first_name }}</label>
+                                                    <input type="text" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="bmd-label-floating">{{ app.user.second_name }}</label>
+                                                    <input type="text" class="form-control">
+                                                </div>
+                                            </div>
                                         </div>
-
-                                        <div class="col-md-12 col-sm-6 col-xs-12 form-group has-feedback">
-                                            <input type="text" class="form-control" id="inputSuccess3" placeholder="Nom" name="sName" value="{{  app.user.second_name }}">
-                                            <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="bmd-label-floating">{{ app.user.username }}</label>
+                                                    <input type="email" class="form-control">
+                                                </div>
+                                            </div>
                                         </div>
-
-                                        <div class="col-md-12 col-sm-6 col-xs-12 form-group has-feedback">
-                                            <input type="text" class="form-control has-feedback-left" id="inputSuccess4" placeholder="Email" name="email" value="{{  app.user.username }}">
-                                            <span class="fa fa-envelope form-control-feedback left" aria-hidden="true"></span>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="bmd-label-floating">{{ app.user.function }}</label>
+                                                    <input type="text" class="form-control">
+                                                </div>
+                                            </div>
                                         </div>
-
-                                        <div class="col-md-12 col-sm-6 col-xs-12 form-group has-feedback">
-                                            <input type="text" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Fonction" name="function" value="{{  app.user.function }}">
-                                            <span class="fa fa-briefcase form-control-feedback left" aria-hidden="true"></span>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label>A propos de moi</label>
+                                                    <div class="form-group">
+                                                        <label class="bmd-label-floating"></label>
+                                                        <textarea class="form-control" rows="5"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-md-12 col-sm-6 col-xs-12 col-md-offset-4 col-xs-offset-4">
-                                            <button type="submit" class="btn btn-primary" name="submit" value="editProfile">Editer profile</button>
-                                        </div>
+                                        <button type="submit" class="btn btn-primary pull-right">Mettre à jour</button>
+                                        <div class="clearfix"></div>
                                     </form>
                                 </div>
-
-                                    </div>
-                                </div>
                             </div>
+                        <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title">Changer de mot de passe</h4>
+                  <p class="card-category"></p>
+                </div>
+                <div class="card-body">
+                </div>
+                        </div>
+                    </div>
+
+
+                    <div id="menu1" class="container tab-pane fade"><br>
+                        <h3>Menu 1</h3>
+                        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    </div>
+                    <div id="menu2" class="container tab-pane fade"><br>
+                        <h3>Menu 2</h3>
+                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
 {% endblock %}
@@ -63,11 +179,6 @@
     {{ parent() }}
     <script src="../vendor/jquery-cropbox-master/jquery.cropbox.js"></script>
     <script>
-        $('#profile_pic').cropbox({
-            width: 200,
-            height: 200
-        }).on('cropbox', function(e, data) {
-            console.log('crop window: ' + data);
-        });
+
     </script>
 {% endblock %}

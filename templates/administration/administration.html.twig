@@ -6,6 +6,9 @@ Administration
 {% block stylesheets %}
     {{ parent() }}
     <link href="../css/table_user.css" rel="stylesheet" />
+        <link href="../vendor/jQuery-popover/css/bootstrap-popover-x.css" rel="stylesheet">
+
+        <link href="../vendor/sweet-alert/dist/sweetalert2.css" rel="stylesheet">
 
 
     <style>
@@ -88,6 +91,12 @@ Administration
                         </li>
                         <li class="nav-item">
                           <a class="nav-link" href="#messages" data-toggle="tab">
+                            <p class="adm-link"><i class="material-icons">description</i> Les audits</p>
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="#messages" data-toggle="tab">
                             <p class="adm-link"><i class="material-icons">security</i> Le contenu de l'audit</p>
                             <div class="ripple-container"></div>
                           </a>
@@ -117,29 +126,39 @@ Administration
                                         </thead>
                                         <tbody>
                                         {% for user in users %}
-                                            <tr class="tr-shadow tr-user">
+                                            <tr class="tr-shadow tr-user" id="user{{ user.id }}">
                                                 <td>{{ user.first_name }} {{ user.secondName }}</td>
                                                 <td>
                                                     <span class="block-email">{{ user.username }}</span>
                                                 </td>
                                                 <td class="desc">{{ user.function }}</td>
-                                                <td><span class="alert {% if user.role.role== 'ROLE_SUPER_ADMIN' %}alert-danger{% elseif user.role.role== 'ROLE_ADMIN'  %}alert-warning{% elseif user.role.role== 'ROLE_USER'  %}alert-info{% endif %}" >{{ user.role.role }}</span></td>
+                                                <td id="userRole{{ user.id }}"><span class="alert {% if user.role.role== 'ROLE_SUPER_ADMIN' %}alert-danger{% elseif user.role.role== 'ROLE_ADMIN'  %}alert-warning{% elseif user.role.role== 'ROLE_USER'  %}alert-info{% endif %}" >{{ user.role.role }}</span></td>
                                                 <td>
                                                     <span class="status--process">{{ user.dateCreation|date('Y-m-d H:i:s') }}</span>
                                                 </td>
                                                 <td>
+                                                                    {% if is_granted('ROLE_SUPER_ADMIN') %}
+
                                                         <span class="more">
-                                                               <i class="material-icons">delete</i>
+                                                               <i class="material-icons swalDelete" rel="tooltip" title="Supprimer l'utilisateur" onclick="delUser('{{ user.first_name }} {{ user.secondName }}',{{ user.id }})">delete</i>
+
                                                         </span>
+                                                        {% endif %}
                                                          <span class="more">
-                                                              <i class="material-icons">lock</i>
+                                                              <i class="material-icons" rel="tooltip" title="Modifier les permissions" onclick="changeRole({{ user.id }})">lock</i>
                                                         </span>
                                                 </td>
                                             </tr>
                                             <tr class="spacer"></tr>
                                             {% endfor %}
+
+
                                         </tbody>
+
                                     </table>
+                                     <button type="button" id="btnAddUser" rel="tooltip" title="Ajouter un utilisateur" class="btn btn-info btn-block" onclick="addUser()">
+                                                <i class="material-icons">add</i>
+                                            </button>
                                 </div>
                                 <!-- END DATA TABLE -->
                     </div>
@@ -261,6 +280,7 @@ Administration
                               </button>
                             </td>
                           </tr>
+
                         </tbody>
                       </table>
                     </div>
@@ -277,8 +297,12 @@ Administration
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="../vendor/sweet-alert/dist/sweetalert2.js"></script>
     <script>
         $('.nav-item.active').removeClass('active');
         $('#nav-adm').addClass('active');
+        $('#btnAddUser').click(function(){
+
+        })
     </script>
 {% endblock %}

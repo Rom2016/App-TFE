@@ -81,6 +81,11 @@ class AppUser implements UserInterface, \Serializable
     private $lastModifiedBy;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Logs", mappedBy="User")
+     */
+    private $logs;
+
+    /**
      * AppUser constructor.
      * @param $username
      * @param $password
@@ -101,6 +106,7 @@ class AppUser implements UserInterface, \Serializable
         $this->date_creation = $date_creation;
         $this->role = $role;
         $this->creator = $creator;
+        $this->logs = new ArrayCollection();
     }
 
 
@@ -322,6 +328,37 @@ class AppUser implements UserInterface, \Serializable
     public function setLastModifiedBy(?self $lastModifiedBy): self
     {
         $this->lastModifiedBy = $lastModifiedBy;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Logs[]
+     */
+    public function getLogs(): Collection
+    {
+        return $this->logs;
+    }
+
+    public function addLog(Logs $log): self
+    {
+        if (!$this->logs->contains($log)) {
+            $this->logs[] = $log;
+            $log->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLog(Logs $log): self
+    {
+        if ($this->logs->contains($log)) {
+            $this->logs->removeElement($log);
+            // set the owning side to null (unless already changed)
+            if ($log->getUser() === $this) {
+                $log->setUser(null);
+            }
+        }
 
         return $this;
     }

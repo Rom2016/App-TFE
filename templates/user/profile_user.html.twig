@@ -6,8 +6,14 @@
 {% endblock %}
 {% block stylesheets %}
     {{ parent() }}
-    <link href="../vendor/jquery-cropbox-master/jquery.cropbox.css" rel="stylesheet">
+    <link rel="stylesheet" href="../vendor/Croppie-2.6.2/croppie.css" />
+
+
     <style>
+        .myDropzone{
+            border: #337ab7 dashed 1px;
+            margin-top: 2%;
+        }
         .card-profile{
             text-align: left;
         }
@@ -92,11 +98,27 @@
                     <div id="home" class="container tab-pane active"><br>
                             <div class="card card-profile">
                                 <div class="card-avatar">
-                                    <img class="img" {% if not app.user.profile_pic %}src="../génèrer-avatar"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} />
+                                    <img class="img" {% if not app.user.profile_pic %}src="../génèrer-avatar?rq=avatar"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %}  />
                                     <div class="overlay">
                                         <a href="#" class="icon" title="Modifier la photo de profile">
-                                            <i class="fa fa-camera"></i>
+                                            <i class="fa fa-camera" id="profileIcon"></i>
+                                            <input type="file" id="file1"  name="file1" accept="image/*" style="display:none" />
+
                                         </a>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="myModal" role="dialog">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                            </div>
+                                            <div class="modal-body">
+                                                <div id="croppie"></div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                            <div class="modal-footer">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -177,8 +199,37 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-    <script src="../vendor/jquery-cropbox-master/jquery.cropbox.js"></script>
+
+    <script src="../vendor/Croppie-2.6.2/croppie.js"></script>
     <script>
+        $("#profileIcon").click(function () {
+            $("#file1").trigger('click');
+        });
+        $image_crop = $('#croppie').croppie({
+            enableExif: true,
+            viewport: {
+                width:200,
+                height:200,
+                type:'square' //circle
+            },
+            boundary:{
+                width:300,
+                height:300
+            }
+        });
+
+        $('#file1').on('change', function(){
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                $image_crop.croppie('bind', {
+                    url: event.target.result
+                }).then(function(){
+                    console.log('jQuery bind complete');
+                });
+            }
+            reader.readAsDataURL(this.files[0]);
+            $('#myModal').modal('show');
+        });
 
     </script>
 {% endblock %}

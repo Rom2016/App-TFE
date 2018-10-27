@@ -13,6 +13,10 @@
         {% block stylesheets %}
             <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+            <link href="../vendor/sweet-alert/dist/sweetalert2.css" rel="stylesheet">
+            <link href="../vendor/SmartWizard/dist/css/smart_wizard_theme_dots.css" rel="stylesheet">
+            <link href="../vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
+
             <!-- CSS Files -->
             <link href="../css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
         {% endblock %}
@@ -34,7 +38,7 @@
                 </a>
                 <div class="center">
                     <a href="../profile">
-                    <img {% if not app.user.profile_pic %}src="../génèrer-avatar"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} class="rounded-circle img" />
+                    <img {% if not app.user.profile_pic %}src="../génèrer-avatar?rq=avatar"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} class="rounded-circle img" />
                     </a>
                     <h6 class="card-category text-gray">{{ app.user.function }}</h6>
                     <h4 class="card-title">{{ app.user.first_name }} {{ app.user.second_name }}</h4>
@@ -67,11 +71,87 @@
                     {% endif %}
                 </ul>
                 <li>
-                    <a class="btn btn-info" style="margin-left: 10%; margin-top: 10%; width: 60%" href="../">
-                        <i class="fa fa-plus"></i>
+                    <button class="btn btn-info"  data-toggle="modal" data-target="#modalAudit" style="margin-left: 10%; margin-top: 10%; width: 60%">
+                        <i class="fa fa-plus" ></i>
                         Créer un audit
-                    </a>
+                    </button>
+
                 </li>
+            </div>
+        </div>
+        <div class="modal fade" id="modalAudit" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="smartWizard">
+                            <ul>
+                                <li><a href="#step-1">1<br /><small>Nommer l'audit</small></a></li>
+                                <li><a href="#step-2">2<br /><small>Informations de l'entreprise</small></a></li>
+                                <li><a href="#step-3">3<br /><small>Inviter des participants</small></a></li>
+                            </ul>
+                            <div>
+                                <div id="step-1" class="form-group text-center">
+                                    <h2>Nom de l'audit</h2>
+                                    <input type="text" class="boot-form-control input-lg">
+                                </div>
+                                <div id="step-2" class="">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating">Nom de l'entreprise</label>
+                                                <input type="text" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating">Adresse mail</label>
+                                                <input type="text" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating">N°</label>
+                                                <input type="text" class="form-control">
+                                            </div>
+                                        </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="bmd-label-floating">Rue</label>
+                                                    <input type="text" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="bmd-label-floating">Code postale</label>
+                                                    <input type="text" class="form-control">
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating">Téléphone</label>
+                                                <input type="email" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="step-3" class="">
+                                    <div class="row" id="containerParticipants">
+                                    <div class="col-md-12">
+                                        <p><img {% if not app.user.profile_pic %}src="../génèrer-avatar?rq=avatar"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} class="rounded-circle" style="width: 30px">{{ app.user.first_name }} {{ app.user.second_name }}/{{ app.user.username }}</p>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-info btn-block" style="margin-top: 5%">Envoyer</button>
+
+                    </div>
+                </div>
             </div>
         </div>
         <div class="main-panel">
@@ -105,7 +185,7 @@
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link" id="navbarDropdownMenuAccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <img {% if not app.user.profile_pic %}src="../génèrer-avatar"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} class="rounded-circle" style="width: 20px" />
+                                    <img {% if not app.user.profile_pic %}src="../génèrer-avatar?rq=avatar"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} class="rounded-circle" style="width: 20px" />
                                     <p class="d-lg-none d-md-block">
                                         Account
                                     </p>
@@ -140,6 +220,7 @@
         <script src="../js/core/jquery.min.js" type="text/javascript"></script>
         <script src="../js/core/popper.min.js" type="text/javascript"></script>
         <script src="../js/core/bootstrap-material-design.min.js" type="text/javascript"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="../js/plugins/perfect-scrollbar.jquery.min.js"></script>
         <!--  Google Maps Plugin    -->
         <!-- Chartist JS -->
@@ -148,13 +229,24 @@
         <script src="../js/plugins/bootstrap-notify.js"></script>
         <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
         <script src="../js/material-dashboard.min.js?v=2.1.0" type="text/javascript"></script>
+        <script src="../vendor/sweet-alert/dist/sweetalert2.js"></script>
+        <script src="../vendor/bootstrap/js/bootstrap.js"></script>
+        <script src="../vendor/SmartWizard/dist/js/jquery.smartWizard.js"></script>
         <script src="../js/custom.min.js" type="text/javascript"></script>
 
         <script>
             $(document).ready(function() {
                 // Javascript method's body can be found in assets/js/demos.js
                 md.initDashboardPageCharts();
-
+                $('#smartWizard').smartWizard({
+                    lang: {
+                        next: 'Suivant',
+                        previous: 'Précédent'
+                    },
+                    theme: 'dots',
+                    transitionEffect: 'fade', // Effect on navigation, none/slide/fade
+                    transitionSpeed: '400'
+                });
             });
         </script>
     {% endblock %}

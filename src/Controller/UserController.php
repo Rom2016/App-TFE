@@ -63,11 +63,12 @@ class UserController extends AbstractController
         $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
         $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
 
-
+        $array['users'] = $repository_user->findAll();
         $array['nbUser'] = $repository_user->getNb();
         $array['nbCompany'] = $repository_company->getNb();
         $array['nbPhase'] = $repository_phase->getNb();
         $array['nbTest'] = $repository_test->getNb();
+
 
         return $this->render('user/homepage.html.twig', $array);
     }
@@ -146,8 +147,17 @@ class UserController extends AbstractController
     public function generateAvatar()
     {
         $avatar = new InitialAvatar();
-        $name = $this->getUser()->first_name.' '.$this->getUser()->second_name;
-        $image = $avatar->size(120)->name($name)->background('#9124a3')->generate();
-        return new Response($image->stream('png', 100));
+        switch($_GET['rq']){
+            case 'avatar':
+                $name = $this->getUser()->first_name.' '.$this->getUser()->second_name;
+                $image = $avatar->size(120)->name($name)->background('#9124a3')->generate();
+                return new Response($image->stream('png', 100));
+                break;
+            case 'administration':
+                $name = $_GET['p'].' '.$_GET['n'];
+                $image = $avatar->size(120)->name($name)->background('#9124a3')->generate();
+                return new Response($image->stream('png', 100));
+                break;
+        }
     }
 }

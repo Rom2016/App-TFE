@@ -53,7 +53,7 @@ class AdministrationController extends AbstractController
 
     /**
      *
-     * @Route("/supprimer-utilisateur", name="ajax_delete_user")
+     * @Route("/administration/supprimer-utilisateur", name="ajax_delete_user",methods="POST")
      */
     public function deleteUser()
     {
@@ -90,7 +90,7 @@ class AdministrationController extends AbstractController
 
     /**
      *
-     * @Route("/roles", name="ajax_get_role")
+     * @Route("/administration/roles", name="ajax_get_role",methods="POST")
      */
     public function getRole()
     {
@@ -104,7 +104,7 @@ class AdministrationController extends AbstractController
 
     /**
      *
-     * @Route("/changer-role", name="ajax_save_role", methods="POST")
+     * @Route("/administration/changer-role", name="ajax_save_role", methods="POST")
      */
     public function saveRole()
     {
@@ -117,5 +117,20 @@ class AdministrationController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
         return new Response($_POST['role']);
+    }
+
+    /**
+     *
+     * @Route("/administration/vérifie-utilisateur", name="ajax_check_username", options={"utf8": true}, methods="POST")
+     */
+    public function checkUsername()
+    {
+        $repository_user = $this->getDoctrine()->getRepository(AppUser::class);
+        $user = $repository_user->findOneBy(['username'=>$_POST['email']]);
+        if($user){
+            return new Response('false');
+        }else{
+            return new Response('true');
+        }
     }
 }

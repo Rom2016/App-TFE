@@ -85,10 +85,10 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-8">
                 <div class="card">
                     <div class="card-header card-header-warning">
-                        <h3 class="card-title">Emails envoyés</h3>
+                        <h3 class="card-title">Statistiques</h3>
                         <p class="card-category"></p>
                     </div>
                     <div class="card-body">
@@ -120,6 +120,7 @@
             </div>
 
         </div>
+
         <div class="row">
             <div id="map"></div>
     </div>
@@ -144,13 +145,30 @@
                 labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin"],
                 datasets: [
                     {
-                        label : 'Nombre d\'audits réalisés',
+                        label : 'Nombre de mails envoyés',
                         data : [20,15,35,20,10,25],
                         backgroundColor : 'rgba(255, 167, 38, 0.1)',
                         borderColor : '#ffa726',
-                        fill : true,
+                        fill : false,
+                        lineTension : .4
+                    },
+                        {
+                        label : 'Nombre d\'audits réalisés',
+                        data : [10,5,15,8,6,20],
+                        backgroundColor : 'rgba(156, 39, 175, 0.1)',
+                        borderColor : '#9c27b0',
+                        fill : false,
+                        lineTension : .4
+                    },
+                      {
+                        label : 'Nombre de prises de contact prises',
+                        data : [2,1,8,6,4,12],
+                        backgroundColor : 'rgba(156, 188, 212, 0.1)',
+                        borderColor : '#00bcd4',
+                        fill : false,
                         lineTension : .4
                     }
+
                 ]
             },
             options: {

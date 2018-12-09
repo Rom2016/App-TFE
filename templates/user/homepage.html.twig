@@ -28,8 +28,58 @@
         <div class="row dash-header">
             <h2>Tableau de bord</h2>
         </div>
+
         <div class="row">
-            <div class="col-lg-4 col-md-6 col-sm-6">
+           <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header card-header-info">
+                        <h3 class="card-title">Mes audits créés</h3>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead class="text-info">
+                                  <tr>
+                                    <th>
+                                       Nom de l'audit
+                                    </th>
+                                     <th>
+                                        Client
+                                     </th>
+                                     <th>
+                                        Statut
+                                     </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for audit in createdAudit %}
+                                    <tr>
+                                        <td>{{ audit.name }}</td>
+                                        <td>{{ audit.customer.name }}</td>
+                                        <td>{% if audit.finishDate is not null %}<i class="material-icons" style="color : #55b559">check_circle</i> {% elseif audit.started == false %}<i class="material-icons" style="">power_settings_new</i>{% else %}<i class="material-icons" style="">pause_circle_filled</i>{% endif %}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header card-header-warning">
+                        <h3 class="card-title">Audits</h3>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chartEmails"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="card card-stats">
                     <div class="card-header card-header-info card-header-icon">
                         <div class="card-icon">
@@ -47,25 +97,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6 col-sm-6">
-                <div class="card card-stats">
-                    <div class="card-header card-header-info card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">description</i>
-                        </div>
-                        <p class="card-category">Audits Créés</p>
-                        <h3 class="card-title purple" style="color: purple">{{ nbCompany }}
-                        </h3>
-                    </div>
-                    <div class="card-footer">
-                        <div class="stats">
-                            <i class="material-icons">link</i>
-                            <a href="#pablo">Visualiser</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-6">
+
+            <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="card card-stats">
                     <div class="card-header card-header-info card-header-icon">
                         <div class="card-icon">
@@ -84,42 +117,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header card-header-warning">
-                        <h3 class="card-title">Statistiques</h3>
-                        <p class="card-category"></p>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="chartEmails"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-            <div class="card">
-                <div class="card-header card-header-primary">
-                    <h3 class="card-title">Audits réalisés</h3>
-                    <p class="card-category"></p>
-                </div>
-                <div class="card-body">
-                    <canvas id="chartAudit"></canvas>
-                </div>
-            </div>
-        </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header card-header-info">
-                        <h3 class="card-title">Prises de contact demandées</h3>
-                        <p class="card-category"></p>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="chartAppoint"></canvas>
-                    </div>
-                </div>
-            </div>
 
-        </div>
 
         <div class="row">
             <div id="map"></div>

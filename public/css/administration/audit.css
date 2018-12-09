@@ -1,0 +1,56 @@
+textarea:focus, input:focus{
+    border-width:0px;
+    border:none;
+    background-color: whitesmoke;
+}
+
+
+.section{
+    color : red;
+    font-size : 20px;
+}
+
+.suggestion:hover{
+    border: grey dashed 1px;
+}
+
+.comment{
+    background-color: whitesmoke;
+    border: white solid 1px;
+}
+
+select {
+    display: block;
+    margin: 0 auto;
+}
+
+.header{
+    color : #8e24aa
+}
+
+.add-button{
+    background-color: #8e24aa ;
+    border : none;
+    color: white
+}
+
+.add-button:hover{
+    cursor : pointer;
+}
+.add-button:focus{
+    outline: none;
+}
+
+.new-comment{
+    font-style: italic;
+    border: grey dashed 1px;
+}
+
+.audit-more{
+    font-size: 30px;
+}
+.audit-more:hover{
+    border: solid 1px lightgray;
+    border-radius: 50px;
+    cursor : pointer
+}

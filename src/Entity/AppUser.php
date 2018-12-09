@@ -51,11 +51,6 @@ class AppUser implements UserInterface, \Serializable
 
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\AuditCompany", mappedBy="owner")
-     */
-    private $audit;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Roles", inversedBy="appUsers")
      */
     private $role;
@@ -86,6 +81,16 @@ class AppUser implements UserInterface, \Serializable
     private $logs;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\IntAuditPermission", mappedBy="user")
+     */
+    private $intAuditPermissions;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\IntAudit", mappedBy="creator")
+     */
+    private $intAudits;
+
+    /**
      * AppUser constructor.
      * @param $username
      * @param $password
@@ -107,6 +112,8 @@ class AppUser implements UserInterface, \Serializable
         $this->role = $role;
         $this->creator = $creator;
         $this->logs = new ArrayCollection();
+        $this->intAuditPermissions = new ArrayCollection();
+        $this->intAudits = new ArrayCollection();
     }
 
 
@@ -241,36 +248,9 @@ class AppUser implements UserInterface, \Serializable
 
    
 
-    /**
-     * @return Collection|AuditCompany[]
-     */
-    public function getAudit(): Collection
-    {
-        return $this->audit;
-    }
 
-    public function addAudit(AuditCompany $audit): self
-    {
-        if (!$this->audit->contains($audit)) {
-            $this->audit[] = $audit;
-            $audit->setUser($this);
-        }
 
-        return $this;
-    }
 
-    public function removeAudit(AuditCompany $audit): self
-    {
-        if ($this->audit->contains($audit)) {
-            $this->audit->removeElement($audit);
-            // set the owning side to null (unless already changed)
-            if ($audit->getUser() === $this) {
-                $audit->setUser(null);
-            }
-        }
-
-        return $this;
-    }
 
     public function getRole(): ?Roles
     {
@@ -357,6 +337,68 @@ class AppUser implements UserInterface, \Serializable
             // set the owning side to null (unless already changed)
             if ($log->getUser() === $this) {
                 $log->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|IntAuditPermission[]
+     */
+    public function getIntAuditPermissions(): Collection
+    {
+        return $this->intAuditPermissions;
+    }
+
+    public function addIntAuditPermission(IntAuditPermission $intAuditPermission): self
+    {
+        if (!$this->intAuditPermissions->contains($intAuditPermission)) {
+            $this->intAuditPermissions[] = $intAuditPermission;
+            $intAuditPermission->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIntAuditPermission(IntAuditPermission $intAuditPermission): self
+    {
+        if ($this->intAuditPermissions->contains($intAuditPermission)) {
+            $this->intAuditPermissions->removeElement($intAuditPermission);
+            // set the owning side to null (unless already changed)
+            if ($intAuditPermission->getUser() === $this) {
+                $intAuditPermission->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|IntAudit[]
+     */
+    public function getIntAudits(): Collection
+    {
+        return $this->intAudits;
+    }
+
+    public function addIntAudit(IntAudit $intAudit): self
+    {
+        if (!$this->intAudits->contains($intAudit)) {
+            $this->intAudits[] = $intAudit;
+            $intAudit->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIntAudit(IntAudit $intAudit): self
+    {
+        if ($this->intAudits->contains($intAudit)) {
+            $this->intAudits->removeElement($intAudit);
+            // set the owning side to null (unless already changed)
+            if ($intAudit->getCreator() === $this) {
+                $intAudit->setCreator(null);
             }
         }
 

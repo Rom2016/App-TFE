@@ -9,13 +9,11 @@
 namespace App\Controller;
 
 use App\Entity\AppUser;
-use App\Entity\AuditCompany;
 use App\Entity\AuditCompanyResult;
 use App\Entity\AuditTestInfrastructure;
-use App\Entity\Company;
 use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
-use App\Entity\CompanyInfrastructure;
+use App\Entity\IntAudit;
 use App\Entity\ProductCompanySize;
 use App\Entity\SolutionFeatures;
 use App\Entity\TestSelection;
@@ -860,6 +858,7 @@ class AuditController extends AbstractController
         $array['test'] = $test;
         return $this->render('audit/solutions_test.html.twig',$array);
     }
+
 
 
 

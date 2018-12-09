@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+Administration
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="../css/administration/audit.css" rel="stylesheet" />
+
+
+        <link href="../vendor/sweet-alert/dist/sweetalert2.css" rel="stylesheet">
+
+
+    <style>
+
+    </style>
+
+{% endblock%}
+{% block body %}
+    {{ parent() }}
+    <div class="content">
+
+        <div class="container-fluid">
+             <div class="row">
+            <div class="col-lg-12 col-md-12">
+              <div class="card">
+                <div class="card-header card-header-tabs card-header-primary">
+                  <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                      <ul class="nav nav-tabs" data-tabs="tabs">
+                        <li class="nav-item">
+                          <a class="nav-link active" href="#profile" data-toggle="tab">
+                            <p class="adm-link">Interne</p>
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="#messages" data-toggle="tab">
+                            <p class="adm-link">Externe</p>
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="tab-content">
+                    <div class="tab-pane active" id="profile">
+                        <div class="row">
+                            <div class="col-md-11"></div>
+                            <div class="nav-item dropdown">
+                                <a class="nav-link" id="navbarDropdownMenuAccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="material-icons audit-more">more_horiz</i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuAccount">
+                                    <a class="dropdown-item" href="../profile"><i class="material-icons">note_add</i>Ajouter une catégorie</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="section">
+                            <span class="editable suggestion">Catégorie</span>
+                        </div>
+                        <div id="audit-table">
+                                    <div class="row">
+                                        <div class="col-md-2"></div>
+                                        <div class="col-md-6 text-center header">Tests</div>
+                                        <div class="col-md-1 text-center header">Priorité</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="sub-section comment col-md-2">
+                                            <span class="editable suggestion">Router</span>
+                                        </div>
+                                        <div class="comment col-md-6">
+                                            <span class="editable suggestion">Blah blah</span>
+                                        </div>
+                                        <div class="text-center">
+                                            <select class="form-control" name="test_phase[1][prio]">
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                        <div class="row">
+                            <div class="sub-section comment col-md-2">
+                                <span class="editable suggestion">Router</span>
+                            </div>
+                            <div class="comment col-md-6">
+                                <span class="editable suggestion">Ajouter un test</span>
+                            </div>
+                            <div class="">
+                                <select class="form-control" name="test_phase[1][prio]" id="sel1">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                </select>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <input class="form-control" id="" type="text" placeholder="Ajouter une sous-section">
+                                    <button id="add-row" class="add-button" onclick="addRow()">+</button>
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+
+
+
+
+
+
+
+
+
+
+
+                      <div class="tab-pane" id="messages">
+                        <p>test 2</p>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+    </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="../vendor/sweet-alert/dist/sweetalert2.js"></script>
+    <script src="../js/administration/audit.js"></script>
+
+    <script>
+        $('.nav-item.active').removeClass('active');
+        $('#nav-adm').addClass('active');
+        $('#btnAddUser').click(function(){
+
+        })
+    </script>
+{% endblock %}

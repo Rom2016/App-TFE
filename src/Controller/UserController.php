@@ -9,10 +9,8 @@
 namespace App\Controller;
 
 use App\Entity\AppUser;
-use App\Entity\AuditCompany;
 use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
-use App\Entity\Company;
 use App\Entity\Roles;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -59,16 +57,15 @@ class UserController extends AbstractController
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $repository_user = $this->getDoctrine()->getRepository(AppUser::class);
-        $repository_company = $this->getDoctrine()->getRepository(Company::class);
         $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
         $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
 
+        $user = $repository_user->findOneBy(['id'=>$this->getUser()]);
         $array['users'] = $repository_user->findAll();
         $array['nbUser'] = $repository_user->getNb();
-        $array['nbCompany'] = $repository_company->getNb();
         $array['nbPhase'] = $repository_phase->getNb();
         $array['nbTest'] = $repository_test->getNb();
-
+        $array['createdAudit'] = $user->getIntAudits();
 
         return $this->render('user/homepage.html.twig', $array);
     }
@@ -120,7 +117,9 @@ class UserController extends AbstractController
      */
     public function viewProfile()
     {
-            /**
+        $repository_user = $this->getDoctrine()->getRepository(AppUser::class);
+
+        /**
              * Si le formulaire a été soumis.
              */
             if ($_POST) {
@@ -137,7 +136,9 @@ class UserController extends AbstractController
                 $entityManager->flush();
                 $array = $_SESSION['user']->getAll();
             }
-            return $this->render('user/profile_user.html.twig');
+        $array['users'] = $repository_user->findAll();
+
+        return $this->render('user/profile_user.html.twig',$array);
     }
 
     /**

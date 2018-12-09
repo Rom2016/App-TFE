@@ -54,10 +54,7 @@ class AuditCompanyResult
      */
     private $note;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AuditCompany", inversedBy="auditCompanyResults")
-     */
-    private $audit;
+
 
     /**
      * AuditCompanyResult constructor.
@@ -66,13 +63,12 @@ class AuditCompanyResult
      * @param $selection
      * @param $passed
      */
-    public function __construct($test, $information, $selection, $passed, $audit)
+    public function __construct($test, $information, $selection, $passed)
     {
         $this->test = $test;
         $this->information = $information;
         $this->selection = $selection;
         $this->passed = $passed;
-        $this->audit = $audit;
 
     }
 

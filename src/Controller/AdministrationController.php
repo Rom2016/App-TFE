@@ -23,9 +23,9 @@ class AdministrationController extends AbstractController
     /**
      * Méthode qui gère la partie administration des utilisateurs
      *
-     * @Route("/administration", name="admin")
+     * @Route("/administration/utilisateurs", name="admin")
      */
-    public function viewAdmin()
+    public function adminUsers()
     {
         /**
          * Si l'utilisateur est connecté et qu'il a les droits admin, render le template d'admin
@@ -42,7 +42,38 @@ class AdministrationController extends AbstractController
         }
         $repository = $this->getDoctrine()->getRepository(AppUser::class);
         $array['users'] = $repository->findAll();
-        return $this->render('administration/administration.html.twig', $array);
+        return $this->render('administration/utilisateurs.html.twig', $array);
+        /**
+         * L'utilisateur n'a pas les droits admin, render le template d'accès refusé.
+         */
+        /**
+         * L'utilisateur n'est pas connecté, redirigé vers le portail de connexion.
+         */
+    }
+
+    /**
+     * Méthode qui gère la partie administration du contenu des audits
+     *
+     * @Route("/administration/contenu-audits", name="admin_audits_content")
+     */
+    public function adminAudit()
+    {
+        /**
+         * Si l'utilisateur est connecté et qu'il a les droits admin, render le template d'admin
+         */
+        /**
+         * Si il y'a eu une soumission du formulaire pour un nouvel utilisateur depuis l'administration.
+         */
+        if ($_POST){
+            switch ($_POST['submit']) {
+                case 'newUser':
+                    $this->newUser();
+                    break;
+            }
+        }
+        $repository = $this->getDoctrine()->getRepository(AppUser::class);
+        $array['users'] = $repository->findAll();
+        return $this->render('administration/audits.html.twig', $array);
         /**
          * L'utilisateur n'a pas les droits admin, render le template d'accès refusé.
          */
@@ -133,4 +164,6 @@ class AdministrationController extends AbstractController
             return new Response('true');
         }
     }
+
+
 }

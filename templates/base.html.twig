@@ -15,11 +15,18 @@
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
             <link href="../vendor/sweet-alert/dist/sweetalert2.css" rel="stylesheet">
             <link href="../vendor/SmartWizard/dist/css/smart_wizard_theme_dots.css" rel="stylesheet">
-            <link href="../vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
 
             <!-- CSS Files -->
             <link href="../css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
         {% endblock %}
+        <style>
+            .participant-container{
+                border: solid 1px lightgrey;
+            }
+            .check-participant:hover{
+                background-color: lightgrey;
+            }
+        </style>
     </head>
 
     <body class="nav-md">
@@ -63,10 +70,24 @@
                     </li>
                     {% if is_granted('ROLE_ADMIN') %}
                     <li class="nav-item" id="nav-adm">
-                        <a class="nav-link" href="../administration">
+                        <a class="nav-link" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
                             <i class="material-icons">build</i>
                             <p>Administration</p>
                         </a>
+                        <div class="collapse" id="collapseExample">
+                            <a class="nav-link" href="../administration/utilisateurs">
+                                <i class="material-icons">person</i>
+                                <p>Utilisateurs</p>
+                            </a>
+                            <a class="nav-link" href="../administration/contenu-audits">
+                                <i class="material-icons">description</i>
+                                <p>Contenu des audits</p>
+                            </a>
+                            <a class="nav-link" href="../voir-audit">
+                                <i class="material-icons">vpn_key</i>
+                                <p>Permissions</p>
+                            </a>
+                        </div>
                     </li>
                     {% endif %}
                 </ul>
@@ -92,63 +113,44 @@
                             <div>
                                 <div id="step-1" class="form-group text-center">
                                     <h2>Nom de l'audit</h2>
-                                    <input type="text" class="boot-form-control input-lg">
+                                    <input type="text" id='int-audit-name' class="boot-form-control input-lg">
                                 </div>
                                 <div id="step-2" class="">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="bmd-label-floating">Nom de l'entreprise</label>
-                                                <input type="text" class="form-control">
+                                                <input type="text" id='int-customer' class="form-control">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="bmd-label-floating">Adresse mail</label>
-                                                <input type="text" class="form-control">
+                                                <label class="bmd-label-floating">Email de la personne responsable</label>
+                                                <input type="text" id='int-customer-responsable' class="form-control">
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label class="bmd-label-floating">N°</label>
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label class="bmd-label-floating">Rue</label>
-                                                    <input type="text" class="form-control">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label class="bmd-label-floating">Code postale</label>
-                                                    <input type="text" class="form-control">
-                                                </div>
-                                            </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="bmd-label-floating">Téléphone</label>
-                                                <input type="email" class="form-control">
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                                 <div id="step-3" class="">
-                                    <div class="row" id="containerParticipants">
-                                    <div class="col-md-12">
-                                        <p><img {% if not app.user.profile_pic %}src="../génèrer-avatar?rq=avatar"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} class="rounded-circle" style="width: 30px">{{ app.user.first_name }} {{ app.user.second_name }}/{{ app.user.username }}</p>
-                                    </div>
+                                    <div class="dropdown">
+                                        <a class="dropdown-toggle btn btn-primary btn-bloc" data-toggle="dropdown" href="#">
+                                            Sélectionner des participants
+                                            <b class="caret"></b>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-form" role="menu">
+                                            {% for u in users %}
+                                            <li class="check-participant">
+                                                <input type="checkbox"  id="check{{ u.id }}"><label for="check{{ u.id }}" style="cursor: pointer"><img {% if not app.user.profile_pic %}src="../génèrer-avatar?rq=administration&p={{ u.first_name }}&n={{ u.second_name }}"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} class="rounded-circle" style="width: 30px" />{{ u.first_name }} {{u.second_name }}/{{ u.username }}</label>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-info btn-block" style="margin-top: 5%">Envoyer</button>
+                        <button type="button" id="create-ext-audit" class="btn btn-info btn-block" style="margin-top: 5%">Créer</button>
+
 
                     </div>
                 </div>
@@ -230,7 +232,6 @@
         <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
         <script src="../js/material-dashboard.min.js?v=2.1.0" type="text/javascript"></script>
         <script src="../vendor/sweet-alert/dist/sweetalert2.js"></script>
-        <script src="../vendor/bootstrap/js/bootstrap.js"></script>
         <script src="../vendor/SmartWizard/dist/js/jquery.smartWizard.js"></script>
         <script src="../js/custom.min.js" type="text/javascript"></script>
 
@@ -247,6 +248,21 @@
                     transitionEffect: 'fade', // Effect on navigation, none/slide/fade
                     transitionSpeed: '400'
                 });
+                $('.check-participant').click(function () {
+                    li = this.closest('li');
+                    if (this.checked){
+                        $(li).css('background-color','lightgrey');
+                    }else{
+                        $(li).css('background-color','');
+                    }
+                })
+
+                $('.dropdown-menu').on('click', function(e) {
+                    if($(this).hasClass('dropdown-menu-form')) {
+                        e.stopPropagation();
+                    }
+                });
+
             });
         </script>
     {% endblock %}

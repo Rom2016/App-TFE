@@ -86,13 +86,11 @@
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="pill" href="#menu1">Projet</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="pill" href="#menu2">Menu 2</a>
-                    </li>
+
                 </ul>
                </div>
                 <!-- Tab panes -->
-                <div class="col-md-6">
+                <div class="col-md-4">
 
                 <div class="tab-content">
                     <div id="home" class="container tab-pane active"><br>
@@ -102,25 +100,12 @@
                                     <div class="overlay">
                                         <a href="#" class="icon" title="Modifier la photo de profile">
                                             <i class="fa fa-camera" id="profileIcon"></i>
-                                            <input type="file" id="file1"  name="file1" accept="image/*" style="display:none" />
+                                            <input type="file" id="upload_image"  name="file1" accept="image/*" style="display:none" />
 
                                         </a>
                                     </div>
                                 </div>
-                                <div class="modal fade" id="myModal" role="dialog">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                            </div>
-                                            <div class="modal-body">
-                                                <div id="croppie"></div>
-                                            </div>
-                                            <div class="clearfix"></div>
-                                            <div class="modal-footer">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                                 <div class="card-body">
                                     <form>
                                         <div class="row">
@@ -138,32 +123,20 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label class="bmd-label-floating">{{ app.user.username }}</label>
                                                     <input type="email" class="form-control">
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label class="bmd-label-floating">{{ app.user.function }}</label>
                                                     <input type="text" class="form-control">
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label>A propos de moi</label>
-                                                    <div class="form-group">
-                                                        <label class="bmd-label-floating"></label>
-                                                        <textarea class="form-control" rows="5"></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <hr>
                                         <button type="submit" class="btn btn-primary pull-right">Mettre à jour</button>
                                         <div class="clearfix"></div>
                                     </form>
@@ -175,6 +148,34 @@
                   <p class="card-category"></p>
                 </div>
                 <div class="card-body">
+                    <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="">Mot de passe actuel:</h5>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="col-md-12">
+                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="">Nouveau mot de passe:</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="col-md-12">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="">Confirmer le nouveau mot de passe:</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="col-md-12">
+                        </div>
+                    </div>
+
+                    <hr>
+                    <button type="submit" class="btn btn-primary pull-right">Mettre à jour</button>
+
                 </div>
                         </div>
                     </div>
@@ -192,6 +193,39 @@
                 </div>
             </div>
         </div>
+        <div id="uploadimageModal" class="modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="card">
+                    <div class="card-header card-header-primary">
+                        <h4 class="card-title">Changer de photo de profile</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-1 text-center">
+                                    </div>
+                                    <div class="col-md-8 text-center">
+                                        <div id="image_demo" style="width:350px; margin-top:30px"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-md-4 text-center">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="button" class="btn btn-success" style="margin-top: 5%">Valider</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 
 
@@ -202,15 +236,15 @@
 
     <script src="../vendor/Croppie-2.6.2/croppie.js"></script>
     <script>
-        $("#profileIcon").click(function () {
-            $("#file1").trigger('click');
-        });
-        $image_crop = $('#croppie').croppie({
+        $('#profileIcon').click(function () {
+            $('#upload_image').trigger('click');
+        })
+        $image_crop = $('#image_demo').croppie({
             enableExif: true,
             viewport: {
                 width:200,
                 height:200,
-                type:'square' //circle
+                type:'circle' //circle
             },
             boundary:{
                 width:300,
@@ -218,7 +252,7 @@
             }
         });
 
-        $('#file1').on('change', function(){
+        $('#upload_image').on('change', function(){
             var reader = new FileReader();
             reader.onload = function (event) {
                 $image_crop.croppie('bind', {
@@ -228,7 +262,7 @@
                 });
             }
             reader.readAsDataURL(this.files[0]);
-            $('#myModal').modal('show');
+            $('#uploadimageModal').modal('show');
         });
 
     </script>

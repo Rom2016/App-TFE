@@ -39,12 +39,18 @@ class AuditPhase
     private $glyphicon;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\AuditSubSection", mappedBy="section")
+     */
+    private $auditSubSections;
+
+    /**
      * AuditPhase constructor.
      * @param $phase_name
      */
     public function __construct($phase_name)
     {
         $this->phase_name = $phase_name;
+        $this->auditSubSections = new ArrayCollection();
     }
 
 
@@ -116,6 +122,37 @@ class AuditPhase
     public function setGlyphicon(string $glyphicon): self
     {
         $this->glyphicon = $glyphicon;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|AuditSubSection[]
+     */
+    public function getAuditSubSections(): Collection
+    {
+        return $this->auditSubSections;
+    }
+
+    public function addAuditSubSection(AuditSubSection $auditSubSection): self
+    {
+        if (!$this->auditSubSections->contains($auditSubSection)) {
+            $this->auditSubSections[] = $auditSubSection;
+            $auditSubSection->setSection($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAuditSubSection(AuditSubSection $auditSubSection): self
+    {
+        if ($this->auditSubSections->contains($auditSubSection)) {
+            $this->auditSubSections->removeElement($auditSubSection);
+            // set the owning side to null (unless already changed)
+            if ($auditSubSection->getSection() === $this) {
+                $auditSubSection->setSection(null);
+            }
+        }
 
         return $this;
     }

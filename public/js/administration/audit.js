@@ -19,6 +19,11 @@ $('body').on('click', '.editable', function(){
     input.one('blur', save).focus();
 })
 
+
+$('.test-edit').click(function () {
+    $('#slide-panel').activate();
+});
+
 function addRow(){
     $('#audit-table').after('<div class="row">\n' +
         '                            <div class="sub-section comment col-md-2">\n' +
@@ -34,5 +39,10 @@ function addRow(){
         '                                    <option>3</option>\n' +
         '                                </select>\n' +
         '                            </div>\n' +
-        '                        </div>')
+        '                        </div>');
+}
+
+function slidePanel(id){
+    $('#slider'+id).slideReveal('show');
+
 }

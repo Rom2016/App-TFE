@@ -51,6 +51,11 @@ class AuditTestPhase
     private $description;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\AuditSubSection", inversedBy="auditTestPhases")
+     */
+    private $subsection;
+
+    /**
      * AuditTestPhase constructor.
      * @param $name
      * @param $priority
@@ -182,6 +187,18 @@ class AuditTestPhase
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getSubsection(): ?AuditSubSection
+    {
+        return $this->subsection;
+    }
+
+    public function setSubsection(?AuditSubSection $subsection): self
+    {
+        $this->subsection = $subsection;
 
         return $this;
     }

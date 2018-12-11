@@ -11,7 +11,7 @@ namespace App\Controller;
 use App\Entity\Roles;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use App\Entity\AppUser;
-use App\Entity\AuditCompany;
+use App\Entity\AuditSection;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -58,20 +58,11 @@ class AdministrationController extends AbstractController
      */
     public function adminAudit()
     {
-        /**
-         * Si l'utilisateur est connecté et qu'il a les droits admin, render le template d'admin
-         */
-        /**
-         * Si il y'a eu une soumission du formulaire pour un nouvel utilisateur depuis l'administration.
-         */
-        if ($_POST){
-            switch ($_POST['submit']) {
-                case 'newUser':
-                    $this->newUser();
-                    break;
-            }
-        }
+
         $repository = $this->getDoctrine()->getRepository(AppUser::class);
+        $repository_section = $this->getDoctrine()->getRepository(AuditSection::class);
+
+        $array['section'] = $repository_section->findAll();
         $array['users'] = $repository->findAll();
         return $this->render('administration/audits.html.twig', $array);
         /**

@@ -5,6 +5,7 @@ Administration
 {% endblock %}
 {% block stylesheets %}
     {{ parent() }}
+
     <link href="../css/administration/audit.css" rel="stylesheet" />
 
 
@@ -58,54 +59,82 @@ Administration
                                 </div>
                             </div>
                         </div>
-                        <div class="section">
-                            <span class="editable suggestion">Catégorie</span>
-                        </div>
-                        <div id="audit-table">
-                                    <div class="row">
-                                        <div class="col-md-2"></div>
-                                        <div class="col-md-6 text-center header">Tests</div>
-                                        <div class="col-md-1 text-center header">Priorité</div>
+                        {% for s in section %}
+                            <div class="section">
+                                <span class="editable suggestion">{{ s.section }}</span>
+                            </div>
+                            <div id="audit-table">
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-6 text-center header">Tests</div>
+                                    <div class="col-md-1 text-center header">Priorité</div>
+                                </div>
+                                {% for ss in s.auditSubSections %}
+                                <div class="row">
+                                    <div class="sub-section comment col-md-2">
+                                        <span class="editable suggestion">{{ ss.subsection }}</span>
                                     </div>
-                                    <div class="row">
-                                        <div class="sub-section comment col-md-2">
-                                            <span class="editable suggestion">Router</span>
-                                        </div>
-                                        <div class="comment col-md-6">
-                                            <span class="editable suggestion">Blah blah</span>
-                                        </div>
-                                        <div class="text-center">
-                                            <select class="form-control" name="test_phase[1][prio]">
-                                                <option>1</option>
-                                                <option>2</option>
-                                                <option>3</option>
-                                            </select>
+                                    <div class="test comment col-md-6">
+                                            <div class="input-group mb-3">
+                                                <span class="editable suggestion">Blah blah</span>
+                                                <div class="input-group-append">
+                                                    <i id='trigger{{ ss.id }}' onclick="slidePanel({{ ss.id }})" class="material-icons test-edit">edit</i>
+                                                </div>
+                                            </div>
+
+
+                                    </div>
+                                    <div class="text-center">
+                                        <select class="form-control" name="test_phase[1][prio]">
+                                            <option>1</option>
+                                            <option>2</option>
+                                            <option>3</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                    <div class="slider" id='slider{{ ss.id }}'>
+                                        <ul class="nav nav-tabs" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link-test active" data-toggle="tab" href="#home">Type</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link-test" data-toggle="tab" href="#menu1">Famille</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link-test" data-toggle="tab" href="#menu2">Ajouter une solution</a>
+                                            </li>
+                                        </ul>
+
+                                        <!-- Tab panes -->
+                                        <div class="tab-content">
+                                            <div id="home" class="container tab-pane active"><br>
+                                                <h3>HOME</h3>
+                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                            </div>
+                                            <div id="menu1" class="container tab-pane fade"><br>
+                                                <h3>Menu 1</h3>
+                                                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                            </div>
+                                            <div id="menu2" class="container tab-pane fade"><br>
+                                                <h3>Menu 2</h3>
+                                                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+                                            </div>
                                         </div>
                                     </div>
-                        <div class="row">
-                            <div class="sub-section comment col-md-2">
-                                <span class="editable suggestion">Router</span>
+                                {% endfor %}
+
                             </div>
-                            <div class="comment col-md-6">
-                                <span class="editable suggestion">Ajouter un test</span>
-                            </div>
-                            <div class="">
-                                <select class="form-control" name="test_phase[1][prio]" id="sel1">
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                </select>
-                            </div>
-                        </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-9">
-                                <div class="input-group">
-                                    <input class="form-control" id="" type="text" placeholder="Ajouter une sous-section">
-                                    <button id="add-row" class="add-button" onclick="addRow()">+</button>
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        <input class="form-control" id="" type="text" placeholder="Ajouter une sous-section">
+                                        <button id="add-row" class="add-button" onclick="addRow()">+</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        {% endfor %}
+
+
                    </div>
 
 
@@ -136,13 +165,18 @@ Administration
 {% block javascripts %}
     {{ parent() }}
     <script src="../vendor/sweet-alert/dist/sweetalert2.js"></script>
+    <script src="../vendor/Slide-panel/dist/jquery.slidereveal.js"></script>
     <script src="../js/administration/audit.js"></script>
 
     <script>
         $('.nav-item.active').removeClass('active');
         $('#nav-adm').addClass('active');
-        $('#btnAddUser').click(function(){
+        $('.slider').slideReveal({
+            position: "right",
+            push: false,
+            overlay: true,
+            width: 500
+        });
 
-        })
     </script>
 {% endblock %}

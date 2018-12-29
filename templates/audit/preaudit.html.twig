@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="images/favicon.ico" type="image/ico" />
+
+    <title></title>
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+        <link href="../vendor/sweet-alert/dist/sweetalert2.css" rel="stylesheet">
+        <link href="../css/audit/preaudit.css?v=2.1.0" rel="stylesheet" />
+
+    <!-- CSS Files -->
+        <link href="../css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
+
+</head>
+<body>
+<div class="content">
+    <div class="container-fluid col-md-6">
+        <form method="post" action="../audit?audit={{ audit_id }}">
+
+        <div class="card">
+                <div class="card-header card-header-primary">
+                    <h2 class="card-title">{{ audit.name }}</h2>
+                    <h4 class="card-category">Questionnaire pré-audit</h4>
+                </div>
+                <div class="card-body">
+                    {% set i= 1 %}
+                    {% for infra in infra %}
+                        {% if infra.type.type == 'Question' %}
+                            <div class="col-md-6 question">
+                                <div class="custom-control custom-checkbox form-group">
+                                    <input type="checkbox" class="custom-control-input" id="defaultChecked{{ infra.id }}" name="pre_audit[{{ infra.id }}]">
+                                    <label class="custom-control-label" for="defaultChecked{{ infra.id }}">{{ i }}.{{ infra.test }}</label>
+                                </div>
+                            </div>
+                        {% elseif infra.type.type == 'Selection'%}
+                            <div class="col-md-6 form-group">
+                                {{ i }}.{{ infra.test }}
+
+                                <div class="clearfix"></div>
+                                {% for select in infra.infraSelections %}
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input" id="defaultInline{{ select.id }}" name="radio-group{{ infra.id }}">
+                                    <label class="custom-control-label" for="defaultInline{{ select.id }}">{{ select.selection }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+
+                        {% elseif infra.type.type == 'Text'%}
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ i }}.{{ infra.test }}
+                                    <input type="text" class="form-control">
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% set i = i+1 %}
+                    {% endfor %}
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-9"></div>
+                    <button type="submit" class="btn btn-primary col-md-2">Passer à la suite!</button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+</body>
+
+<script src="../js/core/jquery.min.js" type="text/javascript"></script>
+<script src="../js/core/popper.min.js" type="text/javascript"></script>
+<script src="../js/core/bootstrap-material-design.min.js" type="text/javascript"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../js/plugins/perfect-scrollbar.jquery.min.js"></script>

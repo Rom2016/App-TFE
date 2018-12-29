@@ -24,78 +24,138 @@ class AuditSubSection
     private $subsection;
     
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\AuditTestPhase", mappedBy="subsection")
-     */
-    private $auditTestPhases;
+
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AuditSection", inversedBy="auditSubSections")
      */
     private $section;
 
-    public function __construct()
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\AuditTests", mappedBy="susbection")
+     */
+    private $auditTests;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $date_creation;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $date_archive;
+
+    /**
+     * AuditSubSection constructor.
+     * @param $subsection
+     * @param $section
+     * @param $date_creation
+     */
+    public function __construct($subsection, $section, $date_creation)
     {
-        $this->auditTestPhases = new ArrayCollection();
+        $this->subsection = $subsection;
+        $this->section = $section;
+        $this->date_creation = $date_creation;
     }
 
-    public function getId(): ?int
+    /**
+     * @return mixed
+     */
+    public function getId()
     {
         return $this->id;
     }
 
-    public function getSubsection(): ?string
+    /**
+     * @param mixed $id
+     */
+    public function setId($id): void
+    {
+        $this->id = $id;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getSubsection()
     {
         return $this->subsection;
     }
 
-    public function setSubsection(string $subsection): self
+    /**
+     * @param mixed $subsection
+     */
+    public function setSubsection($subsection): void
     {
         $this->subsection = $subsection;
-
-        return $this;
     }
 
-    public function getSection(): ?AuditPhase
+    /**
+     * @return mixed
+     */
+    public function getSection()
     {
         return $this->section;
     }
 
-    public function setSection(?AuditPhase $section): self
+    /**
+     * @param mixed $section
+     */
+    public function setSection($section): void
     {
         $this->section = $section;
-
-        return $this;
     }
 
     /**
-     * @return Collection|AuditTestPhase[]
+     * @return mixed
      */
-    public function getAuditTestPhases(): Collection
+    public function getAuditTests()
     {
-        return $this->auditTestPhases;
+        return $this->auditTests;
     }
 
-    public function addAuditTestPhase(AuditTestPhase $auditTestPhase): self
+    /**
+     * @param mixed $auditTests
+     */
+    public function setAuditTests($auditTests): void
     {
-        if (!$this->auditTestPhases->contains($auditTestPhase)) {
-            $this->auditTestPhases[] = $auditTestPhase;
-            $auditTestPhase->setSubsection($this);
-        }
-
-        return $this;
+        $this->auditTests = $auditTests;
     }
 
-    public function removeAuditTestPhase(AuditTestPhase $auditTestPhase): self
+    /**
+     * @return mixed
+     */
+    public function getDateCreation()
     {
-        if ($this->auditTestPhases->contains($auditTestPhase)) {
-            $this->auditTestPhases->removeElement($auditTestPhase);
-            // set the owning side to null (unless already changed)
-            if ($auditTestPhase->getSubsection() === $this) {
-                $auditTestPhase->setSubsection(null);
-            }
-        }
-
-        return $this;
+        return $this->date_creation;
     }
+
+    /**
+     * @param mixed $date_creation
+     */
+    public function setDateCreation($date_creation): void
+    {
+        $this->date_creation = $date_creation;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDateArchive()
+    {
+        return $this->date_archive;
+    }
+
+    /**
+     * @param mixed $date_archive
+     */
+    public function setDateArchive($date_archive): void
+    {
+        $this->date_archive = $date_archive;
+    }
+
+
+
 }

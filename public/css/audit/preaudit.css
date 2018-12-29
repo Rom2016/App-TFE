@@ -1,0 +1,14 @@
+
+#preaudit-questions{
+    background-color: white;
+}
+#preaudit-header{
+    background-color: #9c27b0;
+    color: white;
+    text-align: center;
+}
+
+.question label{
+    color: black;
+    font-weight: 100;
+}

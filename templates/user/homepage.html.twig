@@ -57,7 +57,7 @@
                                     <tr>
                                         <td>{{ audit.name }}</td>
                                         <td>{{ audit.customer.name }}</td>
-                                        <td>{% if audit.finishDate is not null %}<i class="material-icons" style="color : #55b559">check_circle</i> {% elseif audit.started == false %}<i class="material-icons" style="">power_settings_new</i>{% else %}<i class="material-icons" style="">pause_circle_filled</i>{% endif %}</td>
+                                        <td>{% if audit.finishDate is not null %}<i class="material-icons" style="color : #55b559">check_circle</i> {% elseif audit.started == false %}<a href="../préaudit?audit={{ audit.id }}"><i class="material-icons" style="">power_settings_new</i></a>{% else %}<i class="material-icons" style="">pause_circle_filled</i>{% endif %}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>

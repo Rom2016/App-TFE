@@ -55,15 +55,17 @@ Administration
                                     <i class="material-icons audit-more">more_horiz</i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuAccount">
-                                    <a class="dropdown-item" href="../profile"><i class="material-icons">note_add</i>Ajouter une catégorie</a>
+                                    <a id="add-section" class="dropdown-item"><i class="material-icons">note_add</i>Ajouter une section</a>
                                 </div>
                             </div>
                         </div>
+                        <div id="audit-content">
                         {% for s in section %}
+                        <div id="section-group{{ s.id }}" class="section-group">
                             <div class="section">
-                                <span class="editable suggestion">{{ s.section }}</span>
+                                <span id="section{{ s.id }}" class="editable suggestion section">{{ s.section }}</span>
                             </div>
-                            <div id="audit-table">
+                            <div id="audit-table{{ s.id }}">
                                 <div class="row">
                                     <div class="col-md-2"></div>
                                     <div class="col-md-6 text-center header">Tests</div>
@@ -71,92 +73,217 @@ Administration
                                 </div>
                                 {% for ss in s.auditSubSections %}
                                 <div class="row">
-                                    <div class="sub-section comment col-md-2">
-                                        <span class="editable suggestion">{{ ss.subsection }}</span>
+                                    <div  class="sub-section comment col-md-2">
+                                        <span id="sub-section{{ ss.id }}" class="editable suggestion sub-section">{{ ss.subsection }}</span>
                                     </div>
-                                    <div class="test comment col-md-6">
-                                            <div class="input-group mb-3">
-                                                <span class="editable suggestion">Blah blah</span>
-                                                <div class="input-group-append">
-                                                    <i id='trigger{{ ss.id }}' onclick="slidePanel({{ ss.id }})" class="material-icons test-edit">edit</i>
+                                    <div id="test-group{{ ss.id }}" class="test comment col-md-7">
+                                        {% for t in ss.auditTests %}
+                                         <div class="row">
+                                             <div class="modify-test col-md-10 input-group mb-3">
+                                                 <span id="test{{ t.id }}" class="editable suggestion">{{ t.test }}</span>
+                                                 <div class="input-group-append">
+                                                     <i id='trigger{{ t.id }}' onclick="slidePanel({{ t.id }})" class="material-icons test-edit">edit</i>
+                                                 </div>
+                                             </div>
+                                             <div class="col-md-1"></div>
+                                             <div class="col-md-1">
+                                                 <div class="btn-group">
+                                                                                <span class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                    {{ t.priority }}
+                                                                                </span>
+                                                     <div class="dropdown-menu dropdown-menu-right">
+                                                         <span class="dropdown-item">1</span>
+                                                         <span class="dropdown-item">2</span>
+                                                         <span class="dropdown-item">3</span>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                            <div class="slider" id='slider{{ t.id }}'>
+                                                <h2><span>{{ t.test }}</span></h2>
+                                                <ul class="nav nav-tabs" role="tablist">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link-test active" data-toggle="tab" href="#type{{ t.id }}">Type</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link-test" data-toggle="tab" href="#familly{{ t.id }}">Famille</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link-test" data-toggle="tab" href="#solution{{ t.id }}">Ajouter une solution</a>
+                                                    </li>
+                                                </ul>
+
+                                                <!-- Tab panes -->
+                                                <div class="tab-content">
+                                                    <div id="type{{ t.id }}" class="container tab-pane active"><br>
+                                                        <div id="test-type{{ t.id }}" class="">
+
+                                                        {% if t.type.type =='Question' %}
+                                                            <div class="col-md-2"></div>
+                                                            <div id="type-check{{ t.id }}" class="col-md-8 test-type">
+                                                                <div class="row">
+                                                                    <div class="col-md-4"><i class="material-icons type-icon"  >check_box</i></div>
+                                                                    <div class="col-md-8"><p class="checkbox-header">Checkbox</p>
+                                                                    </div>
+                                                                </div>
+                                                                <hr>
+                                                                <span style="text-align: center">Réponse par oui ou non</span>
+                                                            </div>
+                                                            {% elseif t.type.type =='Selection' %}
+                                                                <div class="col-md-2"></div>
+
+                                                                <div id="type-select{{ t.id }}" class="col-md-8 test-type">
+                                                                <div class="row">
+                                                                    <div class="col-md-4"><i  class="material-icons type-icon" >radio_button_checked</i></div>
+                                                                    <div class="col-md-8"><p class="checkbox-header">Sélection</p>
+                                                                    </div>
+                                                                </div>
+                                                                <hr>
+                                                                <span style="text-align: center">Réponse à choix multiples</span>
+                                                            </div>
+                                                                <div id="group-selection{{ t.id }}" >
+                                                                    {% for s in t.Selections %}
+
+                                                                    <div class="row">
+                                                                        <div  class="comment col-md-6">
+                                                                            <span id="" class="editable suggestion">{{ s.selection }}</span>
+                                                                        </div>
+                                                                        <div id="group-status{{ s.id }}" class="col-md-4 group-selection">
+                                                                        {% if s.status == 'fail' %}
+
+                                                                        <div id="status{{ s.id }}" class="selection-fail select">
+                                                                            <div class="btn-group">
+                                                                                <span class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                    échec
+                                                                                </span>
+                                                                                <div class="dropdown-menu dropdown-menu-right">
+                                                                                    <span class="dropdown-item selection-choice selection-fail">échec</span>
+                                                                                    <span class="dropdown-item selection-choice selection-error">passe avec erreurs</span>
+                                                                                    <span class="dropdown-item selection-choice selection-success">passe</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        {% elseif s.status == 'error' %}
+                                                                            <div id="status{{ s.id }}" class="selection-error select">
+                                                                                <div class="btn-group">
+                                                                                <span class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                    passe avec erreurs
+                                                                                </span>
+                                                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                                                        <span class="dropdown-item selection-choice selection-fail">échec</span>
+                                                                                        <span class="dropdown-item selection-choice selection-error">passe avec erreurs</span>
+                                                                                        <span class="dropdown-item selection-choice selection-success">passe</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% elseif s.status == 'success' %}
+                                                                            <div id="status{{ s.id }}" class="selection-success select">
+                                                                                <div class="btn-group">
+                                                                                <span id="current-status{{ s.id }}" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                    passe
+                                                                                </span>
+                                                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                                                        <span class="dropdown-item selection-choice selection-fail">échec</span>
+                                                                                        <span class="dropdown-item selection-choice selection-error">passe avec erreurs</span>
+                                                                                        <span class="dropdown-item selection-choice selection-success">passe</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                        </div>
+                                                                    </div>
+                                                                {% endfor %}
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <div id="group-select{{ t.id }}" class="group-select col-md-10">
+                                                                        <div class="input-group">
+                                                                            <input class="form-control" id="new-select{{ t.id }}" type="text" placeholder="Ajouter un choix">
+                                                                            <button class="add-button select">+</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                    <div id="familly{{ t.id }}" class="container tab-pane fade"><br>
+                                                        <div class="row">
+                                                            <div class="col-md-10"></div>
+
+                                                            <div class="nav-item dropdown col-md-1">
+                                                                <a class="nav-link" id="navbarDropdownMenuAccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                    <i class="material-icons audit-more">add</i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuAccount">
+                                                                    <a id="add-child" class="dropdown-item"><i class="material-icons">note_add</i>Ajouter un enfant checkbox</a>
+                                                                    <a id="add-child" class="dropdown-item"><i class="material-icons">note_add</i>Ajouter un enfant checkbox</a>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                        <div id="group-child{{ t.id }}">
+                                                            {% for child in ss.auditTests %}
+                                                               {% if child.parent is not null %}
+                                                                    {% if child.parent == t %}
+                                                                        {{ child.test }}
+                                                                    {% endif %}
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </div>
+                                                        <div class="row">
+                                                            <div id="group-child{{ t.id }}" class="group-child col-md-10">
+                                                                <div class="input-group">
+                                                                    <input class="form-control child" id="new-child{{ t.id }}" type="text" placeholder="Ajouter un enfant">
+                                                                    <button class="add-button child">+</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="solution{{ t.id }}" class="container tab-pane fade"><br>
+
+                                                    </div>
                                                 </div>
                                             </div>
 
-
+                                        {% endfor %}
                                     </div>
-                                    <div class="text-center">
-                                        <select class="form-control" name="test_phase[1][prio]">
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                    <div class="slider" id='slider{{ ss.id }}'>
-                                        <ul class="nav nav-tabs" role="tablist">
-                                            <li class="nav-item">
-                                                <a class="nav-link-test active" data-toggle="tab" href="#home">Type</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link-test" data-toggle="tab" href="#menu1">Famille</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link-test" data-toggle="tab" href="#menu2">Ajouter une solution</a>
-                                            </li>
-                                        </ul>
 
-                                        <!-- Tab panes -->
-                                        <div class="tab-content">
-                                            <div id="home" class="container tab-pane active"><br>
-                                                <h3>HOME</h3>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                                            </div>
-                                            <div id="menu1" class="container tab-pane fade"><br>
-                                                <h3>Menu 1</h3>
-                                                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                                            </div>
-                                            <div id="menu2" class="container tab-pane fade"><br>
-                                                <h3>Menu 2</h3>
-                                                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+                                    <div class="col-md-1 test-drop">
+                                        <div class="nav-item dropdown">
+                                            <a class="nav-link" id="navbarDropdownMenuAccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="material-icons">arrow_drop_down_circle</i></a>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuAccount">
+                                                <div class="test-drop-group">
+                                                    <a class="dropdown-item" onclick="addTest({{ ss.id }},'check')"><i class="material-icons">note_add</i>Ajouter un test checkbox</a>
+                                                    <a class="dropdown-item" onclick="addTest({{ ss.id }},'select')"><i class="material-icons">note_add</i>Ajouter un test sélection</a>
+                                                </div>
+                                                <a class="dropdown-item"><i class="material-icons">note_add</i>Archiver la sous-section</a>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                                 {% endfor %}
-
                             </div>
                             <div class="row">
                                 <div class="col-md-9">
                                     <div class="input-group">
-                                        <input class="form-control" id="" type="text" placeholder="Ajouter une sous-section">
-                                        <button id="add-row" class="add-button" onclick="addRow()">+</button>
+                                        <input class="form-control" id="new-sub{{ s.id }}" type="text" placeholder="Ajouter une sous-section">
+                                        <button class="add-button sub-section">+</button>
                                     </div>
                                 </div>
                             </div>
+                        </div>
                         {% endfor %}
-
-
-                   </div>
-
-
-
-
-
-
-
-
-
-
-
-                      <div class="tab-pane" id="messages">
-                        <p>test 2</p>
                     </div>
+                   </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
         </div>
-
     </div>
 
 

@@ -9,15 +9,13 @@
 namespace App\Controller;
 
 use App\Entity\AppUser;
+use App\Entity\AuditTestsInfra;
 use App\Entity\AuditCompanyResult;
-use App\Entity\AuditTestInfrastructure;
 use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
 use App\Entity\IntAudit;
 use App\Entity\ProductCompanySize;
 use App\Entity\SolutionFeatures;
-use App\Entity\TestSelection;
-use App\Entity\TestsInfrastructure;
 use App\Entity\TestType;
 use Proxies\__CG__\App\Entity\CompanySize;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,6 +26,23 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AuditController extends AbstractController
 {
+
+    /**
+     * Méthode qui gère toute la partie Administration Audit
+     *
+     * @Route("/préaudit", name="audit_preaudit", options={"utf8": true})
+     */
+    public function preAudit()
+    {
+        $repository_audit = $this->getDoctrine()->getRepository(IntAudit::class);
+        $repository_infra = $this->getDoctrine()->getRepository(AuditTestsInfra::class);
+        $template['audit'] = $repository_audit->findOneBy(['id'=>$_GET['audit']]);
+        $template['infra'] = $repository_infra->findAll();
+        $template['audit_id'] = $_GET['audit'];
+
+        return $this->render('audit/preaudit.html.twig', $template);
+
+    }
 
     /**
      * Méthode qui gère toute la partie Administration Audit
@@ -858,6 +873,7 @@ class AuditController extends AbstractController
         $array['test'] = $test;
         return $this->render('audit/solutions_test.html.twig',$array);
     }
+
 
 
 

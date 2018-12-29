@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\AuditTestInfrastructure;
+use App\Entity\AuditTestsInfra;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method AuditTestInfrastructure|null find($id, $lockMode = null, $lockVersion = null)
- * @method AuditTestInfrastructure|null findOneBy(array $criteria, array $orderBy = null)
- * @method AuditTestInfrastructure[]    findAll()
- * @method AuditTestInfrastructure[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method AuditTestsInfra|null find($id, $lockMode = null, $lockVersion = null)
+ * @method AuditTestsInfra|null findOneBy(array $criteria, array $orderBy = null)
+ * @method AuditTestsInfra[]    findAll()
+ * @method AuditTestsInfra[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AuditTestInfrastructureRepository extends ServiceEntityRepository
+class AuditTestsInfraRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, AuditTestInfrastructure::class);
+        parent::__construct($registry, AuditTestsInfra::class);
     }
 
 //    /**
-//     * @return AuditTestInfrastructure[] Returns an array of AuditTestInfrastructure objects
+//     * @return AuditTestsInfra[] Returns an array of AuditTestsInfra objects
 //     */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class AuditTestInfrastructureRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?AuditTestInfrastructure
+    public function findOneBySomeField($value): ?AuditTestsInfra
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.exampleField = :val')

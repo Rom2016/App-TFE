@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\TestSelection;
+use App\Entity\TestSelections;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method TestSelection|null find($id, $lockMode = null, $lockVersion = null)
- * @method TestSelection|null findOneBy(array $criteria, array $orderBy = null)
- * @method TestSelection[]    findAll()
- * @method TestSelection[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method TestSelections|null find($id, $lockMode = null, $lockVersion = null)
+ * @method TestSelections|null findOneBy(array $criteria, array $orderBy = null)
+ * @method TestSelections[]    findAll()
+ * @method TestSelections[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TestSelectionRepository extends ServiceEntityRepository
+class TestSelectionsRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, TestSelection::class);
+        parent::__construct($registry, TestSelections::class);
     }
 
 //    /**
-//     * @return TestSelection[] Returns an array of TestSelection objects
+//     * @return TestSelections[] Returns an array of TestSelections objects
 //     */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class TestSelectionRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?TestSelection
+    public function findOneBySomeField($value): ?TestSelections
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.exampleField = :val')

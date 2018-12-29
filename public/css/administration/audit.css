@@ -1,12 +1,35 @@
-textarea:focus, input:focus{
+.comment input{
     border-width:0px;
     border:none;
     background-color: whitesmoke;
 }
 
+.selection-fail{
+    background-color: #f55145;
+    border: white solid 1px;
+    color: white;
+    text-align: center;
+}
 
+.selection-error{
+    background-color: #ff9e0f;
+    border: white solid 1px;
+    color: white;
+    text-align: center;
+}
+
+.selection-success{
+    background-color: #55b559;
+    border: white solid 1px;
+    color: white;
+    text-align: center;
+}
+
+.section input{
+    border-width:0px;
+    border:none;
+}
 .section{
-    color : red;
     font-size : 20px;
 }
 
@@ -55,13 +78,14 @@ select {
     cursor : pointer
 }
 
-.test i{
+.modify-test i{
     display: none
 }
 
-.test:hover i{
+.modify-test:hover i {
     display: block
 }
+
 
 .test-edit{
     color: grey;
@@ -252,4 +276,39 @@ select {
     content: "";
     background: no-repeat center center;
     background-size: 100% 100%;
+}
+.test-type{
+    border: solid 1px lightgray;
+    margin: 4%;
+    padding: 2%;
+    transition: 0.3s;
+
+}
+
+.test-type.active {
+    border: solid 1px lightgray;
+    margin: 4%;
+    padding: 2%;
+    cursor: pointer;
+    background-color: whitesmoke;
+    transition: 0.3s;
+}
+
+
+.test-type:hover {
+    box-shadow: inset 0 0 0 3px #8e24aa;
+}
+
+.type-icon{
+    color : #8e24aa;
+    font-size: 35px;
+}
+
+.checkbox-header{
+    font-size: 25px;
+    margin-top: 5%;
+}
+
+.test-drop-group{
+    border-bottom: dashed 1px lightgray;
 }

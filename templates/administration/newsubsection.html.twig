@@ -1,0 +1,21 @@
+<div class="row">
+    <div  class="sub-section comment col-md-2">
+        <span class="editable suggestion">{{ subsection }}</span>
+    </div>
+    <div id="test-group{{ id }}" class="test comment col-md-7">
+    </div>
+
+    <div class="col-md-1 test-drop">
+        <div class="nav-item dropdown">
+            <a class="nav-link" id="navbarDropdownMenuAccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="material-icons">arrow_drop_down_circle</i></a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuAccount">
+                <div class="test-drop-group">
+                    <a class="dropdown-item" onclick="addTest({{ id }},'check')"><i class="material-icons">note_add</i>Ajouter un test checkbox</a>
+                    <a class="dropdown-item" onclick="addTest({{ id }},'select')"><i class="material-icons">note_add</i>Ajouter un test sélection</a>
+                </div>
+                <a class="dropdown-item"><i class="material-icons">note_add</i>Archiver la sous-section</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+<div class="row">
+    <div class="col-md-10 input-group mb-3">
+        <span class="editable suggestion">{{ test }}</span>
+        <div class="input-group-append">
+            <i id='trigger{{ id }}' onclick="slidePanel({{ id }})" class="material-icons test-edit">edit</i>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-1">
+        <select class="form-control" name="test_phase[1][prio]">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+        </select>
+    </div>
+</div>
+<div class="slider" id='slider{{ id }}'>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link-test active" data-toggle="tab" href="#home">Type</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link-test" data-toggle="tab" href="#menu1">Famille</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link-test" data-toggle="tab" href="#menu2">Ajouter une solution</a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div id="home" class="container tab-pane active"><br>
+            <div id="test-type{{ id }}" class="row">
+                <div id="type-check{{ id }}" class="col-md-5 test-type active" onclick="changeType({{ id }},'check')">
+                    <div class="row">
+                        <div class="col-md-3"><i class="material-icons type-icon"  >check_box</i></div>
+                        <div class="col-md-8"><p class="checkbox-header">Checkbox</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <span style="text-align: center">Réponse par oui ou non</span>
+                </div>
+                <div id="type-select{{ id }}" class="col-md-5 test-type" onclick="changeType({{ id }},'select')">
+                    <div class="row">
+                        <div class="col-md-3"><i  class="material-icons type-icon" >radio_button_checked</i></div>
+                        <div class="col-md-8"><p class="checkbox-header">Sélection</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <span style="text-align: center">Réponse à choix multiples</span>
+                </div>
+            </div>
+        </div>
+        <div id="menu1" class="container tab-pane fade"><br>
+            <h3>Menu 1</h3>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        </div>
+        <div id="menu2" class="container tab-pane fade"><br>
+            <h3>Menu 2</h3>
+            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+        </div>
+    </div>
+</div>

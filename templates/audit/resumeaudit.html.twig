@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="images/favicon.ico" type="image/ico" />
+
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <link href="../vendor/sweet-alert/dist/sweetalert2.css" rel="stylesheet">
+    <link href="../css/audit/preaudit.css?v=2.1.0" rel="stylesheet" />
+
+    <!-- CSS Files -->
+    <link href="../css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
+
+</head>
+<body>
+<div class="content">
+    <div class="container-fluid col-md-6">
+        {% for t in tests %}
+            <p>{{ t.test }}</p>
+        {% endfor %}
+
+        <div class="card">
+            <div class="card-header card-header-tabs card-header-primary">
+                <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                        <ul class="nav nav-tabs" data-tabs="tabs">
+                            {% for section in sections %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="#{{ section.section }}" data-toggle="tab">
+                                    <p class="adm-link">{{ section.section }}</p>
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    {% for s in sections %}
+                    <div class="tab-pane" id="{{ s.section }}">
+                        {% for t in tests %}
+                            <p>{{ t.test }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script src="../js/core/jquery.min.js" type="text/javascript"></script>
+<script src="../js/core/popper.min.js" type="text/javascript"></script>
+<script src="../js/core/bootstrap-material-design.min.js" type="text/javascript"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../js/plugins/perfect-scrollbar.jquery.min.js"></script>

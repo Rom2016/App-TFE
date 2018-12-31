@@ -34,6 +34,11 @@ class IntCustomer
     private $intAudits;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\InfraCustomer", mappedBy="customer")
+     */
+    private $infra;
+
+    /**
      * IntCustomer constructor.
      * @param $name
      * @param $email
@@ -42,6 +47,7 @@ class IntCustomer
     {
         $this->name = $name;
         $this->email = $email;
+        $this->infra = new ArrayCollection();
     }
 
 
@@ -99,6 +105,37 @@ class IntCustomer
             // set the owning side to null (unless already changed)
             if ($intAudit->getCustomer() === $this) {
                 $intAudit->setCustomer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|InfraCustomer[]
+     */
+    public function getInfra(): Collection
+    {
+        return $this->infra;
+    }
+
+    public function addInfra(InfraCustomer $infra): self
+    {
+        if (!$this->infra->contains($infra)) {
+            $this->infra[] = $infra;
+            $infra->setCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInfra(InfraCustomer $infra): self
+    {
+        if ($this->infra->contains($infra)) {
+            $this->infra->removeElement($infra);
+            // set the owning side to null (unless already changed)
+            if ($infra->getCustomer() === $this) {
+                $infra->setCustomer(null);
             }
         }
 

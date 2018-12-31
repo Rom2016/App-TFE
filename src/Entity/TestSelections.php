@@ -28,10 +28,7 @@ class TestSelections
      */
     private $test;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $status;
+
 
     /**
      * @ORM\Column(type="datetime")

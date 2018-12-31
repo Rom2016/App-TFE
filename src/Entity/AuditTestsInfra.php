@@ -39,10 +39,26 @@ class AuditTestsInfra
      */
     private $infraSelections;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=false)
+     */
+    private $date_creation;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $date_archive;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\InfraCustomer", mappedBy="infra")
+     */
+    private $infraCustomers;
+
     public function __construct()
     {
         $this->linkTestsInfras = new ArrayCollection();
         $this->infraSelections = new ArrayCollection();
+        $this->infraCustomers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -130,6 +146,61 @@ class AuditTestsInfra
             // set the owning side to null (unless already changed)
             if ($infraSelection->getInfra() === $this) {
                 $infraSelection->setInfra(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDateCreation(): ?\DateTimeInterface
+    {
+        return $this->date_creation;
+    }
+
+    public function setDateCreation(?\DateTimeInterface $date_creation): self
+    {
+        $this->date_creation = $date_creation;
+
+        return $this;
+    }
+
+    public function getDateArchive(): ?\DateTimeInterface
+    {
+        return $this->date_archive;
+    }
+
+    public function setDateArchive(?\DateTimeInterface $date_archive): self
+    {
+        $this->date_archive = $date_archive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|InfraCustomer[]
+     */
+    public function getInfraCustomers(): Collection
+    {
+        return $this->infraCustomers;
+    }
+
+    public function addInfraCustomer(InfraCustomer $infraCustomer): self
+    {
+        if (!$this->infraCustomers->contains($infraCustomer)) {
+            $this->infraCustomers[] = $infraCustomer;
+            $infraCustomer->setInfra($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInfraCustomer(InfraCustomer $infraCustomer): self
+    {
+        if ($this->infraCustomers->contains($infraCustomer)) {
+            $this->infraCustomers->removeElement($infraCustomer);
+            // set the owning side to null (unless already changed)
+            if ($infraCustomer->getInfra() === $this) {
+                $infraCustomer->setInfra(null);
             }
         }
 

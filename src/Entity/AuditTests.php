@@ -68,6 +68,11 @@ class AuditTests
     private $linkTestsInfras;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\InfraSelection", mappedBy="test")
+     */
+    private $infraSelections;
+
+    /**
      * AuditTests constructor.
      * @param $test
      * @param $priority
@@ -85,6 +90,7 @@ class AuditTests
         $this->testSelections = new ArrayCollection();
         $this->Selections = new ArrayCollection();
         $this->linkTestsInfras = new ArrayCollection();
+        $this->infraSelections = new ArrayCollection();
     }
 
 
@@ -243,6 +249,37 @@ class AuditTests
             // set the owning side to null (unless already changed)
             if ($linkTestsInfra->getTest() === $this) {
                 $linkTestsInfra->setTest(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|InfraSelection[]
+     */
+    public function getInfraSelections(): Collection
+    {
+        return $this->infraSelections;
+    }
+
+    public function addInfraSelection(InfraSelection $infraSelection): self
+    {
+        if (!$this->infraSelections->contains($infraSelection)) {
+            $this->infraSelections[] = $infraSelection;
+            $infraSelection->setTest($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInfraSelection(InfraSelection $infraSelection): self
+    {
+        if ($this->infraSelections->contains($infraSelection)) {
+            $this->infraSelections->removeElement($infraSelection);
+            // set the owning side to null (unless already changed)
+            if ($infraSelection->getTest() === $this) {
+                $infraSelection->setTest(null);
             }
         }
 

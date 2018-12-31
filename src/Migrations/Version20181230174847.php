@@ -8,15 +8,16 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20181229171823 extends AbstractMigration
+final class Version20181230174847 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE TABLE infra_selection (id INT AUTO_INCREMENT NOT NULL, infra_id INT NOT NULL, selection VARCHAR(100) NOT NULL, INDEX IDX_6B571D6E362A80ED (infra_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
-        $this->addSql('ALTER TABLE infra_selection ADD CONSTRAINT FK_6B571D6E362A80ED FOREIGN KEY (infra_id) REFERENCES audit_tests_infra (id)');
+        $this->addSql('ALTER TABLE infra_selection ADD test_id INT DEFAULT NULL, ADD status TINYINT(1) DEFAULT NULL');
+        $this->addSql('ALTER TABLE infra_selection ADD CONSTRAINT FK_6B571D6E1E5D0459 FOREIGN KEY (test_id) REFERENCES audit_tests (id)');
+        $this->addSql('CREATE INDEX IDX_6B571D6E1E5D0459 ON infra_selection (test_id)');
     }
 
     public function down(Schema $schema) : void
@@ -24,6 +25,8 @@ final class Version20181229171823 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP TABLE infra_selection');
+        $this->addSql('ALTER TABLE infra_selection DROP FOREIGN KEY FK_6B571D6E1E5D0459');
+        $this->addSql('DROP INDEX IDX_6B571D6E1E5D0459 ON infra_selection');
+        $this->addSql('ALTER TABLE infra_selection DROP test_id, DROP status');
     }
 }

@@ -22,7 +22,7 @@
 <body>
 <div class="content">
     <div class="container-fluid col-md-6">
-        <form method="post" action="../audit?audit={{ audit_id }}">
+        <form method="post" action="../audit/nouveau-audit?audit={{ audit_id }}">
 
         <div class="card">
                 <div class="card-header card-header-primary">
@@ -46,7 +46,7 @@
                                 <div class="clearfix"></div>
                                 {% for select in infra.infraSelections %}
                                 <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input" id="defaultInline{{ select.id }}" name="radio-group{{ infra.id }}">
+                                    <input type="radio" class="custom-control-input" id="defaultInline{{ select.id }}" value="{{ select.selection }}" name="pre_audit[{{ infra.id }}]" required>
                                     <label class="custom-control-label" for="defaultInline{{ select.id }}">{{ select.selection }}</label>
                                 </div>
                                 {% endfor %}
@@ -57,7 +57,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     {{ i }}.{{ infra.test }}
-                                    <input type="text" class="form-control">
+                                    <input type="text" class="form-control" name="pre_audit[{{ infra.id }}]" required>
                                 </div>
                             </div>
                         {% endif %}

@@ -1,0 +1,49 @@
+.comment{
+    background-color: whitesmoke;
+    border: white solid 1px;
+}
+
+.selection-fail{
+    background-color: #f55145;
+    border: white solid 1px;
+    color: white;
+    text-align: center;
+}
+
+.selection-error{
+    background-color: #ff9e0f;
+    border: white solid 1px;
+    color: white;
+    text-align: center;
+}
+
+.selection-success{
+    background-color: #55b559;
+    border: white solid 1px;
+    color: white;
+    text-align: center;
+}
+
+.status{
+    padding-right: 1px; !important;
+    padding-left: 1px; !important;
+}
+
+.new-comment{
+    font-style: italic;
+    border: grey dashed 1px;
+}
+
+.child{
+    border-left: grey solid 2px;
+}
+
+#pause-button{
+    font-size: 50px;
+}
+
+.comment input{
+    border-width:0px;
+    border:none;
+    background-color: whitesmoke;
+}

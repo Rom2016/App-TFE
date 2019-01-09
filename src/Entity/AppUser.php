@@ -50,10 +50,7 @@ class AppUser implements UserInterface, \Serializable
     private $date_creation;
 
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Roles", inversedBy="appUsers")
-     */
-    private $role;
+
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
@@ -91,6 +88,21 @@ class AppUser implements UserInterface, \Serializable
     private $intAudits;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserNotifications", mappedBy="receiver")
+     */
+    private $Notifications;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserRoles", mappedBy="user")
+     */
+    private $userRoles;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserPermission", mappedBy="user")
+     */
+    private $auditPermission;
+
+    /**
      * AppUser constructor.
      * @param $username
      * @param $password
@@ -98,10 +110,9 @@ class AppUser implements UserInterface, \Serializable
      * @param $second_name
      * @param $function
      * @param $date_creation
-     * @param $role
      * @param $creator
      */
-    public function __construct($username, $password, $first_name, $second_name, $function, $date_creation, $role, $creator)
+    public function __construct($username, $password, $first_name, $second_name, $function, $date_creation, $creator)
     {
         $this->username = $username;
         $this->password = $password;
@@ -109,11 +120,13 @@ class AppUser implements UserInterface, \Serializable
         $this->second_name = $second_name;
         $this->function = $function;
         $this->date_creation = $date_creation;
-        $this->role = $role;
         $this->creator = $creator;
         $this->logs = new ArrayCollection();
         $this->intAuditPermissions = new ArrayCollection();
         $this->intAudits = new ArrayCollection();
+        $this->Notifications = new ArrayCollection();
+        $this->userRoles = new ArrayCollection();
+        $this->auditPermission = new ArrayCollection();
     }
 
 
@@ -194,11 +207,6 @@ class AppUser implements UserInterface, \Serializable
         return $this;
     }
 
-    public function getRoles()
-    {
-            $roles[] =$this->getRole()->getRole();
-        return $roles;
-    }
 
     public function eraseCredentials()
     {
@@ -246,23 +254,7 @@ class AppUser implements UserInterface, \Serializable
         return null;
     }
 
-   
-
-
-
-
-
-    public function getRole(): ?Roles
-    {
-        return $this->role;
-    }
-
-    public function setRole(?Roles $role): self
-    {
-        $this->role = $role;
-
-        return $this;
-    }
+  
 
     public function getProfilePic(): ?string
     {
@@ -399,6 +391,108 @@ class AppUser implements UserInterface, \Serializable
             // set the owning side to null (unless already changed)
             if ($intAudit->getCreator() === $this) {
                 $intAudit->setCreator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserNotifications[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->Notifications;
+    }
+
+    public function addNotification(UserNotifications $notification): self
+    {
+        if (!$this->Notifications->contains($notification)) {
+            $this->Notifications[] = $notification;
+            $notification->setReceiver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(UserNotifications $notification): self
+    {
+        if ($this->Notifications->contains($notification)) {
+            $this->Notifications->removeElement($notification);
+            // set the owning side to null (unless already changed)
+            if ($notification->getReceiver() === $this) {
+                $notification->setReceiver(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserRoles[]
+     */
+    public function getUserRoles(): Collection
+    {
+        return $this->userRoles;
+    }
+
+    public function addUserRole(UserRoles $userRole): self
+    {
+        if (!$this->userRoles->contains($userRole)) {
+            $this->userRoles[] = $userRole;
+            $userRole->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserRole(UserRoles $userRole): self
+    {
+        if ($this->userRoles->contains($userRole)) {
+            $this->userRoles->removeElement($userRole);
+            // set the owning side to null (unless already changed)
+            if ($userRole->getUser() === $this) {
+                $userRole->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+    public function getRoles()
+    {
+        $role = $this->getUserRoles();
+        foreach ($role as $key => $value){
+            $roles[] =$value->getRole()->getRole();
+
+        }
+        return $roles;
+    }
+
+    /**
+     * @return Collection|UserPermission[]
+     */
+    public function getAuditPermission(): Collection
+    {
+        return $this->auditPermission;
+    }
+
+    public function addAuditPermission(UserPermission $auditPermission): self
+    {
+        if (!$this->auditPermission->contains($auditPermission)) {
+            $this->auditPermission[] = $auditPermission;
+            $auditPermission->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAuditPermission(UserPermission $auditPermission): self
+    {
+        if ($this->auditPermission->contains($auditPermission)) {
+            $this->auditPermission->removeElement($auditPermission);
+            // set the owning side to null (unless already changed)
+            if ($auditPermission->getUser() === $this) {
+                $auditPermission->setUser(null);
             }
         }
 

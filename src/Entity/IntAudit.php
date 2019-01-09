@@ -56,6 +56,16 @@ class IntAudit
     private $finish_date;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\AuditResults", mappedBy="audit")
+     */
+    private $auditResults;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $date_archive;
+
+    /**
      * IntAudit constructor.
      * @param $creator
      * @param $customer
@@ -70,6 +80,7 @@ class IntAudit
         $this->date_creation = $date_creation;
         $this->started = $started;
         $this->name = $name;
+        $this->auditResults = new ArrayCollection();
     }
 
 
@@ -193,6 +204,49 @@ class IntAudit
     public function setFinishDate($finish_date): void
     {
         $this->finish_date = $finish_date;
+    }
+
+    /**
+     * @return Collection|AuditResults[]
+     */
+    public function getAuditResults(): Collection
+    {
+        return $this->auditResults;
+    }
+
+    public function addAuditResult(AuditResults $auditResult): self
+    {
+        if (!$this->auditResults->contains($auditResult)) {
+            $this->auditResults[] = $auditResult;
+            $auditResult->setAudit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAuditResult(AuditResults $auditResult): self
+    {
+        if ($this->auditResults->contains($auditResult)) {
+            $this->auditResults->removeElement($auditResult);
+            // set the owning side to null (unless already changed)
+            if ($auditResult->getAudit() === $this) {
+                $auditResult->setAudit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDateArchive(): ?\DateTimeInterface
+    {
+        return $this->date_archive;
+    }
+
+    public function setDateArchive(?\DateTimeInterface $date_archive): self
+    {
+        $this->date_archive = $date_archive;
+
+        return $this;
     }
 
 

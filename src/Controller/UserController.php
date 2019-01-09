@@ -23,29 +23,7 @@ use LasseRafn\InitialAvatarGenerator\InitialAvatar;
 
 class UserController extends AbstractController
 {
-    /**
-     * Méthode qui gère la racine du serveur.
-     * Elle se partage entre portail de connexion pour un utilisateur non authentifié et la page d'accueil pour un utilisateur authentifié.
-     *
-     * @Route("/connexion", name="login")
-     */
-    public function login(AuthenticationUtils $authenticationUtils)
-    {
-        $securityContext = $this->container->get('security.authorization_checker');
-        if (!$securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-            $error = $authenticationUtils->getLastAuthenticationError();
 
-            $lastUsername = $authenticationUtils->getLastUsername();
-
-            return $this->render('user/login.html.twig', array(
-                'last_username' => $lastUsername,
-                'error'         => $error,
-            ));
-        }
-        else {
-            return $this->redirectToRoute('homepage');
-        }
-    }
 
     /**
      *

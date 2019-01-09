@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
     <link href="../vendor/sweet-alert/dist/sweetalert2.css" rel="stylesheet">
-    <link href="../css/audit/preaudit.css?v=2.1.0" rel="stylesheet" />
+    <link href="../css/audit/audit.css" rel="stylesheet" />
 
     <!-- CSS Files -->
     <link href="../css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
@@ -20,10 +20,7 @@
 </head>
 <body>
 <div class="content">
-    <div class="container-fluid col-md-6">
-        {% for t in tests %}
-            <p>{{ t.test }}</p>
-        {% endfor %}
+    <div class="container-fluid col-md-9">
 
         <div class="card">
             <div class="card-header card-header-tabs card-header-primary">
@@ -46,8 +43,72 @@
                 <div class="tab-content">
                     {% for s in sections %}
                     <div class="tab-pane" id="{{ s.section }}">
-                        {% for t in tests %}
-                            <p>{{ t.test }}</p>
+                        <div class="row">
+                            <div class="col-md-9"></div>
+                            <div class="col-md-1">
+                                <a class="alert alert-default" href="../" data-toggle="tooltip" data-placement="top" title="Mettre l'audit en pause" ><i id="pause-button" class="material-icons" >pause_circle_filled</i></a>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-secondary">
+                                   <a href="../" style="color: black">Passer au rapport!</a>
+                                </button>
+                            </div>
+                        </div>
+
+                        {% for sub in s.auditSubSections %}
+                            <h3>{{ sub.subsection }}</h3>
+                            <div class="row">
+                                <div class="col-md-4 text-center">Test</div>
+                                <div class="col-md-2 text-center header">Réponse</div>
+                                <div class="col-md-4 text-center header">Commentaire</div>
+                            </div>
+                            {% for t in tests %}
+                                {% if t.test.susbection == sub and t.test.type.type == 'Question'%}
+                                   <div id="test{{ t.test.id }}" class="row">
+                                       <div class="col-md-4 comment">
+                                           <span>{{ t.test.test }}</span>
+                                       </div>
+                                       <div class="col-md-2 status">
+                                    <div id="status{{ t.test.id }}" class="selection-fail select">
+                                        <div class="btn-group">
+                                            <span id="change-status{{ t.test.id }}" style="cursor:pointer" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                échec
+                                            </span>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <span class="dropdown-item selection-choice selection-fail status">échec</span>
+                                                <span class="dropdown-item selection-choice selection-error status">passe avec erreurs</span>
+                                                <span class="dropdown-item selection-choice selection-success status">passe</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                       </div>
+                                       <div class="col-md-4 comment">
+                                           <span class="editable new-comment">Ajouter un commentaire</span>
+                                       </div>
+                                   </div>
+                                   {% elseif  t.test.susbection == sub and t.test.type.type == 'Selection' %}
+                                       <div id="test{{ t.test.id }}" class="row">
+                                           <div class="col-md-4 comment">
+                                               <span>{{ t.test.test }}</span>
+                                           </div>
+                                           <div class="col-md-2 status">
+                                               <div id="status{{ t.test.id }}" class="select">
+                                                   <select class="browser-default custom-select">
+                                                       <option selected disabled>Choisir</option>
+
+                                                   {% for s in t.test.Selections %}
+                                                           <option value="1">{{ s.selection }}</option>
+                                                   {% endfor %}
+                                                   </select>
+
+                                               </div>
+                                           </div>
+                                           <div class="col-md-4 comment">
+                                               <span class="editable new-comment">Ajouter un commentaire</span>
+                                           </div>
+                                       </div>
+                                {% endif %}
+                            {% endfor %}
                         {% endfor %}
                     </div>
                     {% endfor %}
@@ -63,4 +124,4 @@
 <script src="../js/core/popper.min.js" type="text/javascript"></script>
 <script src="../js/core/bootstrap-material-design.min.js" type="text/javascript"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="../js/plugins/perfect-scrollbar.jquery.min.js"></script>
+<script src="../js/audit/audit.js"></script>

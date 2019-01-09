@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\AuditCompanyResult;
+use App\Entity\AuditResults;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method AuditCompanyResult|null find($id, $lockMode = null, $lockVersion = null)
- * @method AuditCompanyResult|null findOneBy(array $criteria, array $orderBy = null)
- * @method AuditCompanyResult[]    findAll()
- * @method AuditCompanyResult[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method AuditResults|null find($id, $lockMode = null, $lockVersion = null)
+ * @method AuditResults|null findOneBy(array $criteria, array $orderBy = null)
+ * @method AuditResults[]    findAll()
+ * @method AuditResults[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AuditCompanyResultRepository extends ServiceEntityRepository
+class AuditResultsRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, AuditCompanyResult::class);
+        parent::__construct($registry, AuditResults::class);
     }
 
 //    /**
-//     * @return AuditCompanyResult[] Returns an array of AuditCompanyResult objects
+//     * @return AuditResults[] Returns an array of AuditResults objects
 //     */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class AuditCompanyResultRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?AuditCompanyResult
+    public function findOneBySomeField($value): ?AuditResults
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.exampleField = :val')

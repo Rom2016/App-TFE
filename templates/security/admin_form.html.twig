@@ -1,0 +1,8 @@
+<div class="wrapper">
+    <form class="form-signin" method="post" action="{{ path('login_admin_check') }}">
+        <h2 class="form-signin-heading">Please login</h2>
+        <input type="text" class="form-control" name="_username" placeholder="Email Address" value="{% if last_username is defined %}{{ last_username }}{% endif %}" required="" autofocus="" />
+        <input type="password" class="form-control" name="_password" placeholder="Password" required=""/>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+    </form>
+</div>

@@ -1,5 +1,4 @@
 security:
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     encoders:
             App\Entity\AppUser:
                 algorithm: bcrypt
@@ -12,33 +11,37 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
+        administration_login:
+                pattern: ^/administration
+                anonymous: ~
+                form_login:
+                          login_path: login_admin
+                          check_path: login_admin
+                provider: app_db
+        main_login:
+            pattern: ^/
             anonymous: ~
             form_login:
                        login_path: login
                        check_path: login
+                       csrf_token_generator: security.csrf.token_manager
             provider: app_db
             logout:
                     path:   logout
                     target: /
-
-            # activate different ways to authenticate
-
-            # http_basic: true
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-
-            # form_login: true
-            # https://symfony.com/doc/current/security/form_login_setup.html
     role_hierarchy:
-            ROLE_AUDIT_RO: ROLE_USER
-            ROLE_AUDIT_RW: ROLE_AUDIT_RO
-            ROLE_ADMIN: ROLE_AUDIT_RW
-            ROLE_SUPER_ADMIN: ROLE_ADMIN
+            ROLE_CREATOR: ROLE_USER
+            ROLE_ADMIN_USER: ROLE_CREATOR
+            ROLE_ADMIN_CONTENT: ROLE_CREATOR
+            ROLE_ADMIN_CUSTOMER: ROLE_CREATOR
+            ROLE_GLOBAL_ADMIN: [ROLE_ADMIN_USER, ROLE_ADMIN_CONTENT, ROLE_ADMIN_CUSTOMER]
+            ROLE_SUPER_ADMIN: ROLE_GLOBAL_ADMIN
     access_control:
       - { path: ~/connexion, roles: IS_AUTHENTICATED_ANONYMOUSLY }
       - { path: ^/$, roles: ROLE_USER }
-      - { path: ^/profile, roles: ROLE_USER }
-      - { path: /administration/supprimer-utilisateur, roles: ROLE_SUPER_ADMIN }
-      - { path: ^/administration, roles: ROLE_ADMIN }
+      - { path: ^/profile, roles: ROLE_USER}
+      - { path: ^/administration/utilisateurs, roles: ROLE_ADMIN_USER }
+      - { path: ^/administration/contenu-audits, roles: ROLE_ADMIN_CONTENT }
+      - { path: ^/administration/clients, roles: ROLE_ADMIN_CUSTOMER }
 
 

@@ -73,6 +73,11 @@ class AuditTests
     private $infraSelections;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\AuditResults", mappedBy="test")
+     */
+    private $auditResults;
+
+    /**
      * AuditTests constructor.
      * @param $test
      * @param $priority
@@ -91,6 +96,7 @@ class AuditTests
         $this->Selections = new ArrayCollection();
         $this->linkTestsInfras = new ArrayCollection();
         $this->infraSelections = new ArrayCollection();
+        $this->auditResults = new ArrayCollection();
     }
 
 
@@ -280,6 +286,37 @@ class AuditTests
             // set the owning side to null (unless already changed)
             if ($infraSelection->getTest() === $this) {
                 $infraSelection->setTest(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|AuditResults[]
+     */
+    public function getAuditResults(): Collection
+    {
+        return $this->auditResults;
+    }
+
+    public function addAuditResult(AuditResults $auditResult): self
+    {
+        if (!$this->auditResults->contains($auditResult)) {
+            $this->auditResults[] = $auditResult;
+            $auditResult->setTest($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAuditResult(AuditResults $auditResult): self
+    {
+        if ($this->auditResults->contains($auditResult)) {
+            $this->auditResults->removeElement($auditResult);
+            // set the owning side to null (unless already changed)
+            if ($auditResult->getTest() === $this) {
+                $auditResult->setTest(null);
             }
         }
 

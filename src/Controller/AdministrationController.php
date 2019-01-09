@@ -262,10 +262,10 @@ class AdministrationController extends AbstractController
         $child->setParent($test);
         $entityManager->persist($child);
         $entityManager->flush();
-        $template['selection'] = $_POST['select'];
-        //$template['status'] = $test->getId();
-
-        return $this->render('administration/newselection.html.twig',$template);
+        $template['child'] = $child->getTest();
+        $template['priority'] = $child->getPriority();
+        $template['id'] = $child->getId();
+        return $this->render('administration/newchild.html.twig',$template);
     }
     /**
      * Méthode qui gère la partie administration du contenu des audits
@@ -279,7 +279,8 @@ class AdministrationController extends AbstractController
             break;
             case 'subsection': $this->updateSection();
             break;
-            case 'test' :
+            case 'child' : return new Response($this->updateChild());
+            break;
 
         }
     }
@@ -377,6 +378,29 @@ class AdministrationController extends AbstractController
         $template['id'] = $selection->getId();
         $template['status'] = $selection->getStatus();
         return $this->render('administration/updateselection.html.twig',$template);
+    }
+
+    /**
+     * Méthode qui gère la partie administration du contenu des audits
+     *
+     * @Route("/administration/contenu-audits/modifier/enfant", name="admin_audits_content_child")
+     */
+    public function updateChild()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+
+        $date = new \DateTime(date('Y-m-d H:i:s'));
+        $test = $repository_test->findOneBy(['id'=>$_POST['child']]);
+        $test->setDateArchive($date);
+        $updatedChild = new AuditTests($_POST['data'], $test->getPriority(), $test->getSusbection(), $test->getType(), $date);
+        $updatedChild->setParent($test->getParent());
+        $entityManager->persist($updatedChild);
+        $entityManager->persist($test);
+        $entityManager->flush();
+        $template['test'] = $updatedChild->getTest();
+        $template['id'] = $updatedChild->getId();
+        return $this->render('administration/updatechild.html.twig', $template);
 
     }
 

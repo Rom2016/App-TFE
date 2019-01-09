@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 use App\Entity\AppUser;
+use App\Entity\AuditResults;
 use App\Entity\AuditSection;
 use App\Entity\AuditTests;
 use App\Entity\AuditTestsInfra;
@@ -44,7 +45,6 @@ class AuditController extends AbstractController
         $template['audit'] = $repository_audit->findOneBy(['id'=>$_GET['audit']]);
         $template['infra'] = $repository_infra->findBy(array('date_archive' => null));
         $template['audit_id'] = $_GET['audit'];
-
         return $this->render('audit/preaudit.html.twig', $template);
 
     }
@@ -62,7 +62,10 @@ class AuditController extends AbstractController
          */
         $repository_audit = $this->getDoctrine()->getRepository(IntAudit::class);
         $repository_infra = $this->getDoctrine()->getRepository(AuditTestsInfra::class);
+        $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $repository_customer_infra = $this->getDoctrine()->getRepository(InfraCustomer::class);
 
+        $tests = $repository_test->findBy(['date_archive' => null,'parent'=>null]);
         $entityManager = $this->getDoctrine()->getManager();
         $audit = $repository_audit->findOneBy(['id'=>$_GET['audit']]);
         $infra = $repository_infra->findBy(array('date_archive' => null));
@@ -82,26 +85,6 @@ class AuditController extends AbstractController
                 $entityManager->persist($infraCustomer);
             }
         }
-        $audit->setStarted(true);
-        $entityManager->flush();
-        return $this->render('audit/newaudit.html.twig');
-    }
-
-    /**
-     * Méthode qui gère toute la partie Administration Audit
-     *
-     * @Route("/audit/reprendre-audit", name="audit_resume_audit", options={"utf8": true})
-     */
-    public function resumeAudit()
-    {
-        $repository_section = $this->getDoctrine()->getRepository(AuditSection::class);
-        $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
-        $repository_audit = $this->getDoctrine()->getRepository(IntAudit::class);
-        $repository_customer_infra = $this->getDoctrine()->getRepository(InfraCustomer::class);
-        $repository_infra_selection = $this->getDoctrine()->getRepository(InfraSelection::class);
-
-        $audit = $repository_audit->findOneBy(['id'=>$_GET['audit']]);
-        $tests = $repository_test->findBy(['date_archive' => null,'parent'=>null]);
         foreach ($tests as $key => $value) {
             foreach ($value->getLinkTestsInfras() as $k => $v) {
                 $infra = $v->getInfra();
@@ -123,14 +106,58 @@ class AuditController extends AbstractController
                     }
                 }
 
-
             }
         }
+        foreach ($tests as $key => $value){
+            $audit_tests = new AuditResults($audit,$value);
+            $entityManager->persist($audit_tests);
+
+        }
+        $audit->setStarted(true);
+        $entityManager->flush();
+        return $this->render('audit/newaudit.html.twig');
+    }
+
+    /**
+     * Méthode qui gère toute la partie Administration Audit
+     *
+     * @Route("/audit/reprendre-audit", name="audit_resume_audit", options={"utf8": true})
+     */
+    public function resumeAudit()
+    {
+        $repository_section = $this->getDoctrine()->getRepository(AuditSection::class);
+        $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $repository_audit = $this->getDoctrine()->getRepository(IntAudit::class);
+        $repository_audit_results = $this->getDoctrine()->getRepository(AuditResults::class);
+
+        $audit = $repository_audit->findOneBy(['id'=>$_GET['audit']]);
+        $audit_results = $repository_audit_results->findBy(['audit'=>$audit]);
+
+
         $template['sections'] = $repository_section->findAll();
-        $template['tests'] = $tests;
+        $template['tests'] = $audit_results;
 
         return $this->render('audit/resumeaudit.html.twig', $template);
     }
+
+    /**
+     * Méthode qui gère toute la partie Administration Audit
+     *
+     * @Route("/audit/chercher-enfants", name="audit_get_child", options={"utf8": true})
+     */
+    public function getChild()
+    {
+        $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $test = $repository_test->findOneBy(['id'=>$_POST['id']]);
+        $template['childs'] = $repository_test->findBy(['parent'=>$test]);
+        $template['parent'] = $test;
+        if($template['childs']){
+            return $this->render('audit/addchild.html.twig',$template);
+        }else{
+            return false;
+        }
+    }
+
     /**
      * Méthode qui gère toute la partie Administration Audit
      *

@@ -1,0 +1,23 @@
+<div id="group-childs{{ parent.id }}">
+{% for c in childs %}
+<div class="row child">
+        <div class="col-md-4">
+                <span style="margin-left: 2%">{{ c.test }}</span>
+        </div>
+        <div class="col-md-2 status">
+                <div id="status{{ c.id }}" class="selection-fail select">
+                        <div class="btn-group">
+                                            <span style="cursor:pointer" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                échec
+                                            </span>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                        <span class="dropdown-item selection-choice selection-fail">échec</span>
+                                        <span class="dropdown-item selection-choice selection-error status-pass">passe avec erreurs</span>
+                                        <span class="dropdown-item selection-choice selection-success status-pass">passe</span>
+                                </div>
+                        </div>
+                </div>
+        </div>
+</div>
+{% endfor %}
+</div>

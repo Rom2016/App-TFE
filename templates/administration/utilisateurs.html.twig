@@ -102,18 +102,15 @@ Administration
                                                     <span class="block-email">{{ user.username }}</span>
                                                 </td>
                                                 <td class="desc">{{ user.function }}</td>
-                                                <td id="userRole{{ user.id }}"><span class="alert {% if user.role.role== 'ROLE_SUPER_ADMIN' %}alert-danger{% elseif user.role.role== 'ROLE_ADMIN'  %}alert-warning{% elseif user.role.role== 'ROLE_USER'  %}alert-info{% endif %}" >{{ user.role.role }}</span></td>
                                                 <td>
                                                     <span class="status--process">{{ user.dateCreation|date('Y-m-d H:i:s') }}</span>
                                                 </td>
                                                 <td>
-                                                                    {% if is_granted('ROLE_SUPER_ADMIN') %}
 
                                                         <span class="more">
                                                                <i class="material-icons swalDelete" rel="tooltip" title="Supprimer l'utilisateur" onclick="delUser('{{ user.first_name }} {{ user.secondName }}',{{ user.id }})">delete</i>
 
                                                         </span>
-                                                        {% endif %}
                                                          <span class="more">
                                                               <i class="material-icons" rel="tooltip" title="Modifier les permissions" {% if is_granted('ROLE_SUPER_ADMIN') %}onclick="changeRole({{ user.id }},true)"{% else %}onclick="changeRole({{ user.id }},false)"{% endif %}>lock</i>
                                                         </span>

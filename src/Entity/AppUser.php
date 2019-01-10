@@ -50,8 +50,6 @@ class AppUser implements UserInterface, \Serializable
     private $date_creation;
 
 
-
-
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
      */
@@ -73,21 +71,6 @@ class AppUser implements UserInterface, \Serializable
     private $lastModifiedBy;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Logs", mappedBy="User")
-     */
-    private $logs;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\IntAuditPermission", mappedBy="user")
-     */
-    private $intAuditPermissions;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\IntAudit", mappedBy="creator")
-     */
-    private $intAudits;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\UserNotifications", mappedBy="receiver")
      */
     private $Notifications;
@@ -101,6 +84,16 @@ class AppUser implements UserInterface, \Serializable
      * @ORM\OneToMany(targetEntity="App\Entity\UserPermission", mappedBy="user")
      */
     private $auditPermission;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\AuditCreator", mappedBy="creator")
+     */
+    private $creations;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $deactivated;
 
     /**
      * AppUser constructor.
@@ -127,7 +120,9 @@ class AppUser implements UserInterface, \Serializable
         $this->Notifications = new ArrayCollection();
         $this->userRoles = new ArrayCollection();
         $this->auditPermission = new ArrayCollection();
+        $this->creations = new ArrayCollection();
     }
+
 
 
     public function getId(): ?int
@@ -498,6 +493,50 @@ class AppUser implements UserInterface, \Serializable
 
         return $this;
     }
+
+    /**
+     * @return Collection|AuditCreator[]
+     */
+    public function getCreations(): Collection
+    {
+        return $this->creations;
+    }
+
+    public function addCreation(AuditCreator $creation): self
+    {
+        if (!$this->creations->contains($creation)) {
+            $this->creations[] = $creation;
+            $creation->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreation(AuditCreator $creation): self
+    {
+        if ($this->creations->contains($creation)) {
+            $this->creations->removeElement($creation);
+            // set the owning side to null (unless already changed)
+            if ($creation->getCreator() === $this) {
+                $creation->setCreator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDeactivated(): ?bool
+    {
+        return $this->deactivated;
+    }
+
+    public function setDeactivated(?bool $deactivated): self
+    {
+        $this->deactivated = $deactivated;
+
+        return $this;
+    }
+
 
   
 }

@@ -21,7 +21,7 @@ class IntCustomer
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $name;
+    private $customer;
 
     /**
      * @ORM\Column(type="string", length=100)
@@ -39,13 +39,25 @@ class IntCustomer
     private $infra;
 
     /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $first_name;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $second_name;
+
+    /**
      * IntCustomer constructor.
      * @param $name
      * @param $email
      */
-    public function __construct($name, $email)
+    public function __construct($customer, $first_name, $second_name, $email)
     {
-        $this->name = $name;
+        $this->customer = $customer;
+        $this->first_name = $first_name;
+        $this->second_name = $second_name;
         $this->email = $email;
         $this->infra = new ArrayCollection();
     }
@@ -56,17 +68,6 @@ class IntCustomer
         return $this->id;
     }
 
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
 
     public function getEmail(): ?string
     {
@@ -138,6 +139,36 @@ class IntCustomer
                 $infra->setCustomer(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * @param mixed $customer
+     */
+    public function setCustomer($customer): void
+    {
+        $this->customer = $customer;
+    }
+
+
+
+    public function getSecondName(): ?string
+    {
+        return $this->second_name;
+    }
+
+    public function setSecondName(string $second_name): self
+    {
+        $this->second_name = $second_name;
 
         return $this;
     }

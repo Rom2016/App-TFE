@@ -33,10 +33,6 @@ class AuditResults
      */
     private $test;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $result;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -44,14 +40,22 @@ class AuditResults
     private $date_response;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Status")
+     */
+    private $status;
+
+
+    /**
      * AuditResults constructor.
      * @param $audit
      * @param $test
      */
-    public function __construct($audit, $test)
+    public function __construct($audit, $test, $status)
     {
         $this->audit = $audit;
         $this->test = $test;
+        $this->status = $status;
+
     }
 
 
@@ -96,17 +100,23 @@ class AuditResults
         return $this;
     }
 
-    public function getResult(): ?string
+    /**
+     * @return mixed
+     */
+    public function getResult()
     {
         return $this->result;
     }
 
-    public function setResult(string $result): self
+    /**
+     * @param mixed $result
+     */
+    public function setResult($result): void
     {
         $this->result = $result;
-
-        return $this;
     }
+
+
 
     public function getDateResponse(): ?\DateTimeInterface
     {
@@ -116,6 +126,18 @@ class AuditResults
     public function setDateResponse(?\DateTimeInterface $date_response): self
     {
         $this->date_response = $date_response;
+
+        return $this;
+    }
+
+    public function getStatus(): ?Status
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?Status $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

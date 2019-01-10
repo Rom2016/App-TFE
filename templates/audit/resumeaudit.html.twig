@@ -28,12 +28,14 @@
                     <div class="nav-tabs-wrapper">
                         <ul class="nav nav-tabs" data-tabs="tabs">
                             {% for section in sections %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="#{{ section.section }}" data-toggle="tab">
-                                    <p class="adm-link">{{ section.section }}</p>
-                                    <div class="ripple-container"></div>
-                                </a>
-                            </li>
+                                {% if section.auditSubSections is not empty %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#{{ section.section }}" data-toggle="tab">
+                                            <p class="adm-link">{{ section.section }}</p>
+                                            <div class="ripple-container"></div>
+                                        </a>
+                                    </li>
+                                {% endif %}
                             {% endfor %}
                         </ul>
                     </div>
@@ -56,22 +58,24 @@
                         </div>
 
                         {% for sub in s.auditSubSections %}
-                            <h3>{{ sub.subsection }}</h3>
+                        {% if sub.auditTests is not empty %}
+
+                        <h3>{{ sub.subsection }}</h3>
                             <div class="row">
                                 <div class="col-md-4 text-center">Test</div>
                                 <div class="col-md-2 text-center header">Réponse</div>
                                 <div class="col-md-4 text-center header">Commentaire</div>
                             </div>
                             {% for t in tests %}
-                                {% if t.test.susbection == sub and t.test.type.type == 'Question'%}
-                                   <div id="test{{ t.test.id }}" class="row">
+                                {% if t.test.susbection == sub and t.test.type.type == 'Question' and t.test.parent is null%}
+                                   <div id="test{{ t.id }}" class="row">
                                        <div class="col-md-4 comment">
                                            <span>{{ t.test.test }}</span>
                                        </div>
                                        <div class="col-md-2 status">
-                                    <div id="status{{ t.test.id }}" class="selection-fail select">
+                                    <div id="status{{ t.id }}" class="selection-fail select">
                                         <div class="btn-group">
-                                            <span id="change-status{{ t.test.id }}" style="cursor:pointer" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span id="change-status{{ t.id }}" style="cursor:pointer" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 échec
                                             </span>
                                             <div class="dropdown-menu dropdown-menu-right">
@@ -85,14 +89,19 @@
                                        <div class="col-md-4 comment">
                                            <span class="editable new-comment">Ajouter un commentaire</span>
                                        </div>
+                                        {% for child in tests %}
+                                             {% if child.test.parent == t.test and t.status != 'fail'%}
+                                                <p>test</p>
+                                             {% endif %}
+                                        {% endfor %}
                                    </div>
                                    {% elseif  t.test.susbection == sub and t.test.type.type == 'Selection' %}
-                                       <div id="test{{ t.test.id }}" class="row">
+                                       <div id="test{{ t.id }}" class="row">
                                            <div class="col-md-4 comment">
                                                <span>{{ t.test.test }}</span>
                                            </div>
                                            <div class="col-md-2 status">
-                                               <div id="status{{ t.test.id }}" class="select">
+                                               <div id="status{{ t.id }}" class="select">
                                                    <select class="browser-default custom-select">
                                                        <option selected disabled>Choisir</option>
 
@@ -109,6 +118,7 @@
                                        </div>
                                 {% endif %}
                             {% endfor %}
+                        {% endif %}
                         {% endfor %}
                     </div>
                     {% endfor %}

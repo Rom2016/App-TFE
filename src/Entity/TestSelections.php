@@ -45,6 +45,8 @@ class TestSelections
      */
     private $infraSelections;
 
+
+
     /**
      * TestSelections constructor.
      * @param $selection
@@ -91,17 +93,24 @@ class TestSelections
         return $this;
     }
 
-    public function getStatus(): ?string
+    /**
+     * @return mixed
+     */
+    public function getStatus()
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    /**
+     * @param mixed $status
+     */
+    public function setStatus($status): void
     {
         $this->status = $status;
-
-        return $this;
     }
+
+
+
 
     public function getDateCreation(): ?\DateTimeInterface
     {

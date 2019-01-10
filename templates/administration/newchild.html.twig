@@ -1,17 +1,20 @@
-<div class="row comment">
-    <div class="col-md-10 ">
-        <span id="child{{ id }}" class="editable suggestion child">{{ child }}</span>
+<div id="group-child{{ test.id }}" class="row comment group-child layer">
+    <div class="col-md-9 ">
+        <span id="child{{  test.id }}" class="editable suggestion child">{{ test.test }}</span>
     </div>
     <div class="col-md-2">
         <div class="btn-group">
-                                                                                <span class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                    {{ priority }}
+                                                                                <span id="prio-drop{{ test.id }}" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                    {{ test.priority }}
                                                                                 </span>
             <div class="dropdown-menu dropdown-menu-right">
-                <span class="dropdown-item">1</span>
-                <span class="dropdown-item">2</span>
-                <span class="dropdown-item">3</span>
+                <span class="dropdown-item priority">1</span>
+                <span class="dropdown-item priority">2</span>
+                <span class="dropdown-item priority">3</span>
             </div>
         </div>
+    </div>
+    <div class="col-md-1">
+        <i id="trash-child{{ test.id }}" class="material-icons trash child" title="archiver">delete</i>
     </div>
 </div>

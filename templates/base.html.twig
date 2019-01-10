@@ -65,7 +65,7 @@
                     <li class="nav-item " id="nav-audit">
                         <a class="nav-link" href="../voir-audit">
                             <i class="material-icons">description</i>
-                            <p>Géstion des entreprises</p>
+                            <p>Révision des audits</p>
                         </a>
                     </li>
                     <li class="nav-item" id="nav-adm">
@@ -82,13 +82,14 @@
                                 <i class="material-icons">description</i>
                                 <p>Contenu des audits</p>
                             </a>
-                            <a class="nav-link" href="../voir-audit">
+                            <a class="nav-link" href="../administration/clients">
                                 <i class="material-icons">vpn_key</i>
-                                <p>Permissions</p>
+                                <p>Clients</p>
                             </a>
                         </div>
                     </li>
                 </ul>
+                {% if is_granted('ROLE_CREATOR') %}
                 <li>
                     <button class="btn btn-info"  data-toggle="modal" data-target="#modalAudit" style="margin-left: 10%; margin-top: 10%; width: 60%">
                         <i class="fa fa-plus" ></i>
@@ -96,11 +97,13 @@
                     </button>
 
                 </li>
+                {% endif %}
             </div>
         </div>
         <div class="modal fade" id="modalAudit" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
+                    <form method="post" action="../audit/créer?route={{ app.request.pathinfo }}">
                     <div class="modal-body">
                         <div id="smartWizard">
                             <ul>
@@ -111,24 +114,43 @@
                             <div>
                                 <div id="step-1" class="form-group text-center">
                                     <h2>Nom de l'audit</h2>
-                                    <input type="text" id='int-audit-name' class="boot-form-control input-lg">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="exampleInputEmail1" name="audit-name" required>
+                                    </div>
                                 </div>
                                 <div id="step-2" class="">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-10">
                                             <div class="form-group">
-                                                <label class="bmd-label-floating">Nom de l'entreprise</label>
-                                                <input type="text" id='int-customer' class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="bmd-label-floating">Email de la personne responsable</label>
-                                                <input type="text" id='int-customer-responsable' class="form-control">
+                                                <label class="bmd-label-floating">Client</label>
+                                                <input type="text"  class="form-control" name="customer" required>
                                             </div>
                                         </div>
                                     </div>
-
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating">Prénom de la personne responsable</label>
+                                                <input type="text" class="form-control" name="first-name-audit" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating">Nom de la personne responsable</label>
+                                                <input type="text" class="form-control" name="second-name-audit" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating">Email de la personne responsable</label>
+                                                <input type="email" class="form-control" name="email-audit" required>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div id="step-3" class="">
                                     <div class="dropdown">
@@ -139,7 +161,7 @@
                                         <ul class="dropdown-menu dropdown-menu-form" role="menu">
                                             {% for u in users %}
                                             <li class="check-participant">
-                                                <input type="checkbox"  id="check{{ u.id }}"><label for="check{{ u.id }}" style="cursor: pointer"><img {% if not app.user.profile_pic %}src="../génèrer-avatar?rq=administration&p={{ u.first_name }}&n={{ u.second_name }}"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} class="rounded-circle" style="width: 30px" />{{ u.first_name }} {{u.second_name }}/{{ u.username }}</label>
+                                                <input type="checkbox" id="check{{ u.id }}" name="creator[{{ u.id }}]"><label for="check{{ u.id }}" style="cursor: pointer"><img {% if not app.user.profile_pic %}src="../génèrer-avatar?rq=administration&p={{ u.first_name }}&n={{ u.second_name }}"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} class="rounded-circle" style="width: 30px" />{{ u.first_name }} {{u.second_name }}/{{ u.username }}</label>
                                             </li>
                                             {% endfor %}
                                         </ul>
@@ -147,10 +169,9 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" id="create-ext-audit" class="btn btn-info btn-block" style="margin-top: 5%">Créer</button>
-
-
+                        <button type="submit" id="create-ext-audit" class="btn btn-info btn-block" style="margin-top: 5%">Créer</button>
                     </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -205,16 +226,15 @@
         </div>
     </div>
 
-            {% block footer %}
                 <!-- footer content -->
                 <footer>
                     <div class="pull-right">
                         Securicheck
                     </div>
                     <div class="clearfix"></div>
+
                 </footer>
                 <!-- /footer content -->
-            {% endblock %}
 
     {% block javascripts %}
         <script src="../js/core/jquery.min.js" type="text/javascript"></script>
@@ -262,6 +282,22 @@
                 });
 
             });
+            {% if new_audit is defined %}
+            Swal({
+                position: 'top-end',
+                type: 'success',
+                title: 'Audit créé!',
+                showConfirmButton: false,
+                timer: 1500
+            })
+            {% endif %}
+            $('.nav-item.active').removeClass('active');
+            $('#nav-adm').click(function () {
+                $('.nav-item.active').removeClass('active');
+                $('#nav-adm').addClass('active');
+            })
+            $('#btnAddUser').click(function(){
+            })
         </script>
     {% endblock %}
 

@@ -28,7 +28,26 @@
         <div class="row dash-header">
             <h2>Tableau de bord</h2>
         </div>
+        <div class="row">
+            <p>Nb Audit,nb test , moyenne général</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-6">
+                <div class="card card-stats">
+                    <div class="card-header card-header-info card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">check_box</i>
+                        </div>
+                        <p class="card-category">Nombre de tests créés</p>
+                        <h3 class="card-title purple" style="color: purple">
+                        </h3>
+                    </div>
+                    <div class="card-footer">
 
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
            <div class="col-md-8">
                 <div class="card">
@@ -36,7 +55,7 @@
                         <h3 class="card-title">Mes audits créés</h3>
                         <p class="card-category"></p>
                     </div>
-                    <div class="card-body">
+                    <div style="overflow-y: scroll; height:300px;" class="card-body">
                         <table class="table table-hover">
                             <thead class="text-info">
                                   <tr>
@@ -55,9 +74,9 @@
                             <tbody>
                                 {% for audit in createdAudit %}
                                     <tr>
-                                        <td>{{ audit.name }}</td>
-                                        <td>{{ audit.customer.name }}</td>
-                                        <td>{% if audit.finishDate is not null %}<i class="material-icons" style="color : #55b559">check_circle</i> {% elseif audit.started == false %}<a href="../audit/préaudit?audit={{ audit.id }}"><i class="material-icons" style="">power_settings_new</i></a>{% else %}<a href="../audit/reprendre-audit?audit={{ audit.id }}"><i class="material-icons" style="">pause_circle_filled</i>{% endif %}</a></td>
+                                        <td>{{ audit.audit.name }}</td>
+                                        <td>{{ audit.audit.customer.customer }}</td>
+                                        <td>{% if audit.audit.finishDate is not null %}<i class="material-icons" style="color : #55b559">check_circle</i> {% elseif audit.audit.started == false %}<a href="../audit/préaudit?audit={{ audit.audit.id }}"><i class="material-icons" style="">power_settings_new</i></a>{% else %}<a href="../audit/reprendre-audit?audit={{ audit.audit.id }}"><i class="material-icons" style="">pause_circle_filled</i>{% endif %}</a></td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -98,30 +117,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-4 col-sm-6">
-                <div class="card card-stats">
-                    <div class="card-header card-header-info card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">check_box</i>
-                        </div>
-                        <p class="card-category">Nombre de tests créés</p>
-                        <h3 class="card-title purple" style="color: purple">{{ nbTest }}
-                        </h3>
-                    </div>
-                    <div class="card-footer">
-                        <div class="stats">
-                            <i class="material-icons">link</i>
-                            <a href="#pablo">Visualiser</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-
-
-        <div class="row">
-            <div id="map"></div>
-    </div>
 </div>
 
 {% endblock %}

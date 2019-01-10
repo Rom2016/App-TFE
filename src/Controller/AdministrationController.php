@@ -12,6 +12,7 @@ use App\Entity\AuditSubSection;
 use App\Entity\AuditTests;
 use App\Entity\Roles;
 use App\Entity\TestSelections;
+use App\Entity\TestStatus;
 use App\Entity\TestType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use App\Entity\AppUser;
@@ -46,7 +47,10 @@ class AdministrationController extends AbstractController
             }
         }
         $repository = $this->getDoctrine()->getRepository(AppUser::class);
-        $array['users'] = $repository->findAll();
+        $array['users'] = $repository->findBy(['deactivated'=>false]);
+        if(isset($_GET['nouveau-audit'])){
+            $array['new_audit'] = true;
+        }
         return $this->render('administration/utilisateurs.html.twig', $array);
         /**
          * L'utilisateur n'a pas les droits admin, render le template d'accès refusé.
@@ -59,23 +63,15 @@ class AdministrationController extends AbstractController
 
     /**
      *
-     * @Route("/administration/supprimer-utilisateur", name="ajax_delete_user",methods="POST")
+     * @Route("/administration/utilisateurs/supprimer-utilisateur", name="ajax_delete_user",methods="POST")
      */
     public function deleteUser()
     {
         if(isset($_POST)) {
             $entityManager = $this->getDoctrine()->getManager();
-            $repository_audit = $this->getDoctrine()->getRepository(AuditCompany::class);
-
             $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(['id' => $_POST['id']]);
-            $audit = $repository_audit->findBy(['owner' => $user]);
-            if($audit){
-                foreach ($audit as $key => $value){
-                    $value->setOwner($this->getUser());
-                    $entityManager->persist($value);
-                }
-            }
-            $entityManager->remove($user);
+            $user->setDeactivated(true);
+            $entityManager->persist($user);
             $entityManager->flush();
         }
         $array['response'] = 'Utilisateur supprimé!';
@@ -219,7 +215,7 @@ class AdministrationController extends AbstractController
         $test = new AuditTests($_POST['data'], '1', $subsection, $type, $date);
         $entityManager->persist($test);
         $entityManager->flush();
-        $template['test'] = $_POST['data'];
+        $template['test'] = $test;
         $template['id'] = $test->getId();
 
         return $this->render('administration/newtest.html.twig',$template);
@@ -234,10 +230,12 @@ class AdministrationController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
-        $date = new \DateTime(date('Y-m-d H:i:s'));
+        $repository_status = $this->getDoctrine()->getRepository(TestStatus::class);
 
+        $date = new \DateTime(date('Y-m-d H:i:s'));
+        $status = $repository_status->findOneBy(['status'=>'fail']);
         $test = $repository_test->findOneBy(['id'=>$_POST['id']]);
-        $select = new TestSelections($_POST['select'], $test, 'fail', $date);
+        $select = new TestSelections($_POST['select'], $test, $status, $date);
         $entityManager->persist($select);
         $entityManager->flush();
         $template['selection'] = $_POST['select'];
@@ -262,9 +260,7 @@ class AdministrationController extends AbstractController
         $child->setParent($test);
         $entityManager->persist($child);
         $entityManager->flush();
-        $template['child'] = $child->getTest();
-        $template['priority'] = $child->getPriority();
-        $template['id'] = $child->getId();
+        $template['test'] = $child;
         return $this->render('administration/newchild.html.twig',$template);
     }
     /**
@@ -363,7 +359,7 @@ class AdministrationController extends AbstractController
     /**
      * Méthode qui gère la partie administration du contenu des audits
      *
-     * @Route("/administration/contenu-audits/modifier/status-selection", name="admin_audits_content_modify_selection_status")
+     * @Route("/administration/contenu-audits/modifier/status-selection", name="admin_audits_content_modify_selection_status", methods="POST")
      */
     public function updateSelectionStatus()
     {
@@ -398,10 +394,51 @@ class AdministrationController extends AbstractController
         $entityManager->persist($updatedChild);
         $entityManager->persist($test);
         $entityManager->flush();
-        $template['test'] = $updatedChild->getTest();
-        $template['id'] = $updatedChild->getId();
+        $template['test'] = $updatedChild;
         return $this->render('administration/updatechild.html.twig', $template);
-
     }
+
+    /**
+     * Méthode qui gère la partie administration du contenu des audits
+     *
+     * @Route("/administration/contenu-audits/modifier/priorité", name="admin_audits_content_modify_prio", methods="POST", options={"utf8": true})
+     */
+    public function updatePrio()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $test = $repository_test->findOneBy(['id'=>$_POST['id']]);
+        $test->setPriority($_POST['prio']);
+        $entityManager->persist($test);
+        $entityManager->flush();
+        return new Response('ok');
+    }
+
+    /**
+     * Méthode qui gère la partie administration du contenu des audits
+     *
+     * @Route("/administration/contenu-audits/supprimer", name="admin_audits_content_delete", methods="POST")
+     */
+    public function deleteElement()
+    {
+        switch ($_POST['el']){
+            case 'child':if($this->deleteChild()){
+                            return new Response('Element supprimé!');
+                        };
+        }
+    }
+
+    public function deleteChild()
+    {
+        $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $date = new \DateTime(date('d-m-Y H:i:s'));
+        $entityManager = $this->getDoctrine()->getManager();
+        $test = $repository_test->findOneBy(['id'=>$_POST['id']]);
+        $test->setDateArchive($date);
+        $entityManager->persist($test);
+        $entityManager->flush();
+        return true;
+    }
+
 
 }

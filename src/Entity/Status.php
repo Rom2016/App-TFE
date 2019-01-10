@@ -5,9 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\LogTypeRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\StatusRepository")
  */
-class LogType
+class Status
 {
     /**
      * @ORM\Id()
@@ -17,23 +17,23 @@ class LogType
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=50)
      */
-    private $type;
+    private $status;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getType(): ?string
+    public function getStatus(): ?string
     {
-        return $this->type;
+        return $this->status;
     }
 
-    public function setType(string $type): self
+    public function setStatus(string $status): self
     {
-        $this->type = $type;
+        $this->status = $status;
 
         return $this;
     }

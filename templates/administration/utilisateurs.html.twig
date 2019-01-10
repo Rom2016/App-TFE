@@ -7,13 +7,10 @@ Administration
     {{ parent() }}
     <link href="../css/table_user.css" rel="stylesheet" />
         <link href="../vendor/jQuery-popover/css/bootstrap-popover-x.css" rel="stylesheet">
-
+    <link href="../css/administration/audit.css" rel="stylesheet" />
+    <link href="../css/administration/users.css" rel="stylesheet" />
         <link href="../vendor/sweet-alert/dist/sweetalert2.css" rel="stylesheet">
-
-
     <style>
-
-
     .table-data tbody tr:hover td .more {
     -webkit-transform: scale(1);
     -moz-transform: scale(1);
@@ -75,7 +72,11 @@ Administration
                 </div>
                 <div class="card-body">
                   <div class="tab-content">
-                    <div class="tab-pane active" id="profile">
+                    <div class="tab-pane active">
+                        <div class="row">
+                            <div class="col-md-11"></div>
+                            <i id="display-log" class="material-icons">list_alt</i>
+                        </div>
                     <div class="row">
                             <div class="col-md-12">
                                 <!-- DATA TABLE -->
@@ -88,13 +89,13 @@ Administration
                                                 <th>Nom</th>
                                                 <th>email</th>
                                                 <th>Fonction</th>
-                                                <th>Rôle</th>
                                                 <th>Utilisateur depuis</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         {% for user in users %}
+                                            {% if app.user.id != user.id %}
                                             <tr class="tr-shadow tr-user" id="user{{ user.id }}">
                                                 <td><img {% if not app.user.profile_pic %}src="../génèrer-avatar?rq=administration&p={{ user.first_name }}&n={{ user.second_name }}"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} class="rounded-circle" style="width: 30px" /></td>
                                                 <td>{{ user.first_name }} {{ user.secondName }}</td>
@@ -108,26 +109,78 @@ Administration
                                                 <td>
 
                                                         <span class="more">
-                                                               <i class="material-icons swalDelete" rel="tooltip" title="Supprimer l'utilisateur" onclick="delUser('{{ user.first_name }} {{ user.secondName }}',{{ user.id }})">delete</i>
+                                                               <i class="material-icons" rel="tooltip" title="Supprimer l'utilisateur" onclick="slidePanel({{ user.id }})">more_horiz</i>
 
-                                                        </span>
-                                                         <span class="more">
-                                                              <i class="material-icons" rel="tooltip" title="Modifier les permissions" {% if is_granted('ROLE_SUPER_ADMIN') %}onclick="changeRole({{ user.id }},true)"{% else %}onclick="changeRole({{ user.id }},false)"{% endif %}>lock</i>
                                                         </span>
                                                 </td>
                                             </tr>
                                             <tr class="spacer"></tr>
+                                            <div id="slider{{ user.id }}" class="slider">
+                                                <div class="user-header">
+                                                    <h2>{{ user.first_name }} {{ user.secondName }}</h2>
+                                                </div>
+                                                <div class="row">
+
+                                                    <div class="col-md-1">
+                                                      <i class="material-icons" onclick="deleteUser({{user.id }},'{{ user.first_name }} {{ user.secondName }}')">delete</i>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                      <i class="material-icons">refresh</i>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            {% endif %}
                                             {% endfor %}
 
 
                                         </tbody>
 
                                     </table>
-                                     <button type="button" id="btnAddUser" rel="tooltip" title="Ajouter un utilisateur" class="btn btn-info btn-block" {% if is_granted('ROLE_SUPER_ADMIN') %}onclick="addUser(true)"{% else %}onclick="addUser(false)"{% endif %}>
+                                     <button type="button" id="btnAddUser" rel="tooltip" title="Ajouter un utilisateur" class="btn btn-info btn-block">
                                                 <i class="material-icons">add</i>
-                                            </button>
+                                     </button>
+                                     <div id="new-user" class="slider">
+                                        <div class="user-header">
+                                            <h3>Informations générales</h3>
+                                        </div>
+                                         <form action="../administration" method="post">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="bmd-label-floating">Prénom</label>
+                                                            <input type="text" id="fName" class="form-control" name="fName" onkeyup="emailAutoCompletion()" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="bmd-label-floating">Nom</label>
+                                                            <input type="text" id="sName" class="form-control" name="sName" onkeyup="emailAutoCompletion()" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="bmd-label-floating">Email</label>
+                                                            <input type="email" class="form-control" id="userEmail" name="email" required>
+                                                        </div>
+                                                    </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="bmd-label-floating">Fonction</label>
+                                                                <input type="text" class="form-control" name="function" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                             <div class="user-header">
+                                                 <h3>Rôles</h3>
+                                             </div>
+                                                <div class="clearfix"></div>
+                                            <button type="submit" id="submit_new_user" class="btn btn-success" name="submit" value="newUser"><i class="fa fa-check"></i></button>
+                                        </form>
+                                     </div>
                                 </div>
-                                <!-- END DATA TABLE -->
                     </div>
                     </div>
                     </div>
@@ -138,6 +191,7 @@ Administration
         </div>
 
     </div>
+    </div>
 
 
 {% endblock %}
@@ -145,11 +199,20 @@ Administration
 {% block javascripts %}
     {{ parent() }}
     <script src="../vendor/sweet-alert/dist/sweetalert2.js"></script>
+    <script src="../vendor/Slide-panel/dist/jquery.slidereveal.js"></script>
+    <script src="../js/administration/audit.js"></script>
+    <script src="../js/administration/user.js"></script>
+
     <script>
         $('.nav-item.active').removeClass('active');
         $('#nav-adm').addClass('active');
         $('#btnAddUser').click(function(){
-
         })
+            $('#new-user').slideReveal({
+            position: "right",
+            push: false,
+            overlay: true,
+            width: 500
+        });
     </script>
 {% endblock %}

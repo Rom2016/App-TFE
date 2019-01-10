@@ -2,35 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\AuditPhase;
+use App\Entity\AuditCreator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method AuditPhase|null find($id, $lockMode = null, $lockVersion = null)
- * @method AuditPhase|null findOneBy(array $criteria, array $orderBy = null)
- * @method AuditPhase[]    findAll()
- * @method AuditPhase[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method AuditCreator|null find($id, $lockMode = null, $lockVersion = null)
+ * @method AuditCreator|null findOneBy(array $criteria, array $orderBy = null)
+ * @method AuditCreator[]    findAll()
+ * @method AuditCreator[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AuditPhaseRepository extends ServiceEntityRepository
+class AuditCreatorRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, AuditPhase::class);
+        parent::__construct($registry, AuditCreator::class);
     }
-
-    public function getNb()
-    {
-        $qb = $this->createQueryBuilder('t');
-        return $qb
-            ->select('count(t.id)')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
 
 //    /**
-//     * @return AuditPhase[] Returns an array of AuditPhase objects
+//     * @return AuditCreator[] Returns an array of AuditCreator objects
 //     */
     /*
     public function findByExampleField($value)
@@ -47,7 +37,7 @@ class AuditPhaseRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?AuditPhase
+    public function findOneBySomeField($value): ?AuditCreator
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.exampleField = :val')

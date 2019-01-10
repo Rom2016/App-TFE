@@ -31,6 +31,7 @@
 }
 .section{
     font-size : 20px;
+    font-weight: bold;
 }
 
 .suggestion:hover{
@@ -69,9 +70,7 @@ select {
     border: grey dashed 1px;
 }
 
-.audit-more{
-    font-size: 30px;
-}
+
 .audit-more:hover{
     border: solid 1px lightgray;
     border-radius: 50px;
@@ -311,4 +310,43 @@ select {
 
 .test-drop-group{
     border-bottom: dashed 1px lightgray;
+}
+
+.audit-icons{
+    cursor: pointer;
+    font-size: 30px;
+}
+
+.trash{
+    cursor: pointer;
+}
+
+.question{
+    background-color: #00cae3;
+    border: white solid 1px;
+    color: white;
+    text-align: center;
+}
+
+.selection{
+    background-color: #8e24aa;
+    border: white solid 1px;
+    color: white;
+    text-align: center;
+}
+
+
+.slider-header{
+    background-color: whitesmoke;
+    padding: 2%;
+    margin-bottom: 2%;
+}
+
+.section-table{
+    padding: 2%;
+}
+
+#icons-table{
+    border: solid 1px lightgray;
+    border-radius: 100px;
 }

@@ -25,7 +25,6 @@ class AuditSubSection
     
 
 
-
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AuditSection", inversedBy="auditSubSections")
      */

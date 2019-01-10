@@ -9,21 +9,21 @@
 namespace App\Controller;
 
 use App\Entity\AppUser;
+use App\Entity\AuditCreator;
 use App\Entity\AuditResults;
 use App\Entity\AuditSection;
 use App\Entity\AuditTests;
 use App\Entity\AuditTestsInfra;
-use App\Entity\AuditCompanyResult;
-use App\Entity\AuditPhase;
-use App\Entity\AuditTestPhase;
+use App\Entity\Status;
+use App\Entity\TestStatus;
+use Symfony\Component\Routing\RequestContext;
+
 use App\Entity\InfraCustomer;
 use App\Entity\InfraSelection;
 use App\Entity\IntAudit;
+use App\Entity\IntCustomer;
 use App\Entity\LinkTestsInfra;
-use App\Entity\ProductCompanySize;
-use App\Entity\SolutionFeatures;
 use App\Entity\TestType;
-use Proxies\__CG__\App\Entity\CompanySize;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,6 +32,38 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AuditController extends AbstractController
 {
+    /**
+     * Méthode qui gère toute la partie Administration Audit
+     *
+     * @Route("/audit/créer", name="create_audit", options={"utf8": true}, methods="POST")
+     */
+    public function createAudit()
+    {
+        $repository_user = $this->getDoctrine()->getRepository(AppUser::class);
+        $entityManager = $this->getDoctrine()->getManager();
+        $date = new \DateTime(date('Y-m-d H:i:s'));
+        $audit_name = $_POST['audit-name'];
+        $first_name = $_POST['first-name-audit'];
+        $second_name = $_POST['second-name-audit'];
+        $email = $_POST['email-audit'];
+        $customer = new IntCustomer($_POST['customer'], $first_name, $second_name, $email );
+        $entityManager->persist($customer);
+        $audit = new IntAudit($customer, $date, $audit_name);
+        $entityManager->persist($audit);
+
+        $creator = new AuditCreator($this->getUser(), $audit);
+        $entityManager->persist($creator);
+        if(isset($_POST['creator'])){
+            foreach ($_POST['creator'] as $key => $value){
+                $user = $repository_user->findOneBy(['id'=>$key]);
+                $creator = new AuditCreator($user, $audit);
+                $entityManager->persist($creator);
+            }
+        }
+        $route = '..'.$_GET['route'].'?nouveau-audit=true';
+        $entityManager->flush();
+        return $this->redirect($route);
+    }
 
     /**
      * Méthode qui gère toute la partie Administration Audit
@@ -40,35 +72,37 @@ class AuditController extends AbstractController
      */
     public function preAudit()
     {
+
         $repository_audit = $this->getDoctrine()->getRepository(IntAudit::class);
         $repository_infra = $this->getDoctrine()->getRepository(AuditTestsInfra::class);
         $template['audit'] = $repository_audit->findOneBy(['id'=>$_GET['audit']]);
         $template['infra'] = $repository_infra->findBy(array('date_archive' => null));
         $template['audit_id'] = $_GET['audit'];
         return $this->render('audit/preaudit.html.twig', $template);
-
     }
 
     /**
-     * Méthode qui gère toute la partie Administration Audit
      *
      * @Route("/audit/nouveau-audit", name="audit_newaudit", options={"utf8": true})
      */
     public function newAudit()
     {
-        /**
-         * Requête personnalisée afin de chercher tous les tests qui ne sont pas liés à un test d'infrastrucuture.
-         * Car cette partie démarre un nouvel audit, il faut donc uniquement les tests du modèle de base en attendant les réponses aux tests d'infra.
-         */
+
         $repository_audit = $this->getDoctrine()->getRepository(IntAudit::class);
         $repository_infra = $this->getDoctrine()->getRepository(AuditTestsInfra::class);
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
         $repository_customer_infra = $this->getDoctrine()->getRepository(InfraCustomer::class);
+        $repository_section = $this->getDoctrine()->getRepository(AuditSection::class);
+        $repository_status = $this->getDoctrine()->getRepository(Status::class);
 
-        $tests = $repository_test->findBy(['date_archive' => null,'parent'=>null]);
+        $tests = $repository_test->findBy(['date_archive' => null, 'parent'=>null]);
         $entityManager = $this->getDoctrine()->getManager();
         $audit = $repository_audit->findOneBy(['id'=>$_GET['audit']]);
         $infra = $repository_infra->findBy(array('date_archive' => null));
+        $status = $repository_status->findOneBy(['status'=>'fail']);
+        /**
+         * Cette partie enregistre les réponses aux questions préaudit
+         */
         foreach ($infra as $key=>$value){
             if($value->getType()->getType() == 'Question'){
                 if(isset($_POST['pre_audit'][$value->getId()])){
@@ -85,6 +119,10 @@ class AuditController extends AbstractController
                 $entityManager->persist($infraCustomer);
             }
         }
+        $entityManager->flush();
+        /**
+         * Cette partie ajoute ou retire des tests
+         */
         foreach ($tests as $key => $value) {
             foreach ($value->getLinkTestsInfras() as $k => $v) {
                 $infra = $v->getInfra();
@@ -105,17 +143,23 @@ class AuditController extends AbstractController
                         unset($tests[$key]);
                     }
                 }
-
             }
         }
         foreach ($tests as $key => $value){
-            $audit_tests = new AuditResults($audit,$value);
+            $audit_tests = new AuditResults($audit,$value,$status);
             $entityManager->persist($audit_tests);
-
+            $audit_test[] = $audit_tests;
+            $childs = $repository_test->findBy(['parent'=>$value]);
+            foreach ($childs as $k => $v){
+                $audit_tests = new AuditResults($audit,$v,$status);
+                $entityManager->persist($audit_tests);
+            }
         }
         $audit->setStarted(true);
         $entityManager->flush();
-        return $this->render('audit/newaudit.html.twig');
+        $template['sections'] = $repository_section->findBy(['archived_date'=>null]);
+        $template['tests'] = $audit_test;
+        return $this->render('audit/newaudit.html.twig', $template);
     }
 
     /**
@@ -132,9 +176,13 @@ class AuditController extends AbstractController
 
         $audit = $repository_audit->findOneBy(['id'=>$_GET['audit']]);
         $audit_results = $repository_audit_results->findBy(['audit'=>$audit]);
-
-
-        $template['sections'] = $repository_section->findAll();
+        $sections = $repository_section->findAll();
+        foreach ($sections as $key => $value){
+            if($value->getAuditSubSections() == null){
+                unset($sections[$key]);
+            }
+        }
+        $template['sections'] = $sections;
         $template['tests'] = $audit_results;
 
         return $this->render('audit/resumeaudit.html.twig', $template);
@@ -143,66 +191,27 @@ class AuditController extends AbstractController
     /**
      * Méthode qui gère toute la partie Administration Audit
      *
-     * @Route("/audit/chercher-enfants", name="audit_get_child", options={"utf8": true})
+     * @Route("/audit/statut", name="audit_update_test", options={"utf8": true})
      */
-    public function getChild()
+    public function updateStatus()
     {
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
-        $test = $repository_test->findOneBy(['id'=>$_POST['id']]);
-        $template['childs'] = $repository_test->findBy(['parent'=>$test]);
-        $template['parent'] = $test;
-        if($template['childs']){
-            return $this->render('audit/addchild.html.twig',$template);
-        }else{
-            return false;
+        $repository_result = $this->getDoctrine()->getRepository(AuditResults::class);
+        $result = $repository_result->findOneBy(['id'=>$_POST['id']]);
+        $template['childs'] = $repository_test->findBy(['parent'=>$result->getTest()]);
+        $template['parent'] = $result->getTest();
+        switch ($_POST['status']){
+            case 'error' :
+
+                if($template['childs']){
+                    return $this->render('audit/addchild.html.twig',$template);
+                }else{
+                    return false;
+                }
         }
     }
 
-    /**
-     * Méthode qui gère toute la partie Administration Audit
-     *
-     * @Route("/adminidedestration", name="admin_audit", options={"utf8": true})
-     */
-    public function adminAudit()
-    {
-                /**
-                 * Gère les changements dans les phases de l'audit
-                 */
-                if ($_POST) {
-                    switch ($_POST['submit']) {
-                        /**
-                         * Création d'une nouvelle phase
-                         */
-                        case 'newPhase':
-                            $this->saveNewPhase();
-                            break;
-                        /**
-                         * Gère les modifications d'une phase existante
-                         */
-                        case 'submitModifPhase':
-                            $this->saveModifPhase();
-                            break;
-                    }
-                }
-                /**
-                 * Toutes les informations nécessaire pour la page d'admin de l'audit de la base de données.
-                 */
-                $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
-                $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
-                $repository_test_type = $this->getDoctrine()->getRepository(TestType::class);
-                $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
-                $array['selection'] = $repository_selection->findAll();
-                $array['type'] = $repository_test_type->findAll();
-                $array['phases'] = $repository_phase->findBy([], ['number' => 'ASC']);
-                $array['tests'] = $repository_test->findAll();
-                $array['test_type'] = $repository_test_type->findAll();
 
-                return $this->render('administration/administration.html.twig', $array);
-                /**
-                 * Pas les droits admin.
-                 */
-
-    }
 
     /**
      * Enregistre une nouvelle phase dans la partie admin>
@@ -522,167 +531,7 @@ class AuditController extends AbstractController
         return new Response('ok');
     }
 
-    /**
-     * Méthode qui gère la partie Audit de l'application
-     * Elle s'occupe d'aller chercher les tests en réponse aux tests d'infrastructure et de les retourner.
-     *
-     * @Route("/créer-audit", name="create_audit", options={"utf8": true})
-     */
-    public function ded()
-    {
-            $repository_test_infra = $this->getDoctrine()->getRepository(AuditTestInfrastructure::class);
-            $repository_type = $this->getDoctrine()->getRepository(TestType::class);
-            $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
-            $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
-            $repository_company = $this->getDoctrine()->getRepository(Company::class);
-            $repository_selection = $this->getDoctrine()->getRepository(TestSelection::class);
-            $repository_size = $this->getDoctrine()->getRepository(CompanySize::class);
-            $repository_audit = $this->getDoctrine()->getRepository(AuditCompany::class);
 
-
-        if(isset($_GET['rq'])){
-                $repository_test_infra_audit = $this->getDoctrine()->getRepository(TestsInfrastructure::class);
-
-                $testInfra = $repository_test_infra->findOneBy(['id'=>$_POST['testId']]);
-                $tests = $repository_test_infra_audit->findBy(['test_infra'=>$testInfra]);
-                return new JsonResponse($tests);
-            }
-            /**
-             * Cette partie s'occupe d'aller chercher les tests en réponse aux tests d'infrastructure et de les retourner.
-             * Je n'ai pas pu utiliser Twig pour générer un template car il peut il y'avoir plusieurs tests liés à un test d'infra.
-             * Je dois générer un template par test dans un tableau et l'envoyer en JSON
-             * Mais Twig a des problèmes lorsqu'on génère un template dans une variable au lieu de le renvoyer directement comme vue.
-             */
-            if(isset($_POST['testId'])){
-                $repository_test_infra_audit = $this->getDoctrine()->getRepository(TestsInfrastructure::class);
-
-                $testInfra = $repository_test_infra->findOneBy(['id'=>$_POST['testId']]);
-                $tests = $repository_test_infra_audit->findBy(['test_infra'=>$testInfra]);
-
-                foreach($tests as $key => $value){
-                    /**
-                     * Si le n'est pas un enfant
-                     * Créer un nouveau groupe de tests.
-                     */
-                    if(!$value->test_phase->id_parent) {
-                        $test = $repository_test->findOneBy(['id'=>$value->test_phase]);
-                    $selection = $repository_selection->findBy(['test'=>$test]);
-                        $test_child = $repository_test->findBy(['id_parent' => $test]);
-                        $html = '<div id="group-form' . $test->id . '" class="group-form-unchecked col-md-8 col-sm-8 col-xs-12" style="margin: 1%"><div class="form-group">';
-                        if ($test->type->type == 'Question') {
-                            $html .= '<label class="checkbox-inline" onclick="toggleClass('.$test->id.')">
-                                    <input type="checkbox" class="form-control check-audit" id="checkbox-audit' . $test->id . '" name="tests[' . $test->id . '][check]">' . $test->name . '</label>';
-                        } elseif ($test->type->type == 'Selection') {
-                            $html .= '<label class="checkbox-inline" onclick="toggleClass(' . $test->id . ')">' . $test->name . '
-                                                                                        <select class="form-control check-audit" id="checkbox-audit' . $test->id . '" name="tests[' . $test->id . '][selection]" >
-                                                                                            <option value="" selected>Aucun</option>';
-                            if ($selection) {
-                                foreach ($selection as $k => $v) {
-                                    $html .= '<option value="' . $v->name . '">' . $v->name . '"></option>';
-                                }
-                                $html .= '</select>
-                                      </label>';
-                            }
-                        }
-                        $html .= '<span class="glyphicon glyphicon-edit" data-toggle="modal" data-target="#myModal' . $test->id . '"></span>
-                                                                            <div class="modal fade" id="myModal' . $test->id . '" role="dialog">
-                                                                                <div class="modal-dialog modal-lg">
-                                                                                    <div class="modal-content">
-                                                                                        <div class="modal-header">
-                                                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                                            <h4 class="modal-title">Informations additionnelles</h4><small>' . $test->name . '</small>
-                                                                                        </div>
-                                                                                        <div class="modal-body">
-                                                                                            <textarea class="autoExpand form-control" rows="5" name="tests[' . $test->id . '][info]"></textarea>
-                                                                                        </div>
-                                                                                        <div class="modal-footer">
-                                                                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>';
-                        /**
-                         * Si le test a des enfants.
-                         */
-                        if ($test_child) {
-                            $html .= '<div class="group-child col-md-offset-1" id="group-child' . $test->id . '">';
-                            foreach ($test_child as $k => $v) {
-                                $html .= '<div class="form-group">';
-                                $selection_child = $repository_selection->findBy(['test' => $v]);
-                                if ($v->type->type == 'Question') {
-                                    $html .= '<label class="checkbox-inline"><input type="checkbox" class="form-control check-audit box' . $test->id . '" name="tests[' . $v->id . '][check]">' . $v->name . '</label>
-';
-                                } elseif ($v->type->type == 'Selection') {
-                                    $html .= '<label class="checkbox-inline">' . $v->name . '
-                                                                                                <select class="form-control check-audit box' . $test->id . '" name="tests[' . $v->id . '][selection]">
-                                                                                                    <option value="" selected>Aucun</option>';
-                                    foreach ($selection_child as $ke => $va) {
-                                        $html .= '<option value="' . $va->name . '">' . $va->name . '</option>';
-                                    }
-                                    $html .= '</select>
-                                      </label>';
-                                }
-                                $html .= '<span class="glyphicon glyphicon-edit" data-toggle="modal" data-target="#myModal' . $v->id . '"></span>
-                                                                                    <div class="modal fade" id="myModal' . $v->id . '" role="dialog">
-                                                                                        <div class="modal-dialog modal-lg">
-                                                                                            <div class="modal-content">
-                                                                                                <div class="modal-header">
-                                                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                                                    <h4 class="modal-title">Informations additionnelles</h4><small>' . $v->name . '</small>
-                                                                                                </div>
-                                                                                                <div class="modal-body">
-                                                                                                    <textarea class="autoExpand form-control" rows="5" name="tests[' . $v->id . '][info]"></textarea>
-                                                                                                </div>
-                                                                                                <div class="modal-footer">
-                                                                                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    </div>';
-                            }
-                            $html .= '</div>';
-                        }
-                        $html .= '</div>';
-                        $array[$test->idPhase->id][$test->name] = $html;
-                    }
-                    }
-                    return new JsonResponse($array);
-                /**
-                 * Si ce n'est pas la requête AJAX des tests d'infrastructure, retourne la vue pour un nouvel audit.
-                 */
-            }else {
-                $em = $this->getDoctrine()->getManager();
-                /**
-                 * Requête personnalisée afin de chercher tous les tests qui ne sont pas liés à un test d'infrastrucuture.
-                 * Car cette partie démarre un nouvel audit, il faut donc uniquement les tests du modèle de base en attendant les réponses aux tests d'infra.
-                 */
-                $sql = 'SELECT  * 
-                        FROM audit_test_phase 
-                        WHERE NOT EXISTS 
-                        (SELECT * 
-                        FROM tests_infrastructure
-                        WHERE audit_test_phase.id = tests_infrastructure.test_phase_id)';
-                $array['tests'] =  $em->getConnection()->query($sql)->fetchAll();
-
-                $array['selection'] = $repository_selection->findAll();
-                $array['phases'] = $repository_phase->findAll();
-                $array['tests_infra'] = $repository_test_infra->findAll();
-                $last_audit = $repository_audit->findOneBy([], ['id' => 'DESC']);
-                if($last_audit){
-                    $array['auditNumber'] = $last_audit->getId();
-                    $array['auditNumber'] = $array['auditNumber'] + 1;
-                }else{
-                    $array['auditNumber'] = 1;
-                }
-                $array['type'] = $repository_type->findAll();
-                $array['size'] = $repository_size->findAll();
-
-
-                return $this->render('audit/new_audit.html.twig', $array);
-            }
-    }
 
 
     /**

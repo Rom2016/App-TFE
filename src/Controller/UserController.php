@@ -35,58 +35,16 @@ class UserController extends AbstractController
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $repository_user = $this->getDoctrine()->getRepository(AppUser::class);
-        $repository_phase = $this->getDoctrine()->getRepository(AuditPhase::class);
-        $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
 
         $user = $repository_user->findOneBy(['id'=>$this->getUser()]);
         $array['users'] = $repository_user->findAll();
         $array['nbUser'] = $repository_user->getNb();
-        $array['nbPhase'] = $repository_phase->getNb();
-        $array['nbTest'] = $repository_test->getNb();
-        $array['createdAudit'] = $user->getIntAudits();
-
+        $array['createdAudit'] = $user->getCreations();
+        if(isset($_GET['nouveau-audit'])){
+            $array['new_audit'] = true;
+        }
         return $this->render('user/homepage.html.twig', $array);
     }
-
-
-
-
-
-    /**
-     * Méthode qui gère la partie administration des utilisateurs
-     *
-     * @Route("/administration/utilisateur", name="admin_user")
-     */
-    public function viewAdminUser()
-    {
-        /**
-             * Si l'utilisateur est connecté et qu'il a les droits admin, render le template d'admin
-             */
-                /**
-                 * Si il y'a eu une soumission du formulaire pour un nouvel utilisateur depuis l'administration.
-                 */
-                if ($_POST){
-                    switch ($_POST['submit']) {
-                        case 'newUser':
-                            $this->newUser();
-                            break;
-                    }
-                }
-                $repository = $this->getDoctrine()->getRepository(AppUser::class);
-                $array['users'] = $repository->findAll();
-                return $this->render('user/administration_user.html.twig', $array);
-            /**
-             * L'utilisateur n'a pas les droits admin, render le template d'accès refusé.
-             */
-        /**
-         * L'utilisateur n'est pas connecté, redirigé vers le portail de connexion.
-         */
-    }
-
-
-
-
-
 
     /**
      * Méthode qui retourne la page profile et la modification des informations de l'utilisateur si il a soumis le formulaire de la page profile.
@@ -115,7 +73,9 @@ class UserController extends AbstractController
                 $array = $_SESSION['user']->getAll();
             }
         $array['users'] = $repository_user->findAll();
-
+        if(isset($_GET['nouveau-audit'])){
+            $array['new_audit'] = true;
+        }
         return $this->render('user/profile_user.html.twig',$array);
     }
 

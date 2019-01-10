@@ -18,10 +18,7 @@ class IntAudit
      */
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AppUser", inversedBy="intAudits")
-     */
-    private $creator;
+
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\IntCustomer", inversedBy="intAudits")
@@ -33,10 +30,8 @@ class IntAudit
      */
     private $date_creation;
 
-  
-
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      */
     private $started;
 
@@ -66,21 +61,34 @@ class IntAudit
     private $date_archive;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $confidential;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $last_activity;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\AuditCreator", mappedBy="audit")
+     */
+    private $creators;
+
+    /**
      * IntAudit constructor.
-     * @param $creator
      * @param $customer
      * @param $date_creation
-     * @param $paused
      * @param $name
+     * @param $auditResults
+     * @param $creators
      */
-    public function __construct($creator, $customer, $date_creation, $started, $name)
+    public function __construct($customer, $date_creation, $name)
     {
-        $this->creator = $creator;
         $this->customer = $customer;
         $this->date_creation = $date_creation;
-        $this->started = $started;
         $this->name = $name;
-        $this->auditResults = new ArrayCollection();
+
     }
 
 
@@ -245,6 +253,61 @@ class IntAudit
     public function setDateArchive(?\DateTimeInterface $date_archive): self
     {
         $this->date_archive = $date_archive;
+
+        return $this;
+    }
+
+    public function getConfidential(): ?bool
+    {
+        return $this->confidential;
+    }
+
+    public function setConfidential(?bool $confidential): self
+    {
+        $this->confidential = $confidential;
+
+        return $this;
+    }
+
+    public function getLastActivity(): ?\DateTimeInterface
+    {
+        return $this->last_activity;
+    }
+
+    public function setLastActivity(?\DateTimeInterface $last_activity): self
+    {
+        $this->last_activity = $last_activity;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|AuditCreator[]
+     */
+    public function getCreators(): Collection
+    {
+        return $this->creators;
+    }
+
+    public function addCreator(AuditCreator $creator): self
+    {
+        if (!$this->creators->contains($creator)) {
+            $this->creators[] = $creator;
+            $creator->setAudit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreator(AuditCreator $creator): self
+    {
+        if ($this->creators->contains($creator)) {
+            $this->creators->removeElement($creator);
+            // set the owning side to null (unless already changed)
+            if ($creator->getAudit() === $this) {
+                $creator->setAudit(null);
+            }
+        }
 
         return $this;
     }

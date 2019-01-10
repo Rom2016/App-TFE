@@ -152,7 +152,7 @@ $('body').on('click', '.editable', function(){ // Attache l'évènement
                             type: 'POST',
                             data: rq
                         }).done(function (response) {
-                            input.replaceWith(response);
+                            $('#group-child'+id[1]).replaceWith(response);
                         }).fail(function () {
                             swal('Oops...', 'Un problème est survenu, réessayez plus tard!', 'error');
                         });
@@ -188,7 +188,6 @@ $('body').on('click', '.add-button', function(){
     }else if($(this).hasClass('select')){
         id =  el.closest('.group-select').attr('id');
         id = id.split('select');
-
         if(!$('#new-select'+id[1]).val()){
             return false;
         }
@@ -206,7 +205,6 @@ $('body').on('click', '.add-button', function(){
     }else if($(this).hasClass('child')){
         id =  el.closest('.group-child').attr('id');
         id = id.split('child');
-
         if(!$('#new-child'+id[1]).val()){
             return false;
         }
@@ -216,14 +214,32 @@ $('body').on('click', '.add-button', function(){
             type: 'POST',
             data: data
         }).done(function(response){
-            $('#group-child'+id[1]).append(response);
-            $('#new-child'+id[1]).val('');
+            $('#table-child'+id[1]).append(response);
         }).fail(function(){
             swal('Oops...', 'Un problème est survenu, réessayez plus tard!', 'error');
         });
     }
 
 })
+
+
+
+$('body').on('click', '.trash', function() {
+    el = $(this)
+    if ($(this).hasClass('child')) {
+        layer = 'child';
+        id = $(this).attr('id').split('child');
+    }
+    data = {'el': layer, 'id': id[1]};
+    $.ajax({
+        url: '../administration/contenu-audits/supprimer',
+        type: 'POST',
+        data: data
+    }).done(function (response) {
+        el.closest('.layer').remove();
+    })
+})
+
 
 
 
@@ -266,6 +282,21 @@ $('body').on('click', '.selection-choice', function(){
     }
 })
 
+$('body').on('click', '.priority', function(){
+    prio = $(this).text();
+    id = $(this).closest('.group-child').attr('id').split('child');
+    data = {'id':id[1], 'prio':prio}
+    el = $(this)
+    $.ajax({
+        url: '../administration/contenu-audits/modifier/priorité',
+        type: 'POST',
+        data: data
+    }).done(function(response){
+       $('#prio-drop'+id[1]).text(prio);
+    }).fail(function(){
+        swal('Oops...', 'Un problème est survenu, réessayez plus tard!', 'error');
+    });
+})
 
 function addRow(id){
 
@@ -303,4 +334,8 @@ function addTest(id,type){
             '<span class="editable new-comment new-select">Nouveau test sélection</span>' +
             '</div>');
     }
+}
+
+function deleteElement(){
+
 }

@@ -18,6 +18,9 @@ security:
                           login_path: login_admin
                           check_path: login_admin
                 provider: app_db
+                logout:
+                      path:   logout_admin
+                      target: /
         main_login:
             pattern: ^/
             anonymous: ~

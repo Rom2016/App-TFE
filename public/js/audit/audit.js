@@ -1,13 +1,26 @@
 $('body').on('click', '.status', function() {
     el = $(this);
-    id = $(this).closest('.row').attr('id').split('test');
-    id = {'id':id[1]};
+    split = $(this).closest('.row').attr('id').split('test');
+    id = {'id':split[1]}
+
     if($(this).hasClass('selection-error') || $(this).hasClass('selection-success')) {
+        $('#status'+id.id).removeClass();
+        if(el.hasClass('selection-error')){
+            status = 'error';
+            $('#status'+id.id).addClass('selection-error');
+            $('#change-status'+id.id).text('passe avec erreurs');
+        }
+        if(el.hasClass('selection-success')){
+            status = 'success';
+            $('#status'+id.id).addClass('selection-success');
+            $('#change-status'+id.id).text('passe');
+        }
         if (!$('#group-childs' + id.id).length) {
+            data = {'id':split[1], 'status':status}
             $.ajax({
-                url: '../audit/chercher-enfants',
+                url: '../audit/statut',
                 type: 'POST',
-                data: id
+                data: data
             }).done(function (response) {
                 if (response) {
                     $('#test' + id.id).after(response);
@@ -16,15 +29,8 @@ $('body').on('click', '.status', function() {
                 swal('Oops...', 'Un problème est survenu, réessayez plus tard!', 'error');
             });
         }
-        $('#status'+id.id).removeClass();
-        if(el.hasClass('selection-error')){
-            $('#status'+id.id).addClass('selection-error');
-            $('#change-status'+id.id).text('passe avec erreurs');
-        }
-        if(el.hasClass('selection-success')){
-            $('#status'+id.id).addClass('selection-success');
-            $('#change-status'+id.id).text('passe');
-        }
+
+
     }else if($(this).hasClass('selection-fail')) {
         if ($('#group-childs'+id.id).length) {
             $('#group-childs'+id.id).remove();

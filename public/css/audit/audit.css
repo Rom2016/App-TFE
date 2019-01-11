@@ -35,8 +35,11 @@
 }
 
 .child{
-    border-left: grey solid 2px;
+    border-left: #8e24aa solid 3px;
+    border-right: #8e24aa solid 3px;
+
 }
+
 
 #pause-button{
     font-size: 50px;
@@ -46,5 +49,9 @@
     border-width:0px;
     border:none;
     background-color: whitesmoke;
+}
+
+.editable:hover{
+    border: grey dashed 1px;
 }
 

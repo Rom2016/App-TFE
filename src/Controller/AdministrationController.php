@@ -10,10 +10,14 @@ namespace App\Controller;
 
 use App\Entity\AuditSubSection;
 use App\Entity\AuditTests;
+use App\Entity\LogAction;
+use App\Entity\LogAdminUser;
+use App\Entity\LogsAdministration;
 use App\Entity\Roles;
 use App\Entity\TestSelections;
 use App\Entity\TestStatus;
 use App\Entity\TestType;
+use App\Entity\UserRoles;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use App\Entity\AppUser;
 use App\Entity\AuditSection;
@@ -29,7 +33,7 @@ class AdministrationController extends AbstractController
     /**
      * Méthode qui gère la partie administration des utilisateurs
      *
-     * @Route("/administration/utilisateurs", name="admin")
+     * @Route("/administration/utilisateurs", name="admin_user")
      */
     public function adminUsers()
     {
@@ -47,7 +51,12 @@ class AdministrationController extends AbstractController
             }
         }
         $repository = $this->getDoctrine()->getRepository(AppUser::class);
-        $array['users'] = $repository->findBy(['deactivated'=>false]);
+        $repository_role = $this->getDoctrine()->getRepository(Roles::class);
+        $repository_log = $this->getDoctrine()->getRepository(LogAdminUser::class);
+
+        $array['users'] = $repository->findAll();
+        $array['roles'] = $repository_role->findAll();
+        $array['log'] = $repository_log->findAll();
         if(isset($_GET['nouveau-audit'])){
             $array['new_audit'] = true;
         }
@@ -69,13 +78,19 @@ class AdministrationController extends AbstractController
     {
         if(isset($_POST)) {
             $entityManager = $this->getDoctrine()->getManager();
+            $repository_log = $this->getDoctrine()->getRepository(LogAction::class);
+            $date = new \DateTime(date('Y-m-d H:i:s'));
             $user = $this->getDoctrine()->getRepository(AppUser::class)->findOneBy(['id' => $_POST['id']]);
             $user->setDeactivated(true);
             $entityManager->persist($user);
+            $array['user'] = $user;
+            $action = $repository_log->findOneBy(['action'=>'Supprimer']);
+            $log = new LogAdminUser($this->getUser(), $user, $action, $date);
+            $entityManager->persist($log);
             $entityManager->flush();
+            return $this->render('administration/disableuser.html.twig',$array);
+
         }
-        $array['response'] = 'Utilisateur supprimé!';
-        return new JsonResponse($array);
     }
 
     public function newUser()
@@ -83,26 +98,50 @@ class AdministrationController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $repository_user =  $this->getDoctrine()->getRepository(AppUser::class);
         $repository_role = $this->getDoctrine()->getRepository(Roles::class);
-        $role = $repository_role->findOneBy(['role'=>$_POST['selectRole']]);
+        $repository_role_user = $this->getDoctrine()->getRepository(UserRoles::class);
         $date = new \DateTime(date('Y-m-d H:i:s'));
-        $user = new AppUser($_POST['email'],password_hash('test', PASSWORD_BCRYPT),$_POST['fName'],$_POST['sName'],$_POST['function'],$date,$role,$this->getUser());
+        $repository_log = $this->getDoctrine()->getRepository(LogAction::class);
+
+        /**
+         * Créer le nouvel utilisateur
+         */
+        $user = new AppUser($_POST['email'],password_hash($_POST['initial-pwd'], PASSWORD_BCRYPT),$_POST['fName'],$_POST['sName'],$_POST['function'],$date);
         $entityManager->persist($user);
+        /**
+         * Créer ses rôles
+         *
+         */
+        if(isset($_POST['role-special'])){
+            $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
+            if($_POST['role-special'] == 'ROLE_ADMIN_GLOBAL'){
+                $role = $repository_role->findOneBy(['role'=>'ROLE_ADMIN_GLOBAL']);
+                $user_role = new UserRoles($role, $user);
+                $entityManager->persist($user_role);
+            }
+            /**
+             * Gère les multi roles admin
+             */
+        }elseif (isset($_POST['role-admin'])){
+            foreach ($_POST['role-admin'] as $key => $value){
+                $role = $repository_role->findOneBy(['role'=>$value]);
+                $user_role = new UserRoles($role, $user);
+                $entityManager->persist($user_role);
+            }
+            /**
+             * Gère les roles utilisateurs
+             */
+        }else{
+            $role = $repository_role->findOneBy(['role'=>$_POST['role-user']]);
+            $user_role = new UserRoles($role, $user);
+            $entityManager->persist($user_role);
+        }
+
+        $action = $repository_log->findOneBy(['action'=>'Créer']);
+        $log = new LogAdminUser($this->getUser(), $user, $action, $date);
+        $entityManager->persist($log);
         $entityManager->flush();
     }
 
-    /**
-     *
-     * @Route("/administration/roles", name="ajax_get_role",methods="POST")
-     */
-    public function getRole()
-    {
-        $repository_role = $this->getDoctrine()->getRepository(Roles::class);
-        $array = $repository_role->findAll();
-        foreach ($array as $key => $value){
-            $array['role'][] = $value->getRole();
-        }
-        return new JsonResponse($array['role']);
-    }
 
     /**
      *
@@ -145,7 +184,10 @@ class AdministrationController extends AbstractController
 
         $repository = $this->getDoctrine()->getRepository(AppUser::class);
         $repository_section = $this->getDoctrine()->getRepository(AuditSection::class);
+        if(isset($_POST['role-special'])){
+            $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
 
+        }
         $array['section'] = $repository_section->findAll();
         $array['users'] = $repository->findAll();
         return $this->render('administration/audits.html.twig', $array);

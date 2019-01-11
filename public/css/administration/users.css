@@ -9,3 +9,7 @@
     cursor: pointer;
     color: #555;
 }
+
+.deactivated{
+    background-color: whitesmoke ;
+}

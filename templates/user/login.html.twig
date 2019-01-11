@@ -46,9 +46,9 @@
                         <span class="focus-input100" data-placeholder="&#xf191;"></span>
                     </div>
 
-                    {% if error is defined%}
+                    {% if error is not empty %}
                         <div class="alert alert-danger text-center">
-                            <p>Identifiants invalides</p>
+                            <span>Identifiants invalides</span>
                         </div>
                     {% endif %}
 

@@ -59,6 +59,14 @@ a:focus {
 	outline: none !important;
 }
 
+.alert-danger{
+  color: white;
+  background-color: indianred;
+  border-radius: 10px;
+  padding: 2%;
+  margin: 3%;
+}
+
 a:hover {
 	text-decoration: none;
   color: #fff;

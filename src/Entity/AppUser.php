@@ -55,20 +55,7 @@ class AppUser implements UserInterface, \Serializable
      */
     public $profile_pic;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AppUser")
-     */
-    private $creator;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $lastModifiedDate;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AppUser")
-     */
-    private $lastModifiedBy;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\UserNotifications", mappedBy="receiver")
@@ -105,7 +92,7 @@ class AppUser implements UserInterface, \Serializable
      * @param $date_creation
      * @param $creator
      */
-    public function __construct($username, $password, $first_name, $second_name, $function, $date_creation, $creator)
+    public function __construct($username, $password, $first_name, $second_name, $function, $date_creation)
     {
         $this->username = $username;
         $this->password = $password;
@@ -113,7 +100,6 @@ class AppUser implements UserInterface, \Serializable
         $this->second_name = $second_name;
         $this->function = $function;
         $this->date_creation = $date_creation;
-        $this->creator = $creator;
         $this->logs = new ArrayCollection();
         $this->intAuditPermissions = new ArrayCollection();
         $this->intAudits = new ArrayCollection();
@@ -122,7 +108,6 @@ class AppUser implements UserInterface, \Serializable
         $this->auditPermission = new ArrayCollection();
         $this->creations = new ArrayCollection();
     }
-
 
 
     public function getId(): ?int

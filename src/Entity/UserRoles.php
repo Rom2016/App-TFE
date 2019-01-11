@@ -28,6 +28,18 @@ class UserRoles
      */
     private $user;
 
+    /**
+     * UserRoles constructor.
+     * @param $role
+     * @param $user
+     */
+    public function __construct($role, $user)
+    {
+        $this->role = $role;
+        $this->user = $user;
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;

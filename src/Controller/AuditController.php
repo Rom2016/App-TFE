@@ -83,7 +83,7 @@ class AuditController extends AbstractController
 
     /**
      *
-     * @Route("/audit/nouveau-audit", name="audit_newaudit", options={"utf8": true})
+     * @Route("/audit/nouveau-audit", name="audit_newaudit")
      */
     public function newAudit()
     {
@@ -145,6 +145,7 @@ class AuditController extends AbstractController
                 }
             }
         }
+
         foreach ($tests as $key => $value){
             $audit_tests = new AuditResults($audit,$value,$status);
             $entityManager->persist($audit_tests);
@@ -165,7 +166,7 @@ class AuditController extends AbstractController
     /**
      * Méthode qui gère toute la partie Administration Audit
      *
-     * @Route("/audit/reprendre-audit", name="audit_resume_audit", options={"utf8": true})
+     * @Route("/audit/reprendre-audit", name="audit_resume_audit")
      */
     public function resumeAudit()
     {
@@ -173,10 +174,11 @@ class AuditController extends AbstractController
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
         $repository_audit = $this->getDoctrine()->getRepository(IntAudit::class);
         $repository_audit_results = $this->getDoctrine()->getRepository(AuditResults::class);
-
         $audit = $repository_audit->findOneBy(['id'=>$_GET['audit']]);
         $audit_results = $repository_audit_results->findBy(['audit'=>$audit]);
         $sections = $repository_section->findAll();
+        $last_response = $repository_audit_results->findOneBy(['audit'=>$audit,'last_responded'=>true]);
+
         foreach ($sections as $key => $value){
             if($value->getAuditSubSections() == null){
                 unset($sections[$key]);
@@ -184,32 +186,94 @@ class AuditController extends AbstractController
         }
         $template['sections'] = $sections;
         $template['tests'] = $audit_results;
-
+        $template['audit'] = $_GET['audit'];
+        if($last_response){
+            $template['last_response'] = $last_response;
+        }
         return $this->render('audit/resumeaudit.html.twig', $template);
     }
 
     /**
      * Méthode qui gère toute la partie Administration Audit
      *
-     * @Route("/audit/statut", name="audit_update_test", options={"utf8": true})
+     * @Route("/audit/statut", name="audit_update_test", methods="POST")
      */
     public function updateStatus()
     {
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
         $repository_result = $this->getDoctrine()->getRepository(AuditResults::class);
-        $result = $repository_result->findOneBy(['id'=>$_POST['id']]);
-        $template['childs'] = $repository_test->findBy(['parent'=>$result->getTest()]);
-        $template['parent'] = $result->getTest();
-        switch ($_POST['status']){
-            case 'error' :
+        $repository_status = $this->getDoctrine()->getRepository(Status::class);
+        $repository_audit = $this->getDoctrine()->getRepository(IntAudit::class);
 
-                if($template['childs']){
-                    return $this->render('audit/addchild.html.twig',$template);
-                }else{
-                    return false;
-                }
+        $entityManager = $this->getDoctrine()->getManager();
+        $audit = $repository_audit->findOneBy(['id'=>$_POST['audit']]);
+        $status = $repository_status->findOneBy(['status'=>$_POST['status']]);
+        $result = $repository_result->findOneBy(['id'=>$_POST['id']]);
+        $childs = $repository_test->findBy(['parent'=>$result->getTest()]);
+        $last_response = $repository_result->findOneBy(['audit'=>$audit,'last_responded'=>true]);
+
+        $template['parent'] = $result;
+        $current_status = $result->getStatus();
+        /**
+         * Met déjà à jour avec le nouveau statut
+         * Met le champ last response pour connaître le dernier test répondu
+         */
+        $result->setStatus($status);
+        if($last_response){
+            $last_response->setLastResponded(null);
+            $result->setLastResponded(true);
+        }else{
+            $result->setLastResponded(true);
         }
+        $entityManager->persist($result);
+        /**
+         * Traitement à faire si le nouveau statut est fail et parent avec enfant
+         * Mettre tous les enfants en fail
+         */
+        if($status->getStatus() =='fail' and $childs){
+            foreach ($childs as $key => $value){
+                $childs_result = $repository_result->findOneBy(['test'=>$value,'audit'=>$audit]);
+                $childs_result->setStatus($status);
+                $entityManager->persist($childs_result);
+            }
+        }
+        /**
+         * Si le nouveau statut est <> de fail va chercher les enfants si il test parent
+         */
+        if($current_status->getStatus()=='fail' and $status->getStatus()=='error' and $childs or $current_status->getStatus()=='fail' and $status->getStatus()=='success' and $childs){
+            foreach ($childs as $key => $value){
+                $childs_result[] = $repository_result->findOneBy(['test'=>$value,'audit'=>$audit]);
+            }
+            $template['childs'] = $childs_result;
+            $entityManager->flush();
+            return $this->render('audit/addchild.html.twig',$template);
+        }
+        $entityManager->flush();
+        return new Response('Succès');
     }
+
+
+    /**
+     * Méthode qui gère toute la partie Administration Audit
+     *
+     * @Route("/audit/commentaire", name="audit_update_comment",methods="POST" )
+     */
+    public function updateComment()
+    {
+        $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $repository_result = $this->getDoctrine()->getRepository(AuditResults::class);
+        $repository_status = $this->getDoctrine()->getRepository(Status::class);
+        $repository_audit = $this->getDoctrine()->getRepository(IntAudit::class);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $audit_test = $repository_result->findOneBy(['id'=>$_POST['id']]);
+        $audit_test->setComment($_POST['data']);
+        $entityManager->persist($audit_test);
+        $entityManager->flush();
+        $template['comment'] = $audit_test->getComment();
+        return $this->render('audit/newcomment.html.twig', $template);
+    }
+
 
 
 

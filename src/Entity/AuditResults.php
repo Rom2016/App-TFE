@@ -34,15 +34,16 @@ class AuditResults
     private $test;
 
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $date_response;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Status")
      */
     private $status;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $last_responded;
 
 
     /**
@@ -138,6 +139,18 @@ class AuditResults
     public function setStatus(?Status $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getLastResponded(): ?bool
+    {
+        return $this->last_responded;
+    }
+
+    public function setLastResponded(?bool $last_responded): self
+    {
+        $this->last_responded = $last_responded;
 
         return $this;
     }

@@ -4,12 +4,17 @@
 Administration
 {% endblock %}
 {% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/css/bootstrap-select.min.css">
+
     {{ parent() }}
+
     <link href="../css/table_user.css" rel="stylesheet" />
         <link href="../vendor/jQuery-popover/css/bootstrap-popover-x.css" rel="stylesheet">
     <link href="../css/administration/audit.css" rel="stylesheet" />
     <link href="../css/administration/users.css" rel="stylesheet" />
         <link href="../vendor/sweet-alert/dist/sweetalert2.css" rel="stylesheet">
+    <link href="../css/administration/log.css" rel="stylesheet">
+
     <style>
     .table-data tbody tr:hover td .more {
     -webkit-transform: scale(1);
@@ -77,12 +82,31 @@ Administration
                             <div class="col-md-11"></div>
                             <i id="display-log" class="material-icons">list_alt</i>
                         </div>
+                        <div id="slider-log" class="" style="background-color: white">
+                            <div class="user-header">
+                                <h3>Historique</h3>
+                            </div>
+                            <div class="col-md-11">
+                            <table class="table" style="text-align: center">
+                                <tbody>
+                                {% for l in log %}
+                                <tr>
+                                    <td class="log-user">{{ l.creator.first_name }} {{ l.creator.second_name }}</td>
+                                    <td class="log-icon">{% if l.action.action == 'Créer' %} <i class="material-icons" data-toggle="tooltip" data-placement="top" title="Tooltip on top">create</i>{% elseif l.action.action == 'Supprimer' %} <i class="material-icons" data-toggle="tooltip" data-placement="top" title="Tooltip on top">delete</i>{% endif %}</td>
+                                    <td class="log-user">{{ l.recipient.username }}</td>
+                                    <td class="log-date">{{ l.datecreation|date('Y-m-d H:i:s')}}</td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
                     <div class="row">
                             <div class="col-md-12">
                                 <!-- DATA TABLE -->
 
                                 <div class="table-responsive table-responsive-data2">
-                                    <table class="table table-data2 table-striped ">
+                                    <table class="table table-data2 ">
                                         <thead class="thead-light">
                                             <tr>
                                                 <th></th>
@@ -95,8 +119,8 @@ Administration
                                         </thead>
                                         <tbody>
                                         {% for user in users %}
-                                            {% if app.user.id != user.id %}
-                                            <tr class="tr-shadow tr-user" id="user{{ user.id }}">
+                                            {% if app.user.id != user.id and user.deactivated is null%}
+                                            <tr class="tr-shadow tr-user {% if user.deactivated is not null %}deactivated{% endif %}" id="user{{ user.id }}">
                                                 <td><img {% if not app.user.profile_pic %}src="../génèrer-avatar?rq=administration&p={{ user.first_name }}&n={{ user.second_name }}"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} class="rounded-circle" style="width: 30px" /></td>
                                                 <td>{{ user.first_name }} {{ user.secondName }}</td>
                                                 <td>
@@ -107,10 +131,8 @@ Administration
                                                     <span class="status--process">{{ user.dateCreation|date('Y-m-d H:i:s') }}</span>
                                                 </td>
                                                 <td>
-
                                                         <span class="more">
                                                                <i class="material-icons" rel="tooltip" title="Supprimer l'utilisateur" onclick="slidePanel({{ user.id }})">more_horiz</i>
-
                                                         </span>
                                                 </td>
                                             </tr>
@@ -120,7 +142,6 @@ Administration
                                                     <h2>{{ user.first_name }} {{ user.secondName }}</h2>
                                                 </div>
                                                 <div class="row">
-
                                                     <div class="col-md-1">
                                                       <i class="material-icons" onclick="deleteUser({{user.id }},'{{ user.first_name }} {{ user.secondName }}')">delete</i>
                                                     </div>
@@ -128,14 +149,10 @@ Administration
                                                       <i class="material-icons">refresh</i>
                                                     </div>
                                                 </div>
-
                                             </div>
                                             {% endif %}
                                             {% endfor %}
-
-
                                         </tbody>
-
                                     </table>
                                      <button type="button" id="btnAddUser" rel="tooltip" title="Ajouter un utilisateur" class="btn btn-info btn-block">
                                                 <i class="material-icons">add</i>
@@ -144,7 +161,7 @@ Administration
                                         <div class="user-header">
                                             <h3>Informations générales</h3>
                                         </div>
-                                         <form action="../administration" method="post">
+                                         <form action="../administration/utilisateurs" method="post">
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
@@ -174,10 +191,86 @@ Administration
                                                         </div>
                                                     </div>
                                              <div class="user-header">
+                                                 <h3>Mot de passe initial</h3>
+                                             </div>
+                                             <div class="row">
+                                                 <div class="col-md-6">
+                                                     <h4>
+                                                         Mot de passe initial:
+                                                     </h4>
+                                                 </div>
+                                                 <div class="col-md-6">
+                                                     <input type="password" id="initial-password" class="col-md-12" name="initial-pwd" required>
+                                                 </div>
+                                             </div>
+                                             <div class="row">
+                                                 <div class="col-md-6">
+                                                     <h4>
+                                                         Confirmer le mot de passe:
+                                                     </h4>
+                                                 </div>
+                                                 <div class="col-md-6">
+                                                     <input id="check-password" type="password" class="col-md-12" required>
+                                                 </div>
+                                             </div>
+                                             <div class="user-header">
                                                  <h3>Rôles</h3>
                                              </div>
+                                             <div class="row">
+                                                 <div class="col-md-6">
+                                                     <h4>
+                                                         Rôles utilisateurs:
+                                                     </h4>
+                                                 </div>
+                                                 <div class="col-md-6">
+                                                     <select id="role-user" class="selectpicker" name="role-user" required>
+                                                     {% for r in roles %}
+                                                        {% if r.admin is null %}
+                                                            <option>{{ r.role }}</option>
+                                                        {% endif %}
+                                                     {% endfor %}
+                                                     </select>
+                                                 </div>
+                                             </div>
+                                             <div class="row">
+                                                 <div class="col-md-6">
+                                                     <h4>
+                                                         Rôles administrateurs:
+                                                     </h4>
+                                                 </div>
+                                                 <div class="col-md-6">
+                                                     <select id="role-admin" name="role-admin[]" class="selectpicker" title="Sélectionner" multiple>
+                                                         {% for r in roles %}
+                                                             {% if r.admin is not null and r.special is null %}
+                                                                 <option class="role-admin">{{ r.role }}</option>
+                                                             {% endif %}
+                                                         {% endfor %}
+                                                     </select>
+                                                 </div>
+                                             </div>
+                                             {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                             <div class="row">
+                                                 <div class="col-md-6">
+                                                     <h4>
+                                                         Rôles spéciaux:
+                                                     </h4>
+                                                 </div>
+                                                 <div class="col-md-6">
+                                                     <select name="role-special" class="selectpicker" title="Sélectionner" multiple>
+                                                         {% for r in roles %}
+                                                             {% if r.admin is not null and r.multiple is not null %}
+                                                                 <option class="role-admin">{{ r.role }}</option>
+                                                             {% endif %}
+                                                         {% endfor %}
+                                                     </select>
+                                                 </div>
+                                             </div>
+                                             {% endif %}
                                                 <div class="clearfix"></div>
-                                            <button type="submit" id="submit_new_user" class="btn btn-success" name="submit" value="newUser"><i class="fa fa-check"></i></button>
+                                            <div class="row">
+                                                <div class="col-md-6"></div>
+                                                <button type="submit" id="submit_new_user" class="btn btn-success" name="submit" value="newUser"><i class="fa fa-check"></i></button>
+                                            </div>
                                         </form>
                                      </div>
                                 </div>
@@ -190,6 +283,7 @@ Administration
             </div>
         </div>
 
+
     </div>
     </div>
 
@@ -201,18 +295,11 @@ Administration
     <script src="../vendor/sweet-alert/dist/sweetalert2.js"></script>
     <script src="../vendor/Slide-panel/dist/jquery.slidereveal.js"></script>
     <script src="../js/administration/audit.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/bootstrap-select.min.js"></script>
+    <script src="../vendor/password_strength/dist/jquery.passwordstrength.js"></script>
     <script src="../js/administration/user.js"></script>
 
     <script>
-        $('.nav-item.active').removeClass('active');
-        $('#nav-adm').addClass('active');
-        $('#btnAddUser').click(function(){
-        })
-            $('#new-user').slideReveal({
-            position: "right",
-            push: false,
-            overlay: true,
-            width: 500
-        });
+        $('#initial-password').passwordStrength();
     </script>
 {% endblock %}

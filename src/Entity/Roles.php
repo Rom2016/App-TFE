@@ -33,6 +33,21 @@ class Roles
      */
     private $userRoles;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $admin;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $multiple;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $special;
+
 
     public function __construct()
     {
@@ -116,6 +131,42 @@ class Roles
                 $userRole->setRole(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAdmin(): ?bool
+    {
+        return $this->admin;
+    }
+
+    public function setAdmin(?bool $admin): self
+    {
+        $this->admin = $admin;
+
+        return $this;
+    }
+
+    public function getMultiple(): ?bool
+    {
+        return $this->multiple;
+    }
+
+    public function setMultiple(?bool $multiple): self
+    {
+        $this->multiple = $multiple;
+
+        return $this;
+    }
+
+    public function getSpecial(): ?bool
+    {
+        return $this->special;
+    }
+
+    public function setSpecial(?bool $special): self
+    {
+        $this->special = $special;
 
         return $this;
     }

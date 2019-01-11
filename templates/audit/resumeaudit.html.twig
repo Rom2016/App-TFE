@@ -19,7 +19,7 @@
 
 </head>
 <body>
-<div class="content">
+<div id="audit{{ audit }}" class="content">
     <div class="container-fluid col-md-9">
 
         <div class="card">
@@ -73,10 +73,16 @@
                                            <span>{{ t.test.test }}</span>
                                        </div>
                                        <div class="col-md-2 status">
-                                    <div id="status{{ t.id }}" class="selection-fail select">
+                                    <div id="status{{ t.id }}" class="{% if t.status.status == 'fail' %}selection-fail{% elseif t.status.status == 'error' %}selection-error{% elseif t.status.status == 'success' %}selection-success{% endif %} select">
                                         <div class="btn-group">
                                             <span id="change-status{{ t.id }}" style="cursor:pointer" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                échec
+                                                {% if t.status.status == 'fail' %}
+                                                    échec
+                                                {% elseif t.status.status == 'error' %}
+                                                    passe avec erreurs
+                                                {% elseif t.status.status == 'success' %}
+                                                   succès
+                                                {% endif %}
                                             </span>
                                             <div class="dropdown-menu dropdown-menu-right">
                                                 <span class="dropdown-item selection-choice selection-fail status">échec</span>
@@ -87,14 +93,52 @@
                                     </div>
                                        </div>
                                        <div class="col-md-4 comment">
+                                           {% if t.comment is null %}
                                            <span class="editable new-comment">Ajouter un commentaire</span>
+                                           {% else %}
+                                               <span class="editable">{{ t.comment }}</span>
+                                            {% endif %}
                                        </div>
-                                        {% for child in tests %}
-                                             {% if child.test.parent == t.test and t.status != 'fail'%}
-                                                <p>test</p>
+                                   </div>
+
+                                    <div id="group-childs{{ t.id }}">
+                                       {% for child in tests %}
+                                             {% if child.test.parent == t.test and t.status.status != 'fail' %}
+                                                 <div id="child{{ child.id }}" class="row child">
+                                                     <div class="col-md-4 child-col">
+                                                         <span style="margin-left: 2%">{{ child.test.test }}</span>
+                                                     </div>
+                                                     <div class="col-md-2 status">
+                                                         <div id="status{{ child.id }}" class="{% if child.status.status == 'fail' %}selection-fail{% elseif child.status.status == 'error' %}selection-error{% elseif child.status.status == 'success' %}selection-success{% endif %} select">
+                                                             <div class="btn-group">
+                                            <span style="cursor:pointer" class="dropdown-toggle" id="change-status{{ child.id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                   {% if child.status.status == 'fail' %}
+                                                       échec
+                                                   {% elseif child.status.status == 'error' %}
+                                                       passe avec erreurs
+                                                   {% elseif child.status.status == 'success' %}
+                                                       succès
+                                                   {% endif %}
+                                            </span>
+                                                                 <div class="dropdown-menu dropdown-menu-right">
+                                                                     <span class="dropdown-item selection-choice selection-fail status child">échec</span>
+                                                                     <span class="dropdown-item selection-choice selection-error status child">passe avec erreurs</span>
+                                                                     <span class="dropdown-item selection-choice selection-success status child">passe</span>
+                                                                 </div>
+                                                             </div>
+                                                         </div>
+                                                     </div>
+                                                     <div class="col-md-4 comment">
+                                                         {% if child.comment is null %}
+                                                             <span class="editable new-comment child">Ajouter un commentaire</span>
+                                                         {% else %}
+                                                             <span class="editable child">{{ child.comment }}</span>
+                                                         {% endif %}
+                                                     </div>
+                                                 </div>
                                              {% endif %}
                                         {% endfor %}
-                                   </div>
+                                       </div>
                                    {% elseif  t.test.susbection == sub and t.test.type.type == 'Selection' %}
                                        <div id="test{{ t.id }}" class="row">
                                            <div class="col-md-4 comment">
@@ -134,4 +178,15 @@
 <script src="../js/core/popper.min.js" type="text/javascript"></script>
 <script src="../js/core/bootstrap-material-design.min.js" type="text/javascript"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../vendor/sweet-alert/dist/sweetalert2.js"></script>
 <script src="../js/audit/audit.js"></script>
+<script>
+    {% if last_response is defined %}
+    Swal({
+        type: 'info',
+        title: 'Dernier test modifié:',
+        html:
+        '{{ last_response.test.test }} '
+        })
+    {% endif %}
+</script>

@@ -1,0 +1,30 @@
+<tr class="tr-shadow tr-user {% if user.deactivated is not null %}deactivated{% endif %}" id="user{{ user.id }}">
+    <td><img {% if not app.user.profile_pic %}src="../génèrer-avatar?rq=administration&p={{ user.first_name }}&n={{ user.second_name }}"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} class="rounded-circle" style="width: 30px" /></td>
+    <td>{{ user.first_name }} {{ user.secondName }}</td>
+    <td>
+        <span class="block-email">{{ user.username }}</span>
+    </td>
+    <td class="desc">{{ user.function }}</td>
+    <td>
+        <span class="status--process">{{ user.dateCreation|date('Y-m-d H:i:s') }}</span>
+    </td>
+    <td>
+                                                        <span class="more">
+                                                               <i class="material-icons" rel="tooltip" title="Supprimer l'utilisateur" onclick="slidePanel({{ user.id }})">more_horiz</i>
+                                                        </span>
+    </td>
+</tr>
+<tr class="spacer"></tr>
+<div id="slider{{ user.id }}" class="slider">
+    <div class="user-header">
+        <h2>{{ user.first_name }} {{ user.secondName }}</h2>
+    </div>
+    <div class="row">
+        <div class="col-md-1">
+            <i class="material-icons" onclick="deleteUser({{user.id }},'{{ user.first_name }} {{ user.secondName }}')">delete</i>
+        </div>
+        <div class="col-md-1">
+            <i class="material-icons">refresh</i>
+        </div>
+    </div>
+</div>

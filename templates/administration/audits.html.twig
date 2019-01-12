@@ -76,15 +76,15 @@ Administration
                                     <div id="test-group{{ ss.id }}" class="test comment col-md-8">
                                         {% for t in ss.auditTests %}
                                         {% if t.parent is null and t.datearchive is null %}
-                                        <div id="test{{ t.id }}" class="yolo">
+                                        <div id="test{{ t.id }}" class="layer">
                                         <div class="row">
                                              <div class="modify-test col-md-9 input-group mb-3">
-                                                 <span class="editable suggestion">{{ t.test }}</span>
+                                                 <span class="editable suggestion test">{{ t.test }}</span>
                                                  <div class="input-group-append">
                                                      <i id='trigger{{ t.id }}' title="Modifier le test" onclick="slidePanel({{ t.id }})" class="material-icons test-edit">edit</i>
                                                  </div>
                                                  <div class="input-group-append">
-                                                     <i id='' title="Supprimer le test" class="material-icons test-edit">delete</i>
+                                                     <i id="trash-test{{ t.id }}" title="Supprimer le test" class="material-icons test-edit trash test">delete</i>
                                                  </div>
                                              </div>
                                                 {% if t.type.type == 'Question' %}
@@ -92,13 +92,13 @@ Administration
                                                     <span class="">{{ t.type.type }}</span>
                                                 </div>
                                                 {% elseif t.type.type == 'Selection' %}
-                                                  <div class="col-md-2 selection" style="text-align: center">
+                                                  <div class="col-md-2 type-selection" style="text-align: center">
                                                       <span class="">{{ t.type.type }}</span>
                                                   </div>
                                                 {% endif %}
                                              <div class="col-md-1">
                                                  <div class="btn-group">
-                                                                                <span class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                <span id="prio-drop{{ t.id }}" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                                     {{ t.priority }}
                                                                                 </span>
                                                      <div class="dropdown-menu dropdown-menu-right">
@@ -116,15 +116,18 @@ Administration
                                                 <ul class="nav nav-tabs" role="tablist">
                                                     {% if t.type.type == 'Selection' %}
                                                     <li class="nav-item">
-                                                        <a class="nav-link-test active" data-toggle="tab" href="#type{{ t.id }}">Type</a>
+                                                        <a class="nav-link-test active" data-toggle="tab" href="#type{{ t.id }}">Sélection</a>
                                                     </li>
                                                     {% endif %}
+                                                    {% if t.type.type == 'Question' %}
                                                     <li class="nav-item">
-                                                        <a class="nav-link-test {% if t.type.type == 'Question' %}active{% endif %}" data-toggle="tab" href="#familly{{ t.id }}">Famille</a>
+                                                        <a class="nav-link-test active" data-toggle="tab" href="#familly{{ t.id }}">Famille</a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link-test" data-toggle="tab" href="#solution{{ t.id }}">Ajouter une solution</a>
                                                     </li>
+                                                    {% endif %}
+
                                                     <li class="nav-item">
                                                         <a class="nav-link-test" data-toggle="tab" href="#log{{ t.id }}">Historique</a>
                                                     </li>
@@ -137,66 +140,42 @@ Administration
                                                     <div id="type{{ t.id }}" class="container tab-pane active"><br>
                                                         <div id="test-type{{ t.id }}" class="">
 
-                                                                <div class="col-md-2"></div>
-                                                                <div id="type-select{{ t.id }}" class="col-md-8 test-type">
-                                                                <div class="row">
-                                                                    <div class="col-md-4"><i  class="material-icons type-icon" >radio_button_checked</i></div>
-                                                                    <div class="col-md-8"><p class="checkbox-header">Sélection</p>
-                                                                    </div>
+                                                                <div class="col-md-3"></div>
+                                                                <div id="type-select{{ t.id }}" class="col-md-10 test-type">
+                                                                    <h4>Ajoute une possibilité d'une réponse à choix multiples</h4>
                                                                 </div>
-                                                                <hr>
-                                                                <span style="text-align: center">Réponse à choix multiples</span>
-                                                            </div>
-                                                                <div id="group-selection{{ t.id }}" >
+                                                                <div id="group-selection{{ t.id }}">
                                                                     {% for s in t.Selections %}
-
-                                                                    <div class="row">
+                                                                        {% if s.datearchive is null %}
+                                                                    <div id="row-selection{{ s.id }}" class="row layer" style="margin: 1%" >
                                                                         <div  class="comment col-md-6">
-                                                                            <span id="" class="editable suggestion">{{ s.selection }}</span>
+                                                                            <span id="selection{{ s.id }}" class="editable suggestion selection">{{ s.selection }}</span>
                                                                         </div>
                                                                         <div id="group-status{{ s.id }}" class="col-md-4 group-selection">
-                                                                        {% if s.status.status == 'fail' %}
-                                                                        <div id="status{{ s.id }}" class="selection-fail select">
-                                                                            <div class="btn-group">
-                                                                                <span class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                    échec
-                                                                                </span>
-                                                                                <div class="dropdown-menu dropdown-menu-right">
-                                                                                    <span class="dropdown-item selection-choice selection-fail">échec</span>
-                                                                                    <span class="dropdown-item selection-choice selection-error">passe avec erreurs</span>
-                                                                                    <span class="dropdown-item selection-choice selection-success">passe</span>
+                                                                            <div id="status{{ t.id }}" class="{% if s.status.status == 'fail' %}selection-fail{% elseif s.status.status == 'error' %}selection-error{% elseif s.status.status == 'success' %}selection-success{% endif %} select">
+                                                                                <div class="btn-group">
+                                            <span id="change-status{{ s.id }}" style="cursor:pointer" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                {% if s.status.status == 'fail' %}
+                                                    échec
+                                                {% elseif s.status.status == 'error' %}
+                                                    passe avec erreurs
+                                                {% elseif s.status.status == 'success' %}
+                                                    succès
+                                                {% endif %}
+                                            </span>
+                                                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                                                        <span class="dropdown-item selection-choice selection-fail status">échec</span>
+                                                                                        <span class="dropdown-item selection-choice selection-error status">passe avec erreurs</span>
+                                                                                        <span class="dropdown-item selection-choice selection-success status">passe</span>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                        {% elseif s.status.status == 'error' %}
-                                                                            <div id="status{{ s.id }}" class="selection-error select">
-                                                                                <div class="btn-group">
-                                                                                <span class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                    passe avec erreurs
-                                                                                </span>
-                                                                                    <div class="dropdown-menu dropdown-menu-right">
-                                                                                        <span class="dropdown-item selection-choice selection-fail">échec</span>
-                                                                                        <span class="dropdown-item selection-choice selection-error">passe avec erreurs</span>
-                                                                                        <span class="dropdown-item selection-choice selection-success">passe</span>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        {% elseif s.status.status == 'success' %}
-                                                                            <div id="status{{ s.id }}" class="selection-success select">
-                                                                                <div class="btn-group">
-                                                                                <span id="current-status{{ s.id }}" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                    passe
-                                                                                </span>
-                                                                                    <div class="dropdown-menu dropdown-menu-right">
-                                                                                        <span class="dropdown-item selection-choice selection-fail">échec</span>
-                                                                                        <span class="dropdown-item selection-choice selection-error">passe avec erreurs</span>
-                                                                                        <span class="dropdown-item selection-choice selection-success">passe</span>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        {% endif %}
+                                                                        <div class="col-md-1">
+                                                                            <i id="trash-selection{{ s.id }}" class="material-icons trash select" title="archiver">delete</i>
                                                                         </div>
                                                                     </div>
+                                                                    {% endif %}
                                                                 {% endfor %}
                                                                 </div>
 
@@ -211,26 +190,29 @@ Administration
 
                                                         </div>
                                                     </div>
-                                                    {% endif %}
-
-                                                    <div id="familly{{ t.id }}" class="container tab-pane fade"><br>
+                                                    {% elseif t.type.type == 'Question' %}
+                                                    <div id="familly{{ t.id }}" class="container tab-pane active">
+                                                        <div class="col-md-3"></div>
+                                                        <div id="type-select{{ t.id }}" class="col-md-10 test-type">
+                                                            <h4>Ajoute un enfant au test</h4>
+                                                        </div>
                                                         <div id="table-child{{ t.id }}" class="table-child">
                                                             {% for child in ss.auditTests %}
                                                                {% if child.parent is not null %}
                                                                     {% if child.parent == t and child.datearchive is null%}
-                                                                        <div id="group-child{{ child.id }}" class="row comment group-child layer">
-                                                                            <div class="col-md-9">
+                                                                        <div id="group-child{{ child.id }}" class="row group-child layer" style="margin: 1%">
+                                                                            <div class="col-md-8 comment">
                                                                                 <span id="child{{  child.id }}" class="editable suggestion child">{{ child.test }}</span>
                                                                             </div>
-                                                                            <div class="col-md-2">
+                                                                            <div class="col-md-2 comment">
                                                                                 <div class="btn-group">
                                                                                 <span id="prio-drop{{ child.id }}" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                                     {{ child.priority }}
                                                                                 </span>
                                                                                     <div class="dropdown-menu dropdown-menu-right">
-                                                                                        <span class="dropdown-item priority">1</span>
-                                                                                        <span class="dropdown-item priority">2</span>
-                                                                                        <span class="dropdown-item priority">3</span>
+                                                                                        <span class="dropdown-item priority child">1</span>
+                                                                                        <span class="dropdown-item priority child">2</span>
+                                                                                        <span class="dropdown-item priority child">3</span>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -243,7 +225,7 @@ Administration
                                                             {% endfor %}
                                                         </div>
                                                         <div class="row">
-                                                            <div id="add-child{{ t.id }}" class="group-child col-md-12">
+                                                            <div id="add-child{{ t.id }}" class="group-child col-md-10">
                                                                 <div class="input-group">
                                                                     <input class="form-control child" id="new-child{{ t.id }}" type="text" placeholder="Ajouter un enfant">
                                                                     <button class="add-button child">+</button>
@@ -252,7 +234,35 @@ Administration
                                                         </div>
                                                     </div>
                                                     <div id="solution{{ t.id }}" class="container tab-pane fade"><br>
+                                                        <div class="col-md-3"></div>
+                                                        <div id="type-select{{ t.id }}" class="col-md-10 test-type">
+                                                            <h4>Ajoute une solution au test</h4>
+                                                        </div>
+                                                        <div id="table-sol{{ t.id }}">
+                                                        {% for sol in t.solutions %}
+                                                            {% if sol.datearchive is null %}
+                                                            <div id="group-solution{{ sol.id }}" class="row group-solution layer" style="margin: 1%">
+                                                                <div class="col-md-8 comment">
+                                                                    <span id="sol{{  sol.id }}" class="editable suggestion solution">{{ sol.solution }}</span>
+                                                                </div>
+                                                                <div class="col-md-1">
+                                                                    <i id="trash-solution{{ sol.id }}" class="material-icons trash solution" title="archiver">delete</i>
+                                                                </div>
+                                                            </div>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        </div>
+                                                        <div class="row">
+                                                            <div id="add-sol{{ t.id }}" class="group-sol col-md-10">
+                                                                <div class="input-group">
+                                                                    <input class="form-control child" id="new-sol{{ t.id }}" type="text" placeholder="Ajouter une solution">
+                                                                    <button class="add-button solution">+</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                    {% endif %}
+
                                                 </div>
                                             </div>
                                         </div>

@@ -5,9 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\LinkTestsInfraRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\LinkSelectInfraRepository")
  */
-class LinkTestsInfra
+class LinkSelectInfra
 {
     /**
      * @ORM\Id()
@@ -17,16 +17,11 @@ class LinkTestsInfra
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AuditTestsInfra", inversedBy="linkTestsInfras")
+     * @ORM\ManyToOne(targetEntity="App\Entity\InfraSelection", inversedBy="link")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $infra;
+    private $selection;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AuditTests", inversedBy="linkTestsInfras")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $test;
 
     /**
      * @ORM\Column(type="boolean")
@@ -44,18 +39,24 @@ class LinkTestsInfra
     private $date_archive;
 
     /**
-     * LinkTestsInfra constructor.
-     * @param $infra
-     * @param $test
+     * @ORM\ManyToOne(targetEntity="App\Entity\AuditTests", inversedBy="linkSelectInfras")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $test;
+
+    /**
+     * LinkSelectInfra constructor.
+     * @param $selection
      * @param $action
      * @param $date_creation
+     * @param $test
      */
-    public function __construct($infra, $test, $action, $date_creation)
+    public function __construct($selection, $action, $date_creation, $test)
     {
-        $this->infra = $infra;
-        $this->test = $test;
+        $this->selection = $selection;
         $this->action = $action;
         $this->date_creation = $date_creation;
+        $this->test = $test;
     }
 
 
@@ -64,14 +65,14 @@ class LinkTestsInfra
         return $this->id;
     }
 
-    public function getInfra(): ?AuditTestsInfra
+    public function getSelection(): ?InfraSelection
     {
-        return $this->infra;
+        return $this->selection;
     }
 
-    public function setInfra(?AuditTestsInfra $infra): self
+    public function setSelection(?InfraSelection $selection): self
     {
-        $this->infra = $infra;
+        $this->selection = $selection;
 
         return $this;
     }

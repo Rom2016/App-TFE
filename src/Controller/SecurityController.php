@@ -44,7 +44,7 @@ class SecurityController extends AbstractController
         if (!$securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $error = $authenticationUtils->getLastAuthenticationError();
             $lastUsername = $authenticationUtils->getLastUsername();
-            return $this->render('user/login.html.twig', array(
+            return $this->render('security/admin_form.html.twig', array(
                 'last_username' => $lastUsername,
                 'error'         => $error,
             ));

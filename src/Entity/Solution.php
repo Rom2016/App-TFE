@@ -5,9 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\LinkTestsInfraRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\SolutionRepository")
  */
-class LinkTestsInfra
+class Solution
 {
     /**
      * @ORM\Id()
@@ -17,21 +17,15 @@ class LinkTestsInfra
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AuditTestsInfra", inversedBy="linkTestsInfras")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="string", length=200)
      */
-    private $infra;
+    private $solution;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AuditTests", inversedBy="linkTestsInfras")
+     * @ORM\ManyToOne(targetEntity="App\Entity\AuditTests", inversedBy="solutions")
      * @ORM\JoinColumn(nullable=false)
      */
     private $test;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $action;
 
     /**
      * @ORM\Column(type="datetime")
@@ -44,17 +38,15 @@ class LinkTestsInfra
     private $date_archive;
 
     /**
-     * LinkTestsInfra constructor.
-     * @param $infra
+     * Solution constructor.
+     * @param $solution
      * @param $test
-     * @param $action
      * @param $date_creation
      */
-    public function __construct($infra, $test, $action, $date_creation)
+    public function __construct($solution, $test, $date_creation)
     {
-        $this->infra = $infra;
+        $this->solution = $solution;
         $this->test = $test;
-        $this->action = $action;
         $this->date_creation = $date_creation;
     }
 
@@ -64,14 +56,14 @@ class LinkTestsInfra
         return $this->id;
     }
 
-    public function getInfra(): ?AuditTestsInfra
+    public function getSolution(): ?string
     {
-        return $this->infra;
+        return $this->solution;
     }
 
-    public function setInfra(?AuditTestsInfra $infra): self
+    public function setSolution(string $solution): self
     {
-        $this->infra = $infra;
+        $this->solution = $solution;
 
         return $this;
     }
@@ -84,18 +76,6 @@ class LinkTestsInfra
     public function setTest(?AuditTests $test): self
     {
         $this->test = $test;
-
-        return $this;
-    }
-
-    public function getAction(): ?bool
-    {
-        return $this->action;
-    }
-
-    public function setAction(bool $action): self
-    {
-        $this->action = $action;
 
         return $this;
     }

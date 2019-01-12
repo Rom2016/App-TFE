@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,22 +30,31 @@ class InfraSelection
     private $infra;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AuditTests", inversedBy="infraSelections")
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    private $test;
+    private $date_creation;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    private $status;
-
+    private $date_archive;
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\LinkSelectInfra", mappedBy="selection")
      */
-    private $action;
+    private $link;
+
+    public function __construct()
+    {
+        $this->link = new ArrayCollection();
+    }
 
 
-    
+
+
+
+
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,6 +116,61 @@ class InfraSelection
     public function setAction(?bool $action): self
     {
         $this->action = $action;
+
+        return $this;
+    }
+
+    public function getDateCreation(): ?\DateTimeInterface
+    {
+        return $this->date_creation;
+    }
+
+    public function setDateCreation(?\DateTimeInterface $date_creation): self
+    {
+        $this->date_creation = $date_creation;
+
+        return $this;
+    }
+
+    public function getDateArchive(): ?\DateTimeInterface
+    {
+        return $this->date_archive;
+    }
+
+    public function setDateArchive(\DateTimeInterface $date_archive): self
+    {
+        $this->date_archive = $date_archive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LinkSelectInfra[]
+     */
+    public function getLink(): Collection
+    {
+        return $this->link;
+    }
+
+    public function addLink(LinkSelectInfra $link): self
+    {
+        if (!$this->link->contains($link)) {
+            $this->link[] = $link;
+            $link->setSelection($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLink(LinkSelectInfra $link): self
+    {
+        if ($this->link->contains($link)) {
+            $this->link->removeElement($link);
+            // set the owning side to null (unless already changed)
+            if ($link->getSelection() === $this) {
+                $link->setSelection(null);
+            }
+        }
 
         return $this;
     }

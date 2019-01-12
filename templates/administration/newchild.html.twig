@@ -1,16 +1,16 @@
-<div id="group-child{{ test.id }}" class="row comment group-child layer">
-    <div class="col-md-9 ">
+<div id="group-child{{ test.id }}" class="row  group-child layer" style="margin: 1%">
+    <div class="col-md-8 comment">
         <span id="child{{  test.id }}" class="editable suggestion child">{{ test.test }}</span>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-2 comment">
         <div class="btn-group">
                                                                                 <span id="prio-drop{{ test.id }}" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                                     {{ test.priority }}
                                                                                 </span>
             <div class="dropdown-menu dropdown-menu-right">
-                <span class="dropdown-item priority">1</span>
-                <span class="dropdown-item priority">2</span>
-                <span class="dropdown-item priority">3</span>
+                <span class="dropdown-item priority child">1</span>
+                <span class="dropdown-item priority child">2</span>
+                <span class="dropdown-item priority child">3</span>
             </div>
         </div>
     </div>

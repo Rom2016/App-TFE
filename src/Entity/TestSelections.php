@@ -45,6 +45,12 @@ class TestSelections
      */
     private $infraSelections;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Status")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $status;
+
 
 
     /**

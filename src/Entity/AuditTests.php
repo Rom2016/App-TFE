@@ -67,15 +67,21 @@ class AuditTests
      */
     private $linkTestsInfras;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\InfraSelection", mappedBy="test")
-     */
-    private $infraSelections;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\AuditResults", mappedBy="test")
      */
     private $auditResults;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Solution", mappedBy="test")
+     */
+    private $solutions;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\LinkSelectInfra", mappedBy="test")
+     */
+    private $linkSelectInfras;
 
     /**
      * AuditTests constructor.
@@ -95,8 +101,9 @@ class AuditTests
         $this->testSelections = new ArrayCollection();
         $this->Selections = new ArrayCollection();
         $this->linkTestsInfras = new ArrayCollection();
-        $this->infraSelections = new ArrayCollection();
         $this->auditResults = new ArrayCollection();
+        $this->solutions = new ArrayCollection();
+        $this->linkSelectInfras = new ArrayCollection();
     }
 
 
@@ -261,36 +268,8 @@ class AuditTests
         return $this;
     }
 
-    /**
-     * @return Collection|InfraSelection[]
-     */
-    public function getInfraSelections(): Collection
-    {
-        return $this->infraSelections;
-    }
 
-    public function addInfraSelection(InfraSelection $infraSelection): self
-    {
-        if (!$this->infraSelections->contains($infraSelection)) {
-            $this->infraSelections[] = $infraSelection;
-            $infraSelection->setTest($this);
-        }
 
-        return $this;
-    }
-
-    public function removeInfraSelection(InfraSelection $infraSelection): self
-    {
-        if ($this->infraSelections->contains($infraSelection)) {
-            $this->infraSelections->removeElement($infraSelection);
-            // set the owning side to null (unless already changed)
-            if ($infraSelection->getTest() === $this) {
-                $infraSelection->setTest(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection|AuditResults[]
@@ -317,6 +296,72 @@ class AuditTests
             // set the owning side to null (unless already changed)
             if ($auditResult->getTest() === $this) {
                 $auditResult->setTest(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Solution[]
+     */
+    public function getSolutions(): Collection
+    {
+        return $this->solutions;
+    }
+
+    public function addSolution(Solution $solution): self
+    {
+        if (!$this->solutions->contains($solution)) {
+            $this->solutions[] = $solution;
+            $solution->setTest($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSolution(Solution $solution): self
+    {
+        if ($this->solutions->contains($solution)) {
+            $this->solutions->removeElement($solution);
+            // set the owning side to null (unless already changed)
+            if ($solution->getTest() === $this) {
+                $solution->setTest(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
+
+
+    /**
+     * @return Collection|LinkSelectInfra[]
+     */
+    public function getLinkSelectInfras(): Collection
+    {
+        return $this->linkSelectInfras;
+    }
+
+    public function addLinkSelectInfra(LinkSelectInfra $linkSelectInfra): self
+    {
+        if (!$this->linkSelectInfras->contains($linkSelectInfra)) {
+            $this->linkSelectInfras[] = $linkSelectInfra;
+            $linkSelectInfra->setTest($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLinkSelectInfra(LinkSelectInfra $linkSelectInfra): self
+    {
+        if ($this->linkSelectInfras->contains($linkSelectInfra)) {
+            $this->linkSelectInfras->removeElement($linkSelectInfra);
+            // set the owning side to null (unless already changed)
+            if ($linkSelectInfra->getTest() === $this) {
+                $linkSelectInfra->setTest(null);
             }
         }
 

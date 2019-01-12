@@ -1,112 +1,192 @@
-<div id="test{{ id }}" class="yolo">
+<div id="test{{ t.id }}" class="layer">
     <div class="row">
-        <div class="modify-test col-md-10 input-group mb-3">
-            <span class="editable suggestion">{{ test.test }}</span>
+        <div class="modify-test col-md-9 input-group mb-3">
+            <span class="editable suggestion test">{{ t.test }}</span>
             <div class="input-group-append">
-                <i id='trigger{{ id }}' onclick="slidePanel({{ id }})" class="material-icons test-edit">edit</i>
+                <i id='trigger{{ t.id }}' title="Modifier le test" onclick="slidePanel({{ t.id }})" class="material-icons test-edit">edit</i>
+            </div>
+            <div class="input-group-append">
+                <i id="trash-test{{ t.id }}" title="Supprimer le test" class="material-icons test-edit trash test">delete</i>
             </div>
         </div>
-        <div class="col-md-1"></div>
+        {% if t.type.type == 'Question' %}
+            <div class="col-md-2 question" style="text-align: center">
+                <span class="">{{ t.type.type }}</span>
+            </div>
+        {% elseif t.type.type == 'Selection' %}
+            <div class="col-md-2 type-selection" style="text-align: center">
+                <span class="">{{ t.type.type }}</span>
+            </div>
+        {% endif %}
         <div class="col-md-1">
             <div class="btn-group">
-                                                                                <span class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                    {{ test.priority }}
+                                                                                <span id="prio-drop{{ t.id }}" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                    {{ t.priority }}
                                                                                 </span>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <span class="dropdown-item">1</span>
-                    <span class="dropdown-item">2</span>
-                    <span class="dropdown-item">3</span>
+                    <span class="dropdown-item priority">1</span>
+                    <span class="dropdown-item priority">2</span>
+                    <span class="dropdown-item priority">3</span>
                 </div>
             </div>
         </div>
     </div>
-    <div class="slider" id='slider{{ id }}'>
-        <h3>{{ test.test }}</h3>
+    <div class="slider" id='slider{{ t.id }}'>
+        <div class="slider-header">
+            <h3>{{ t.test }}</h3>
+        </div>
         <ul class="nav nav-tabs" role="tablist">
+            {% if t.type.type == 'Selection' %}
+                <li class="nav-item">
+                    <a class="nav-link-test active" data-toggle="tab" href="#type{{ t.id }}">Sélection</a>
+                </li>
+            {% endif %}
+            {% if t.type.type == 'Question' %}
+                <li class="nav-item">
+                    <a class="nav-link-test active" data-toggle="tab" href="#familly{{ t.id }}">Famille</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link-test" data-toggle="tab" href="#solution{{ t.id }}">Ajouter une solution</a>
+                </li>
+            {% endif %}
+
             <li class="nav-item">
-                <a class="nav-link-test active" data-toggle="tab" href="#type{{ id }}">Type</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link-test" data-toggle="tab" href="#familly{{ id }}">Famille</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link-test" data-toggle="tab" href="#solution{{ id }}">Ajouter une solution</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link-test" data-toggle="tab" href="#log{{ id }}">Historique</a>
+                <a class="nav-link-test" data-toggle="tab" href="#log{{ t.id }}">Historique</a>
             </li>
         </ul>
 
         <!-- Tab panes -->
         <div class="tab-content">
-            <div id="type{{ id }}" class="container tab-pane active"><br>
-                <div id="test-type{{ id }}" class="">
+            {% if t.type.type =='Selection' %}
 
-                    {% if test.type.type =='Question' %}
-                        <div class="col-md-2"></div>
-                        <div id="type-check{{ id }}" class="col-md-8 test-type">
-                            <div class="row">
-                                <div class="col-md-4"><i class="material-icons type-icon"  >check_box</i></div>
-                                <div class="col-md-8"><p class="checkbox-header">Checkbox</p>
-                                </div>
-                            </div>
-                            <hr>
-                            <span style="text-align: center">Réponse par oui ou non</span>
-                        </div>
-                    {% elseif test.type.type =='Selection' %}
-                        <div class="col-md-2"></div>
+                <div id="type{{ t.id }}" class="container tab-pane active"><br>
+                    <div id="test-type{{ t.id }}" class="">
 
-                        <div id="type-select{{ id }}" class="col-md-8 test-type">
-                            <div class="row">
-                                <div class="col-md-4"><i  class="material-icons type-icon" >radio_button_checked</i></div>
-                                <div class="col-md-8"><p class="checkbox-header">Sélection</p>
-                                </div>
-                            </div>
-                            <hr>
-                            <span style="text-align: center">Réponse à choix multiples</span>
+                        <div class="col-md-3"></div>
+                        <div id="type-select{{ t.id }}" class="col-md-10 test-type">
+                            <h4>Ajoute une possibilité d'une réponse à choix multiples</h4>
                         </div>
-                        <div id="group-selection{{ id }}" >
+                        <div id="group-selection{{ t.id }}">
+                            {% for s in t.Selections %}
+                                {% if s.datearchive is null %}
+                                    <div id="row-selection{{ s.id }}" class="row layer" style="margin: 1%" >
+                                        <div  class="comment col-md-6">
+                                            <span id="selection{{ s.id }}" class="editable suggestion selection">{{ s.selection }}</span>
+                                        </div>
+                                        <div id="group-status{{ s.id }}" class="col-md-4 group-selection">
+                                            <div id="status{{ t.id }}" class="{% if s.status.status == 'fail' %}selection-fail{% elseif s.status.status == 'error' %}selection-error{% elseif s.status.status == 'success' %}selection-success{% endif %} select">
+                                                <div class="btn-group">
+                                            <span id="change-status{{ s.id }}" style="cursor:pointer" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                {% if s.status.status == 'fail' %}
+                                                    échec
+                                                {% elseif s.status.status == 'error' %}
+                                                    passe avec erreurs
+                                                {% elseif s.status.status == 'success' %}
+                                                    succès
+                                                {% endif %}
+                                            </span>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <span class="dropdown-item selection-choice selection-fail status">échec</span>
+                                                        <span class="dropdown-item selection-choice selection-error status">passe avec erreurs</span>
+                                                        <span class="dropdown-item selection-choice selection-success status">passe</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <i id="trash-selection{{ s.id }}" class="material-icons trash select" title="archiver">delete</i>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
                         </div>
 
                         <div class="row">
-                            <div id="group-select{{ id }}" class="group-select col-md-10">
+                            <div id="group-select{{ t.id }}" class="group-select col-md-10">
                                 <div class="input-group">
-                                    <input class="form-control" id="new-select{{ id }}" type="text" placeholder="Ajouter un choix">
+                                    <input class="form-control" id="new-select{{ t.id }}" type="text" placeholder="Ajouter un choix">
                                     <button class="add-button select">+</button>
                                 </div>
                             </div>
                         </div>
 
+                    </div>
+                </div>
+            {% elseif t.type.type == 'Question' %}
+                <div id="familly{{ t.id }}" class="container tab-pane active">
+                    <div class="col-md-3"></div>
+                    <div id="type-select{{ t.id }}" class="col-md-10 test-type">
+                        <h4>Ajoute un enfant au test</h4>
+                    </div>
+                    <div id="table-child{{ t.id }}" class="table-child">
+                     {% if childs is defined %}
+                        {% for child in childs %}
+                            {% if child.parent is not null %}
+                                {% if child.parent == t and child.datearchive is null%}
+                                    <div id="group-child{{ child.id }}" class="row group-child layer" style="margin: 1%">
+                                        <div class="col-md-8 comment">
+                                            <span id="child{{  child.id }}" class="editable suggestion child">{{ child.test }}</span>
+                                        </div>
+                                        <div class="col-md-2 comment">
+                                            <div class="btn-group">
+                                                                                <span id="prio-drop{{ child.id }}" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                    {{ child.priority }}
+                                                                                </span>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <span class="dropdown-item priority">1</span>
+                                                    <span class="dropdown-item priority">2</span>
+                                                    <span class="dropdown-item priority">3</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <i id="trash-child{{ child.id }}" class="material-icons trash child" title="archiver">delete</i>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
                     {% endif %}
+                    </div>
+                    <div class="row">
+                        <div id="add-child{{ t.id }}" class="group-child col-md-10">
+                            <div class="input-group">
+                                <input class="form-control child" id="new-child{{ t.id }}" type="text" placeholder="Ajouter un enfant">
+                                <button class="add-button child">+</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div id="familly{{ id }}" class="container tab-pane fade"><br>
-                <div class="row">
-                    <div class="col-md-10"></div>
+                <div id="solution{{ t.id }}" class="container tab-pane fade"><br>
+                    <div class="col-md-3"></div>
+                    <div id="type-select{{ t.id }}" class="col-md-10 test-type">
+                        <h4>Ajoute une solution au test</h4>
+                    </div>
+                    <div id="table-sol{{ t.id }}">
+                        {% for sol in t.solutions %}
+                            {% if sol.datearchive is null %}
+                                <div id="group-solution{{ sol.id }}" class="row group-solution layer" style="margin: 1%">
+                                    <div class="col-md-8 comment">
+                                        <span id="sol{{  sol.id }}" class="editable suggestion solution">{{ sol.solution }}</span>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <i id="trash-solution{{ sol.id }}" class="material-icons trash solution" title="archiver">delete</i>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="row">
+                        <div id="add-sol{{ t.id }}" class="group-sol col-md-10">
+                            <div class="input-group">
+                                <input class="form-control child" id="new-sol{{ t.id }}" type="text" placeholder="Ajouter une solution">
+                                <button class="add-button solution">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
 
-                    <div class="nav-item dropdown col-md-1">
-                        <a class="nav-link" id="navbarDropdownMenuAccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="material-icons audit-more">add</i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuAccount">
-                            <a id="add-child" class="dropdown-item"><i class="material-icons">note_add</i>Ajouter un enfant checkbox</a>
-                            <a id="add-child" class="dropdown-item"><i class="material-icons">note_add</i>Ajouter un enfant checkbox</a>
-                        </div>
-                    </div>
-                </div>
-                <div id="group-child{{ id }}">
-                </div>
-                <div class="row">
-                    <div id="group-child{{ id }}" class="group-child col-md-12">
-                        <div class="input-group">
-                            <input class="form-control child" id="new-child{{ id }}" type="text" placeholder="Ajouter un enfant">
-                            <button class="add-button child">+</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="solution{{ id }}" class="container tab-pane fade"><br>
-            </div>
         </div>
     </div>
 </div>

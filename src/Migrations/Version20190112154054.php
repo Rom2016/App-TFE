@@ -8,14 +8,14 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20190111151825 extends AbstractMigration
+final class Version20190112154054 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE roles ADD special TINYINT(1) DEFAULT NULL');
+        $this->addSql('ALTER TABLE link_tests_infra ADD date_creation DATETIME NOT NULL, ADD date_archive DATETIME DEFAULT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -23,6 +23,6 @@ final class Version20190111151825 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE roles DROP special');
+        $this->addSql('ALTER TABLE link_tests_infra DROP date_creation, DROP date_archive');
     }
 }

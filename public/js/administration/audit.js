@@ -80,21 +80,24 @@ $('body').on('click', '.editable', function(){ // Attache l'évènement
             input.focusout(function () { // Lorsque que le champ perd le focus
                 if ($(this).val() != el.text() && $(this).val().trim().length != 0) { // Vérifie que le champ n'est pas vide, composé d'espaces ou à la même valeur
                     section = el.attr('id').split('section'); // Récupère l'id de la section concernée par l'id d'une <div>
-                    rq = {'data': $(this).val(), 'rq': 'section', 'section': section[1]}; // Prépare les données à envoyer au serveur
+                    rq = {'data': $(this).val(), 'rq': 'section', 'id': section[1]}; // Prépare les données à envoyer au serveur
                     $.ajax({
-                        url: '../administration/contenu-audits/modifier',
+                        url: '../administration/contenu-audits/modifier/section',
                         type: 'POST',
                         data: rq
                     }).done(function (response) { // Si réussite
-                        input.replaceWith(response.html); //remplace le champ avec la nouvelle section
-                        $('#section-group' + section[1]).attr('id', 'section-group' + response.id);
-                        $('#new-sub' + section[1]).attr('id', 'new-sub' + response.id);
-                        $('#audit-table' + section[1]).attr('id', 'audit-table' + response.id);
+                        input.closest('.layer').replaceWith(response);
+                        $('.slider').slideReveal({
+                            position: "right",
+                            push: false,
+                            overlay: true,
+                            width: 500
+                        });
                     }).fail(function () {
                         swal('Oops...', 'Un problème est survenu, réessayez plus tard!', 'error');
                     });
                 } else { // Si le If précédent est négatif, aucune requête vers le serveur et remplace le champ avec la section d'origine
-                    span = $('<span/>').text(input.val()).addClass(classes); // Si
+                    span = '<span id="'+el.attr('id')+'" class="'+classes+'">'+el.text()+'</span>';
                     input.replaceWith(span);
                 }
             });
@@ -121,7 +124,7 @@ $('body').on('click', '.editable', function(){ // Attache l'évènement
                         swal('Oops...', 'Un problème est survenu, réessayez plus tard!', 'error');
                     });
                 } else {
-                    span = $('<span/>').text(input.val()).addClass(classes);
+                    span = '<span id="'+el.attr('id')+'" class="'+classes+'">'+el.text()+'</span>';
                     input.replaceWith(span);
                 }
             });
@@ -479,6 +482,44 @@ function newSnapshot() {
         showCancelButton: true,
         cancelButtonText: 'Annuler',
         confirmButtonText: 'Confirmer',
-        showLoaderOnConfirm: true
+        showLoaderOnConfirm: true,
+        preConfirm: function() {
+            return new Promise(function(resolve) {
+                $.ajax({
+                    url: '../administration/contenu-audits/nouveau-snapshot',
+                    type: 'POST',
+                    data: 'id='+id,
+                    dataType: 'json'
+                }).done(function(response){
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        showConfirmButton: false,
+                        timer: 1500,
+                        title: 'Utilisateur supprimé avec succès!'
+                    })
+                    $('#user'+id).remove();
+                }).fail(function(){
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        showConfirmButton: false,
+                        timer: 1500,
+                        title: 'Utilisateur supprimé avec succès!'
+                    })
+                });
+            });
+        }
     })
 }
+
+$('#display-log').click(function(){
+    $('#slider-log').slideReveal('show');
+})
+
+$('#slider-log').slideReveal({
+    position: "right",
+    push: false,
+    overlay: true,
+    width: 650
+});

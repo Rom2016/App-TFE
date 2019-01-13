@@ -14,6 +14,7 @@ use App\Entity\InfraSelection;
 use App\Entity\LinkSelectInfra;
 use App\Entity\LinkTestsInfra;
 use App\Entity\LogAction;
+use App\Entity\LogAdminContent;
 use App\Entity\LogAdminUser;
 use App\Entity\Roles;
 use App\Entity\Status;
@@ -187,12 +188,15 @@ class AdministrationController extends AbstractController
 
         $repository = $this->getDoctrine()->getRepository(AppUser::class);
         $repository_section = $this->getDoctrine()->getRepository(AuditSection::class);
-        if (isset($_POST['role-special'])) {
-            $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
+        $repository_log = $this->getDoctrine()->getRepository(LogAdminContent::class);
 
+        $array['section'] = $repository_section->findBy(['archived_date'=>null]);
+        $array['users'] = $repository->findBy(['deactivated'=>false]);
+        if (isset($_GET['nouveau-audit'])) {
+            $array['new_audit'] = true;
         }
-        $array['section'] = $repository_section->findAll();
-        $array['users'] = $repository->findAll();
+        $array['log'] = $repository_log->findAll();
+
         return $this->render('administration/audits.html.twig', $array);
         /**
          * L'utilisateur n'a pas les droits admin, render le template d'accès refusé.
@@ -212,11 +216,16 @@ class AdministrationController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $repository_subsection = $this->getDoctrine()->getRepository(AuditSubSection::class);
         $repository_section = $this->getDoctrine()->getRepository(AuditSection::class);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+
+        $action = $repository_log_action->findOneBy(['action'=>'Créer']);
         $date = new \DateTime(date('Y-m-d H:i:s'));
         $section = $repository_section->findOneBy(['id' => $_POST['id']]);
         $subsection_name = htmlspecialchars($_POST['subsection']);
         $subsection = new AuditSubSection($subsection_name, $section, $date);
         $entityManager->persist($subsection);
+        $log = new LogAdminContent($this->getUser(), $action, 'Sous-section', $date, $subsection->getSubsection());
+        $entityManager->persist($log);
         $entityManager->flush();
         $array['ss'] = $subsection;
         return $this->render('administration/newsubsection.html.twig', $array);
@@ -230,14 +239,16 @@ class AdministrationController extends AbstractController
     public function newSection()
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $repository_section = $this->getDoctrine()->getRepository(AuditSection::class);
-        $subsection_name = htmlspecialchars($_POST['section']);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Créer']);
+        $section_name = htmlspecialchars($_POST['section']);
         $date = new \DateTime(date('Y-m-d H:i:s'));
-        $section = new AuditSection($subsection_name, $date);
+        $section = new AuditSection($section_name, $date);
+        $log = new LogAdminContent($this->getUser(), $action, 'Section', $date, $section->getSection());
+        $entityManager->persist($log);
         $entityManager->persist($section);
         $entityManager->flush();
-        $array['section'] = $section->getSection();
-        $array['id'] = $section->getId();
+        $array['s'] = $section;
         return $this->render('administration/newsection.html.twig', $array);
     }
 
@@ -252,12 +263,16 @@ class AdministrationController extends AbstractController
         $repository_subsection = $this->getDoctrine()->getRepository(AuditSubSection::class);
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
         $repository_type = $this->getDoctrine()->getRepository(TestType::class);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Créer']);
         $date = new \DateTime(date('Y-m-d H:i:s'));
 
         $type = $repository_type->findOneBy(['type' => $_POST['type']]);
         $subsection = $repository_subsection->findOneBy(['id' => $_POST['sub']]);
         $test = new AuditTests($_POST['data'], '1', $subsection, $type, $date);
         $entityManager->persist($test);
+        $log = new LogAdminContent($this->getUser(), $action, 'Test', $date, $test->getTest());
+        $entityManager->persist($log);
         $entityManager->flush();
         $template['t'] = $test;
 
@@ -274,11 +289,16 @@ class AdministrationController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
         $repository_status = $this->getDoctrine()->getRepository(Status::class);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Créer']);
+
 
         $date = new \DateTime(date('Y-m-d H:i:s'));
         $status = $repository_status->findOneBy(['status' => 'fail']);
         $test = $repository_test->findOneBy(['id' => $_POST['id']]);
         $select = new TestSelections($_POST['select'], $test, $status, $date);
+        $log = new LogAdminContent($this->getUser(), $action, 'Sélection', $date, $select->getSelection());
+        $entityManager->persist($log);
         $entityManager->persist($select);
         $entityManager->flush();
         $template['selection'] = $select;
@@ -295,11 +315,16 @@ class AdministrationController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
         $date = new \DateTime(date('Y-m-d H:i:s'));
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Créer']);
+
 
         $test = $repository_test->findOneBy(['id' => $_POST['id']]);
         $child = new AuditTests($_POST['child'], '1', $test->getSusbection(), $test->getType(), $date);
         $child->setParent($test);
         $entityManager->persist($child);
+        $log = new LogAdminContent($this->getUser(), $action, 'Enfant', $date, $child->getTest());
+        $entityManager->persist($log);
         $entityManager->flush();
         $template['test'] = $child;
         return $this->render('administration/newchild.html.twig', $template);
@@ -314,61 +339,144 @@ class AdministrationController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Créer']);
         $date = new \DateTime(date('Y-m-d H:i:s'));
 
         $test = $repository_test->findOneBy(['id' => $_POST['id']]);
         $solution = new Solution($_POST['sol'], $test, $date);
         $entityManager->persist($solution);
+        $log = new LogAdminContent($this->getUser(), $action, 'Solution', $date, $solution->getSolution());
+        $entityManager->persist($log);
         $entityManager->flush();
         $template['sol'] = $solution;
         return $this->render('administration/newsolution.html.twig', $template);
     }
 
-    /**
-     * Méthode qui gère la partie administration du contenu des audits
-     *
-     * @Route("/administration/contenu-audits/modifier", name="admin_audits_content_modify")
-     */
-    public function modifyAuditContent()
-    {
-        switch ($_POST['rq']) {
-            case 'section':
-                return new JsonResponse($this->updateSection());
-                break;
-            case 'subsection':
-                $this->updateSection();
-                break;
-            case 'child' :
-                return new Response($this->updateChild());
-                break;
-        }
-    }
 
+
+    /**
+     * Méthode qui gère la mise à jour d'une section
+     *
+     * @Route("/administration/contenu-audits/modifier/section", name="admin_audits_content_modify_section")
+     */
     public function updateSection()
     {
         $entityManager = $this->getDoctrine()->getManager();
         $repository_section = $this->getDoctrine()->getRepository(AuditSection::class);
-        $repository_sub = $this->getDoctrine()->getRepository(AuditSubSection::class);
+        $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Modifier']);
         $date = new \DateTime(date('Y-m-d H:i:s'));
-        $section = $repository_section->findOneBy(['id' => $_POST['section']]);
-        $subsection = $repository_sub->findBy(['section' => $section]);
+        $section = $repository_section->findOneBy(['id' => $_POST['id']]);
+        //$test = $repository_test->findBy(['susbection'=>$sub, 'date_archive'=>null]);
         $section->setArchivedDate($date);
         $entityManager->persist($section);
         $updatedSection = new AuditSection($_POST['data'], $date);
         $entityManager->persist($updatedSection);
-        foreach ($subsection as $key => $value) {
-            if (!$value->getDateArchive()) {
-                $subsection = new AuditSubSection($value->getSubsection(), $updatedSection, $date);
-                $value->setDateArchive($date);
-                $entityManager->persist($value);
-                $entityManager->persist($subsection);
+        if($section->getAuditSubSections()){
+            foreach ($section->getAuditSubSections() as $key => $value) {
+                if ($value->getDateArchive() == null) {
+                    $value->setDateArchive($date);
+                    $entityManager->persist($value);
+                    $newSub = new AuditSubSection($value->getSubsection(), $updatedSection, $date);
+                    $entityManager->persist($newSub);
+                    $sub[] = $newSub;
+                    if($value->getAuditTests()){
+                        foreach ($value->getAuditTests() as $ke => $val){
+                            if($val->getDateArchive() == null){
+                                $val->setDateArchive($date);
+                                $entityManager->persist($val);
+                                $newTest = new AuditTests($val->getTest(), $val->getPriority(), $newSub, $val->getType(), $date);
+                                $entityManager->persist($newTest);
+                                $tests[] = $newTest;
+                                $child = $repository_test->findBy(['parent' => $val, 'date_archive'=>null]);
+                                if ($child) {
+                                    foreach ($child as $k => $v) {
+                                        if($v->getDateArchive() == null){
+                                            $v->setDateArchive($date);
+                                            $entityManager->persist($v);
+                                            $newChild = new AuditTests($v->getTest(), $v->getPriority(), $newSub, $v->getType(), $date);
+                                            $newChild->setParent($newTest);
+                                            $entityManager->persist($newChild);
+                                            $childs[] = $newChild;
+                                        }
+                                    }
+                                }
+                                if ($val->getSolutions()) {
+                                    foreach ($val->getSolutions() as $k => $v) {
+                                        if ($v->getDateArchive() == null) {
+                                            $v->setDateArchive($date);
+                                            $newSolution = new Solution($v->getSolution(), $newTest, $date);
+                                            $entityManager->persist($v);
+                                            $entityManager->persist($newSolution);
+                                            $solutions[] = $newSolution;
+                                        }
+                                    }
+                                }
+                                /**
+                                 * Si le test est sélection, archive les choix multiples
+                                 */
+                                if ($val->getType()->getType() == 'Selection' && $val->getSelections()) {
+                                    foreach ($val->getSelections() as $k => $v) {
+                                        if ($v->getDateArchive() == null) {
+                                            $v->setDateArchive($date);
+                                            $newSelection = new TestSelections($v->getSelection(), $newTest, $v->getStatus(), $date);
+                                            $entityManager->persist($v);
+                                            $entityManager->persist($newSelection);
+                                            $selections[] = $newSelection;
+                                        }
+                                    }
+                                }
+                                /**
+                                 * Archive et recopie les liens avec les questions pré audit du test
+                                 */
+                                if ($val->getLinkSelectInfras()) {
+                                    foreach ($val->getLinkSelectInfras() as $k => $v) {
+                                        if ($v->getDateArchive() == null) {
+                                            $v->setDateArchive($date);
+                                            $newLink = new LinkSelectInfra($v->getSelection(), $v->getAction(), $date, $newTest);
+                                            $entityManager->persist($v);
+                                            $entityManager->persist($newLink);
+                                        }
+                                    }
+                                }
+                                if ($val->getLinkTestsInfras()) {
+                                    foreach ($val->getLinkTestsInfras() as $k => $v) {
+                                        if ($v->getDateArchive() == null) {
+                                            $v->setDateArchive($date);
+                                            $newLink = new LinkTestsInfra($v->getInfra(), $newTest, $v->getAction(), $date);
+                                            $entityManager->persist($v);
+                                            $entityManager->persist($newLink);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
+        $log = new LogAdminContent($this->getUser(), $action, 'Section', $date, $section->getSection());
+        $entityManager->persist($log);
         $entityManager->flush();
-        $response['html'] = '<span id="section' . $updatedSection->getId() . '" class="editable suggestion section">' . $updatedSection->getSection() . '</span>';
-        $response['id'] = $updatedSection->getId();
-        return $response;
-
+        $template['s'] = $updatedSection;
+        if (isset($sub)) {
+            $template['subSections'] = $sub;
+        }
+        if (isset($tests)) {
+            $template['tests'] = $tests;
+        }
+        if (isset($solutions)) {
+            $template['solutions'] = $solutions;
+        }
+        if (isset($childs)) {
+            $template['childs'] = $childs;
+        }
+        if (isset($selections)) {
+            $template['selections'] = $selections;
+        }
+        return $this->render('administration/newsection.html.twig',$template);
     }
 
     /**
@@ -381,6 +489,8 @@ class AdministrationController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $repository_sub = $this->getDoctrine()->getRepository(AuditSubSection::class);
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Modifier']);
         $date = new \DateTime(date('Y-m-d H:i:s'));
         $sub = $repository_sub->findOneBy(['id' => $_POST['id']]);
         $test = $repository_test->findBy(['susbection'=>$sub, 'date_archive'=>null]);
@@ -461,6 +571,8 @@ class AdministrationController extends AbstractController
                 }
             }
         }
+        $log = new LogAdminContent($this->getUser(), $action, 'Sous-section', $date, $sub->getSubsection());
+        $entityManager->persist($log);
         $entityManager->flush();
         $template['ss'] = $updatedSubSection;
         if (isset($tests)) {
@@ -488,6 +600,8 @@ class AdministrationController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Modifier']);
 
         $date = new \DateTime(date('Y-m-d H:i:s'));
         $test = $repository_test->findOneBy(['id' => $_POST['id']]);
@@ -559,6 +673,8 @@ class AdministrationController extends AbstractController
                 }
             }
         }
+        $log = new LogAdminContent($this->getUser(), $action, 'Test', $date, $test->getTest());
+        $entityManager->persist($log);
         $entityManager->flush();
         $template['t'] = $updatedTest;
         if (isset($childs)) {
@@ -577,6 +693,9 @@ class AdministrationController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $repository_selection = $this->getDoctrine()->getRepository(TestSelections::class);
         $repository_status = $this->getDoctrine()->getRepository(Status::class);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Modifier']);
+
 
         $date = new \DateTime(date('Y-m-d H:i:s'));
         $status = $repository_status->findOneBy(['status' => $_POST['status']]);
@@ -585,6 +704,9 @@ class AdministrationController extends AbstractController
         //$newSelection = new TestSelections($selection->getSelection(), $selection->getTest(), $status, $date);
         $entityManager->persist($selection);
         //$entityManager->persist($newSelection);
+        $log = new LogAdminContent($this->getUser(), $action, 'Selection', $date, $selection->getSelection());
+        $entityManager->persist($log);
+
         $entityManager->flush();
         $template['selection'] = $selection;
         return $this->render('administration/newselection.html.twig', $template);
@@ -599,6 +721,8 @@ class AdministrationController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Modifier']);
 
         $date = new \DateTime(date('Y-m-d H:i:s'));
         $test = $repository_test->findOneBy(['id' => $_POST['child']]);
@@ -607,6 +731,8 @@ class AdministrationController extends AbstractController
         $updatedChild->setParent($test->getParent());
         $entityManager->persist($updatedChild);
         $entityManager->persist($test);
+        $log = new LogAdminContent($this->getUser(), $action, 'Enfant', $date, $test->getTest());
+        $entityManager->persist($log);
         $entityManager->flush();
         $template['test'] = $updatedChild;
         return $this->render('administration/updatechild.html.twig', $template);
@@ -636,12 +762,18 @@ class AdministrationController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $repository_solution = $this->getDoctrine()->getRepository(Solution::class);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Modifier']);
+
         $solution = $repository_solution->findOneBy(['id' => $_POST['id']]);
         $date = new \DateTime(date('Y-m-d H:i:s'));
         $solution->setDateArchive($date);
         $entityManager->persist($solution);
         $newSolution = new Solution($_POST['data'], $solution->getTest(), $date);
         $entityManager->persist($newSolution);
+        $log = new LogAdminContent($this->getUser(), $action, 'Solution', $date, $solution->getSolution());
+        $entityManager->persist($log);
+
         $entityManager->flush();
         $template['sol'] = $newSolution;
         return $this->render('administration/newsolution.html.twig', $template);
@@ -656,11 +788,16 @@ class AdministrationController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $repository_selection = $this->getDoctrine()->getRepository(TestSelections::class);
         $selection = $repository_selection->findOneBy(['id' => $_POST['id']]);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Modifier']);
+
         $date = new \DateTime(date('Y-m-d H:i:s'));
         $selection->setDateArchive($date);
         $entityManager->persist($selection);
         $newSelection = new TestSelections($_POST['data'], $selection->getTest(), $selection->getStatus(), $date);
         $entityManager->persist($newSelection);
+        $log = new LogAdminContent($this->getUser(), $action, 'Selection', $date, $selection->getSelection());
+        $entityManager->persist($log);
         $entityManager->flush();
         $template['selection'] = $newSelection;
         return $this->render('administration/newselection.html.twig', $template);
@@ -711,6 +848,9 @@ class AdministrationController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $repository_sub = $this->getDoctrine()->getRepository(AuditSubSection::class);
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Supprimer']);
+
         $date = new \DateTime(date('Y-m-d H:i:s'));
         $sub = $repository_sub->findOneBy(['id' => $_POST['id']]);
         $test = $repository_test->findBy(['susbection'=>$sub, 'date_archive'=>null]);
@@ -771,6 +911,9 @@ class AdministrationController extends AbstractController
                 }
             }
         }
+        $log = new LogAdminContent($this->getUser(), $action, 'Sous-section', $date, $sub->getSubsection());
+        $entityManager->persist($log);
+
         $entityManager->flush();
         return true;
     }
@@ -778,11 +921,17 @@ class AdministrationController extends AbstractController
     public function deleteChild()
     {
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Supprimer']);
+
         $date = new \DateTime(date('d-m-Y H:i:s'));
         $entityManager = $this->getDoctrine()->getManager();
         $test = $repository_test->findOneBy(['id' => $_POST['id']]);
         $test->setDateArchive($date);
         $entityManager->persist($test);
+        $log = new LogAdminContent($this->getUser(), $action, 'Enfant', $date, $test->getTest());
+        $entityManager->persist($log);
+
         $entityManager->flush();
         return true;
     }
@@ -790,11 +939,17 @@ class AdministrationController extends AbstractController
     public function deleteSolution()
     {
         $repository_solution = $this->getDoctrine()->getRepository(Solution::class);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Supprimer']);
+
         $date = new \DateTime(date('d-m-Y H:i:s'));
         $entityManager = $this->getDoctrine()->getManager();
         $test = $repository_solution->findOneBy(['id' => $_POST['id']]);
         $test->setDateArchive($date);
         $entityManager->persist($test);
+        $log = new LogAdminContent($this->getUser(), $action, 'Solution', $date, $test->getSolution());
+        $entityManager->persist($log);
+
         $entityManager->flush();
         return true;
     }
@@ -803,10 +958,16 @@ class AdministrationController extends AbstractController
     {
         $repository_selection = $this->getDoctrine()->getRepository(TestSelections::class);
         $date = new \DateTime(date('d-m-Y H:i:s'));
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Supprimer']);
+
         $entityManager = $this->getDoctrine()->getManager();
         $selection = $repository_selection->findOneBy(['id' => $_POST['id']]);
         $selection->setDateArchive($date);
         $entityManager->persist($selection);
+        $log = new LogAdminContent($this->getUser(), $action, 'Selection', $date, $selection->getSelection());
+        $entityManager->persist($log);
+
         $entityManager->flush();
         return true;
     }
@@ -815,6 +976,8 @@ class AdministrationController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Supprimer']);
 
         $date = new \DateTime(date('Y-m-d H:i:s'));
         $test = $repository_test->findOneBy(['id' => $_POST['id']]);
@@ -868,8 +1031,35 @@ class AdministrationController extends AbstractController
                     $entityManager->persist($value);
                 }
             }
+        $log = new LogAdminContent($this->getUser(), $action, 'Test', $date, $test->getTest());
+        $entityManager->persist($log);
+
         $entityManager->flush();
         return true;
+    }
+
+    /**
+     * Méthode qui met à jour une solution par archivage et re creation
+     * @Route("/administration/contenu-audits/modifier/selection", name="admin_audits_content_modify_selection", methods="POST")
+     */
+    public function updateSelection()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $repository_selection = $this->getDoctrine()->getRepository(TestSelections::class);
+        $selection = $repository_selection->findOneBy(['id' => $_POST['id']]);
+        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
+        $action = $repository_log_action->findOneBy(['action'=>'Modifier']);
+
+        $date = new \DateTime(date('Y-m-d H:i:s'));
+        $selection->setDateArchive($date);
+        $entityManager->persist($selection);
+        $newSelection = new TestSelections($_POST['data'], $selection->getTest(), $selection->getStatus(), $date);
+        $entityManager->persist($newSelection);
+        $log = new LogAdminContent($this->getUser(), $action, 'Selection', $date, $selection->getSelection());
+        $entityManager->persist($log);
+        $entityManager->flush();
+        $template['selection'] = $newSelection;
+        return $this->render('administration/newselection.html.twig', $template);
     }
 
 

@@ -348,5 +348,10 @@ select {
 
 #icons-table{
     border: solid 1px lightgray;
-    border-radius: 100px;
+    border-radius: 50px;
+}
+
+.user-header{
+    background-color: whitesmoke;
+    padding: 2%;
 }

@@ -110,7 +110,13 @@ $('body').on('click', '.editable', function(){ // Attache l'évènement
                         type: 'POST',
                         data: rq
                     }).done(function (response) {
-                        input.replaceWith(response);
+                        input.closest('.layer').replaceWith(response);
+                        $('.slider').slideReveal({
+                            position: "right",
+                            push: false,
+                            overlay: true,
+                            width: 500
+                        });
                     }).fail(function () {
                         swal('Oops...', 'Un problème est survenu, réessayez plus tard!', 'error');
                     });
@@ -214,7 +220,9 @@ $('body').on('click', '.editable', function(){ // Attache l'évènement
 })
 
 
-
+/**
+ * Fonction qui gère le bouton ajout
+ */
 
 $('body').on('click', '.add-button', function(){
     el = $(this);
@@ -339,6 +347,9 @@ $('body').on('click', '.trash', function() {
     }else if($(this).hasClass('test')) {
         layer = 'test';
         id = $(this).attr('id').split('test');
+    }else if($(this).hasClass('sub')) {
+        layer = 'sub';
+        id = $(this).attr('id').split('sub');
     }
     data = {'el': layer, 'id': id[1]};
     $.ajax({
@@ -454,6 +465,20 @@ function addTest(id,type){
     }
 }
 
-function deleteElement(){
+/*
+Gère la fonction de snapshot
+*/
 
+function newSnapshot() {
+    Swal({
+        title: 'Nom du snapshot',
+        input: 'text',
+        inputAttributes: {
+            autocapitalize: 'off'
+        },
+        showCancelButton: true,
+        cancelButtonText: 'Annuler',
+        confirmButtonText: 'Confirmer',
+        showLoaderOnConfirm: true
+    })
 }

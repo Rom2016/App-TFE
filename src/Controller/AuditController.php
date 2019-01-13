@@ -102,20 +102,25 @@ class AuditController extends AbstractController
         $status = $repository_status->findOneBy(['status'=>'fail']);
         /**
          * Cette partie enregistre les réponses aux questions préaudit
+         * Pour chaque test infra
          */
         foreach ($infra as $key=>$value){
+            /**
+             * Si type question
+             */
             if($value->getType()->getType() == 'Question'){
                 if(isset($_POST['pre_audit'][$value->getId()])){
-                    $infraCustomer = new InfraCustomer($value,$audit->getCustomer(),'true');
+                    $infraCustomer = new InfraCustomer($value,$audit,'true');
                     $entityManager->persist($infraCustomer);
                 }else{
-                    $entityManager->persist(new InfraCustomer($value,$audit->getCustomer(),'false'));
+                    $entityManager->persist(new InfraCustomer($value,$audit,'false'));
                 }
+
             }elseif ($value->getType()->getType() == 'Selection'){
-                $infraCustomer = new InfraCustomer($value,$audit->getCustomer(),$_POST['pre_audit'][$value->getId()]);
+                $infraCustomer = new InfraCustomer($value,$audit,$_POST['pre_audit'][$value->getId()]);
                 $entityManager->persist($infraCustomer);
             }elseif ($value->getType()->getType() == 'Text'){
-                $infraCustomer = new InfraCustomer($value,$audit->getCustomer(),$_POST['pre_audit'][$value->getId()]);
+                $infraCustomer = new InfraCustomer($value,$audit,$_POST['pre_audit'][$value->getId()]);
                 $entityManager->persist($infraCustomer);
             }
         }
@@ -124,28 +129,39 @@ class AuditController extends AbstractController
          * Cette partie ajoute ou retire des tests
          */
         foreach ($tests as $key => $value) {
+            /**
+             * Pour chaque lien avec un test infra
+             */
             foreach ($value->getLinkTestsInfras() as $k => $v) {
                 $infra = $v->getInfra();
-                $customerInfra = $repository_customer_infra->findOneBy(['infra'=>$infra]);
+                /**
+                 * Récupère la réponse au test par le pré-audit
+                 */
+                $customerInfra = $repository_customer_infra->findOneBy(['infra'=>$infra,'audit'=>$audit]);
                 $result = $customerInfra->getResult();
                 if($infra->getType()->getType() == 'Question'){
+                    /**
+                     *
+                     */
                     if($v->getAction() && $result == 'false' || !$v->getAction() && $result == 'true'){
                         unset($tests[$key]);
                     }
                 }
             }
-            foreach ($value->getInfraSelections() as $k => $v){
-                $infra = $v->getInfra();
-                $customerInfra = $repository_customer_infra->findOneBy(['infra'=>$infra]);
+            foreach ($value->getLinkSelectInfras() as $k => $v){
+                $infra = $v->getSelection()->getInfra();
+                $customerInfra = $repository_customer_infra->findOneBy(['infra'=>$infra,'audit'=>$audit]);
                 $result = $customerInfra->getResult();
-                if($v->getSelection() == $result){
+                if($v->getSelection()->getSelection() == $result){
                     if(!$v->getAction()){
                         unset($tests[$key]);
                     }
                 }
             }
         }
-
+        /**
+         * Initialise le questionnaire d'audit avec le jeu de question adapté
+         */
         foreach ($tests as $key => $value){
             $audit_tests = new AuditResults($audit,$value,$status);
             $entityManager->persist($audit_tests);

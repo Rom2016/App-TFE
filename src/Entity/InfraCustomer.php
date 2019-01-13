@@ -22,27 +22,28 @@ class InfraCustomer
      */
     private $infra;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\IntCustomer", inversedBy="infra")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $customer;
-
+    
     /**
      * @ORM\Column(type="string", length=255)
      */
     private $result;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\IntAudit", inversedBy="infraCustomers")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $audit;
+
+    /**
      * InfraCustomer constructor.
      * @param $infra
-     * @param $customer
+     * @param $audit
      * @param $result
      */
-    public function __construct($infra, $customer, $result)
+    public function __construct($infra, $audit, $result)
     {
         $this->infra = $infra;
-        $this->customer = $customer;
+        $this->audit = $audit;
         $this->result = $result;
     }
 
@@ -84,6 +85,18 @@ class InfraCustomer
     public function setResult(string $result): self
     {
         $this->result = $result;
+
+        return $this;
+    }
+
+    public function getAudit(): ?IntAudit
+    {
+        return $this->audit;
+    }
+
+    public function setAudit(?IntAudit $audit): self
+    {
+        $this->audit = $audit;
 
         return $this;
     }

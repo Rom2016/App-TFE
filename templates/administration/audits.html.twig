@@ -47,7 +47,7 @@ Administration
                                     </td>
                                     <td class="col-md-1">
                                         <div>
-                                            <i class="material-icons audit-icons" title="prendre un snapshot">camera_enhance</i>
+                                            <i class="material-icons audit-icons" title="prendre un snapshot" onclick="newSnapshot()">camera_enhance</i>
                                         </div>
                                     </td>
                                 </tr>
@@ -57,9 +57,22 @@ Administration
                         {% for s in section %}
                          <div class="section-table">
                         <div id="section-group{{ s.id }}" class="section-group">
-                            <div class="section">
+                            <div class="section input-group">
+                                <div class="input-group-append">
+                                    <div class="nav-item dropdown">
+                                        <a class="nav-link" id="navbarDropdownMenuAccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="material-icons test-edit">arrow_drop_down_circle</i></a>
+                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuAccount">
+                                            <div class="test-drop-group">
+                                                <a class="dropdown-item" ><i class="material-icons test-edit">note_add</i>Ajouter un test checkbox</a>
+                                                <a class="dropdown-item"><i class="material-icons test-edit">note_add</i>Ajouter un test sélection</a>
+                                            </div>
+                                            <a id="trash-sub" class="dropdown-item trash sub"><i class="material-icons test-edit">delete</i>Archiver la sous-section</a>
+                                        </div>
+                                    </div>                                </div>
                                 <span id="section{{ s.id }}" class="editable suggestion section">{{ s.section }}</span>
                             </div>
+
                             <div id="audit-table{{ s.id }}">
                                 <div class="row">
                                     <div class="col-md-2"></div>
@@ -69,10 +82,12 @@ Administration
 
                                 </div>
                                 {% for ss in s.auditSubSections %}
-                                <div class="row">
+                                    {% if ss.datearchive is null %}
+                                <div class="row layer">
                                     <div  class="sub-section comment col-md-2">
                                         <span id="sub-section{{ ss.id }}" class="editable suggestion sub-section">{{ ss.subsection }}</span>
                                     </div>
+
                                     <div id="test-group{{ ss.id }}" class="test comment col-md-8">
                                         {% for t in ss.auditTests %}
                                         {% if t.parent is null and t.datearchive is null %}
@@ -272,17 +287,18 @@ Administration
                                     <div class="col-md-1 test-drop">
                                         <div class="nav-item dropdown">
                                             <a class="nav-link" id="navbarDropdownMenuAccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="material-icons">arrow_drop_down_circle</i></a>
+                                                <i class="material-icons test-edit">arrow_drop_down_circle</i></a>
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuAccount">
                                                 <div class="test-drop-group">
-                                                    <a class="dropdown-item" onclick="addTest({{ ss.id }},'check')"><i class="material-icons">note_add</i>Ajouter un test checkbox</a>
-                                                    <a class="dropdown-item" onclick="addTest({{ ss.id }},'select')"><i class="material-icons">note_add</i>Ajouter un test sélection</a>
+                                                    <a class="dropdown-item" onclick="addTest({{ ss.id }},'check')"><i class="material-icons test-edit">note_add</i>Ajouter un test checkbox</a>
+                                                    <a class="dropdown-item" onclick="addTest({{ ss.id }},'select')"><i class="material-icons test-edit">note_add</i>Ajouter un test sélection</a>
                                                 </div>
-                                                <a class="dropdown-item"><i class="material-icons">delete</i>Archiver la sous-section</a>
+                                                <a id="trash-sub{{ ss.id }}" class="dropdown-item trash sub"><i class="material-icons test-edit">delete</i>Archiver la sous-section</a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                {% endif %}
                                 {% endfor %}
                             </div>
                             <div class="row">

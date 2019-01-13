@@ -19,6 +19,8 @@
 
 </head>
 <body>
+{% set indexsub = 0 %}
+{% set indextest = 0 %}
 <div id="audit{{ audit }}" class="content">
     <div class="container-fluid col-md-9">
 
@@ -56,11 +58,12 @@
                                 </button>
                             </div>
                         </div>
-
+                        {% set i = 0 %}
                         {% for sub in s.auditSubSections %}
                         {% if sub.auditTests is not empty %}
-
-                        <h3>{{ sub.subsection }}</h3>
+                            {% set i = i+1 %}
+                            {% set j =0 %}
+                        <h3>{{ i }}.{{  sub.subsection }}</h3>
                             <div class="row">
                                 <div class="col-md-4 text-center">Test</div>
                                 <div class="col-md-2 text-center header">Réponse</div>
@@ -68,9 +71,14 @@
                             </div>
                             {% for t in tests %}
                                 {% if t.test.susbection == sub and t.test.type.type == 'Question' and t.test.parent is null%}
-                                   <div id="test{{ t.id }}" class="row">
+                                    {% set j = j+1 %}
+                                    {% if last_response is defined and last_response.test.test == t.test.test and last_response.test.susbection == t.test.susbection %}
+                                        {% set indextest = j %}
+                                        {% set indexsub = i %}
+                                    {% endif %}
+                                    <div id="test{{ t.id }}" class="row">
                                        <div class="col-md-4 comment">
-                                           <span>{{ t.test.test }}</span>
+                                           <span>{{ j }}.{{ t.test.test }}</span>
                                        </div>
                                        <div class="col-md-2 status">
                                     <div id="status{{ t.id }}" class="{% if t.status.status == 'fail' %}selection-fail{% elseif t.status.status == 'error' %}selection-error{% elseif t.status.status == 'success' %}selection-success{% endif %} select">
@@ -140,9 +148,11 @@
                                         {% endfor %}
                                        </div>
                                    {% elseif  t.test.susbection == sub and t.test.type.type == 'Selection' %}
+                                       {% set j = j+1 %}
+
                                        <div id="test{{ t.id }}" class="row">
                                            <div class="col-md-4 comment">
-                                               <span>{{ t.test.test }}</span>
+                                               <span>{{ j }}.{{ t.test.test }}</span>
                                            </div>
                                            <div class="col-md-2 status">
                                                <div id="status{{ t.id }}" class="select">
@@ -160,7 +170,9 @@
                                                <span class="editable new-comment">Ajouter un commentaire</span>
                                            </div>
                                        </div>
+
                                 {% endif %}
+
                             {% endfor %}
                         {% endif %}
                         {% endfor %}
@@ -186,7 +198,7 @@
         type: 'info',
         title: 'Dernier test modifié:',
         html:
-        '{{ last_response.test.test }} '
+        '<h2>{{ last_response.test.susbection.section.section }}</h2><div class="clearfix></div><h3><span style="font-weight:bold">{% if indextest is defined %}{{ indexsub }}.{{ indextest }}{% endif %}</span> {{ last_response.test.test }}</h3>'
         })
     {% endif %}
 </script>

@@ -1,6 +1,6 @@
-<style>
-    @import "bourbon";
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
+<style>
     body {
         background: #eee !important;
     }
@@ -15,7 +15,8 @@
         padding: 15px 35px 45px;
         margin: 0 auto;
         background-color: #fff;
-        border: 1px solid rgba(0,0,0,0.1);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
 
     .form-signin-heading,
     .checkbox {
@@ -31,11 +32,6 @@
         font-size: 16px;
         height: auto;
         padding: 10px;
-    @include box-sizing(border-box);
-
-    &:focus {
-         z-index: 2;
-     }
     }
 
     input[type="text"] {
@@ -49,14 +45,15 @@
         border-top-left-radius: 0;
         border-top-right-radius: 0;
     }
-    }
+
 
 </style>
 <div class="wrapper">
     <form class="form-signin" method="post">
-        <h2 class="form-signin-heading">Please login</h2>
-        <input type="text" class="form-control" name="_username" placeholder="Email Address" value="{% if last_username is defined %}{{ last_username }}{% endif %}" required="" autofocus="" />
-        <input type="password" class="form-control" name="_password" placeholder="Password" required=""/>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+        <h2 class="form-signin-heading">Zone sécurisée!</h2>
+        <h4>Veuillez vous authentifier</h4>
+        <input type="text" class="form-control" name="_username" placeholder="Addresse mail" value="{% if last_username is defined %}{{ last_username }}{% endif %}" required autofocus="" />
+        <input type="password" class="form-control" name="_password" placeholder="Mot de passe" required/>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Connexion</button>
     </form>
 </div>

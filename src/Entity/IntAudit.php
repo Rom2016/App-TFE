@@ -76,6 +76,11 @@ class IntAudit
     private $creators;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\InfraCustomer", mappedBy="audit")
+     */
+    private $infraCustomers;
+
+    /**
      * IntAudit constructor.
      * @param $customer
      * @param $date_creation
@@ -88,6 +93,7 @@ class IntAudit
         $this->customer = $customer;
         $this->date_creation = $date_creation;
         $this->name = $name;
+        $this->infraCustomers = new ArrayCollection();
 
     }
 
@@ -306,6 +312,37 @@ class IntAudit
             // set the owning side to null (unless already changed)
             if ($creator->getAudit() === $this) {
                 $creator->setAudit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|InfraCustomer[]
+     */
+    public function getInfraCustomers(): Collection
+    {
+        return $this->infraCustomers;
+    }
+
+    public function addInfraCustomer(InfraCustomer $infraCustomer): self
+    {
+        if (!$this->infraCustomers->contains($infraCustomer)) {
+            $this->infraCustomers[] = $infraCustomer;
+            $infraCustomer->setAudit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInfraCustomer(InfraCustomer $infraCustomer): self
+    {
+        if ($this->infraCustomers->contains($infraCustomer)) {
+            $this->infraCustomers->removeElement($infraCustomer);
+            // set the owning side to null (unless already changed)
+            if ($infraCustomer->getAudit() === $this) {
+                $infraCustomer->setAudit(null);
             }
         }
 

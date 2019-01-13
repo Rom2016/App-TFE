@@ -159,6 +159,23 @@ class IntCustomer
         $this->customer = $customer;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getFirstName()
+    {
+        return $this->first_name;
+    }
+
+    /**
+     * @param mixed $first_name
+     */
+    public function setFirstName($first_name): void
+    {
+        $this->first_name = $first_name;
+    }
+
+
 
 
     public function getSecondName(): ?string

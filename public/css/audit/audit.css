@@ -34,9 +34,9 @@
     border: grey dashed 1px;
 }
 
-.child{
+.child-row{
     border-left: #8e24aa solid 3px;
-    border-right: #8e24aa solid 3px;
+    border-right: white solid 3px;
 
 }
 

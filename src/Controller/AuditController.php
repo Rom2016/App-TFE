@@ -15,6 +15,7 @@ use App\Entity\AuditSection;
 use App\Entity\AuditTests;
 use App\Entity\AuditTestsInfra;
 use App\Entity\Status;
+use App\Entity\TestSelections;
 use App\Entity\TestStatus;
 use Symfony\Component\Routing\RequestContext;
 
@@ -66,7 +67,7 @@ class AuditController extends AbstractController
     }
 
     /**
-     * Méthode qui gère toute la partie Administration Audit
+     * Méthode qui gère le chargement du questionnaire pré Audit
      *
      * @Route("/audit/préaudit", name="audit_preaudit", options={"utf8": true})
      */
@@ -87,7 +88,6 @@ class AuditController extends AbstractController
      */
     public function newAudit()
     {
-
         $repository_audit = $this->getDoctrine()->getRepository(IntAudit::class);
         $repository_infra = $this->getDoctrine()->getRepository(AuditTestsInfra::class);
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
@@ -176,7 +176,9 @@ class AuditController extends AbstractController
         $entityManager->flush();
         $template['sections'] = $repository_section->findBy(['archived_date'=>null]);
         $template['tests'] = $audit_test;
-        return $this->render('audit/newaudit.html.twig', $template);
+        $template['audit'] = $_GET['audit'];
+
+        return $this->render('audit/resumeaudit.html.twig', $template);
     }
 
     /**
@@ -192,7 +194,7 @@ class AuditController extends AbstractController
         $repository_audit_results = $this->getDoctrine()->getRepository(AuditResults::class);
         $audit = $repository_audit->findOneBy(['id'=>$_GET['audit']]);
         $audit_results = $repository_audit_results->findBy(['audit'=>$audit]);
-        $sections = $repository_section->findAll();
+        $sections = $repository_section->findBy(['archived_date'=>null]);
         $last_response = $repository_audit_results->findOneBy(['audit'=>$audit,'last_responded'=>true]);
 
         foreach ($sections as $key => $value){
@@ -212,7 +214,7 @@ class AuditController extends AbstractController
     /**
      * Méthode qui gère toute la partie Administration Audit
      *
-     * @Route("/audit/statut", name="audit_update_test", methods="POST")
+     * @Route("/audit/statut", name="audit_update_test_statut", methods="POST")
      */
     public function updateStatus()
     {
@@ -268,6 +270,26 @@ class AuditController extends AbstractController
         return new Response('Succès');
     }
 
+    /**
+     * Méthode qui gère toute la partie Administration Audit
+     *
+     * @Route("/audit/selection", name="audit_update_test_selection", methods="POST")
+     */
+    public function updateSelection()
+    {
+        $repository_result = $this->getDoctrine()->getRepository(AuditResults::class);
+        $repository_selection = $this->getDoctrine()->getRepository(TestSelections::class);
+        $entityManager = $this->getDoctrine()->getManager();
+        $result = $repository_result->findOneBy(['id'=>$_POST['id']]);
+        $selection = $repository_selection->findOneBy(['test'=>$result->getTest(), 'selection'=>$_POST['data']]);
+        $result->setStatus($selection->getStatus());
+        $result->setSelection($selection);
+        $entityManager->persist($result);
+        $entityManager->flush();
+        return new Response('Succès!');
+
+
+    }
 
     /**
      * Méthode qui gère toute la partie Administration Audit

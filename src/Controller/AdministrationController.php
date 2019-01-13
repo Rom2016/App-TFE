@@ -11,12 +11,16 @@ namespace App\Controller;
 use App\Entity\AuditSubSection;
 use App\Entity\AuditTests;
 use App\Entity\InfraSelection;
+use App\Entity\IntCustomer;
 use App\Entity\LinkSelectInfra;
+use App\Entity\LinkSnapTest;
 use App\Entity\LinkTestsInfra;
 use App\Entity\LogAction;
 use App\Entity\LogAdminContent;
+use App\Entity\LogAdminCustomer;
 use App\Entity\LogAdminUser;
 use App\Entity\Roles;
+use App\Entity\Snapshot;
 use App\Entity\Status;
 use App\Entity\TestSelections;
 use App\Entity\TestType;
@@ -1039,29 +1043,47 @@ class AdministrationController extends AbstractController
     }
 
     /**
-     * Méthode qui met à jour une solution par archivage et re creation
-     * @Route("/administration/contenu-audits/modifier/selection", name="admin_audits_content_modify_selection", methods="POST")
+     * Méthode de création d'un snapshot
+     * @Route("/administration/contenu-audits/nouveau-snapshot", name="admin_audits_content_new_snapshot", methods="POST")
      */
-    public function updateSelection()
+    public function newSnapshot()
     {
+        $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $tests = $repository_test->findBy(['date_archive'=>null]);
         $entityManager = $this->getDoctrine()->getManager();
-        $repository_selection = $this->getDoctrine()->getRepository(TestSelections::class);
-        $selection = $repository_selection->findOneBy(['id' => $_POST['id']]);
-        $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
-        $action = $repository_log_action->findOneBy(['action'=>'Modifier']);
-
         $date = new \DateTime(date('Y-m-d H:i:s'));
-        $selection->setDateArchive($date);
-        $entityManager->persist($selection);
-        $newSelection = new TestSelections($_POST['data'], $selection->getTest(), $selection->getStatus(), $date);
-        $entityManager->persist($newSelection);
-        $log = new LogAdminContent($this->getUser(), $action, 'Selection', $date, $selection->getSelection());
-        $entityManager->persist($log);
+        $name = htmlentities($_POST['name']);
+        $snap = new Snapshot($name,$date);
+        $entityManager->persist($snap);
+        foreach ($tests as $key => $value){
+            $link = new LinkSnapTest($snap,$value);
+            $entityManager->persist($link);
+        }
         $entityManager->flush();
-        $template['selection'] = $newSelection;
-        return $this->render('administration/newselection.html.twig', $template);
     }
 
+    /**
+     * ADMINISTRATION CLIENTS
+     */
 
+    /**
+     * Méthode qui gère l'affichage de l'admin client
+     *
+     * @Route("/administration/clients", name="admin_customer")
+     */
+    public function adminCustomer()
+    {
+        $repository = $this->getDoctrine()->getRepository(AppUser::class);
+        $repository_customer = $this->getDoctrine()->getRepository(IntCustomer::class);
+        $repository_log = $this->getDoctrine()->getRepository(LogAdminCustomer::class);
+
+        $array['customers'] = $repository_customer->findAll();
+        $array['users'] = $repository->findBy(['deactivated'=>false]);
+        $array['log'] = $repository_log->findAll();
+        if (isset($_GET['nouveau-audit'])) {
+            $array['new_audit'] = true;
+        }
+        return $this->render('administration/customer/customer.html.twig', $array);
+    }
 
 }

@@ -45,6 +45,11 @@ class AuditResults
      */
     private $last_responded;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\TestSelections")
+     */
+    private $selection;
+
 
     /**
      * AuditResults constructor.
@@ -151,6 +156,18 @@ class AuditResults
     public function setLastResponded(?bool $last_responded): self
     {
         $this->last_responded = $last_responded;
+
+        return $this;
+    }
+
+    public function getSelection(): ?TestSelections
+    {
+        return $this->selection;
+    }
+
+    public function setSelection(?TestSelections $selection): self
+    {
+        $this->selection = $selection;
 
         return $this;
     }

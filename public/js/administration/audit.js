@@ -483,12 +483,12 @@ function newSnapshot() {
         cancelButtonText: 'Annuler',
         confirmButtonText: 'Confirmer',
         showLoaderOnConfirm: true,
-        preConfirm: function() {
+        preConfirm: (name) => {
             return new Promise(function(resolve) {
                 $.ajax({
                     url: '../administration/contenu-audits/nouveau-snapshot',
                     type: 'POST',
-                    data: 'id='+id,
+                    data: 'name='+name,
                     dataType: 'json'
                 }).done(function(response){
                     swal({

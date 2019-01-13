@@ -73,6 +73,7 @@ function updateStatus(id, status){
 
 $('body').on('click', '.editable', function(){
     el = $(this);
+    classes = $(this).attr('class');
     input = $('<input type="text" id="tmp-input" class="col-md-12"/>');
     if(!$(this).hasClass('new-comment')){
         input.val(el.text());
@@ -99,12 +100,30 @@ $('body').on('click', '.editable', function(){
             });
         }else{
             if(el.hasClass('new-comment')){
-                span = $('<span class="editable new-comment"/>').text('Ajouter un commentaire');
+                span = $('<span/>').text('Ajouter un commentaire');
+                span.addClass(classes);
                 $(this).replaceWith(span);
             }else{
-                span = $('<span class="editable"/>').text($(this).val());
+                span = '<span class="'+classes+'">'+el.text()+'</span>';
                 $(this).replaceWith(span);
             }
         }
     })
 })
+
+/**
+ * Fonction qui gère l'enregistrement aux tests sélection
+ */
+$('select').on('change', function() {
+    split = $(this).closest('.row').attr('id').split('test');
+    id = split[1];
+    data = {'id':id, 'status':'select', 'data':$(this).val()}
+    $.ajax({
+        url: '../audit/selection',
+        type: 'POST',
+        data: data
+    }).done(function (response) {
+    }).fail(function () {
+        swal('Oops...', 'Un problème est survenu, réessayez plus tard!', 'error');
+    });
+});

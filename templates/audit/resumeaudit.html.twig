@@ -112,7 +112,7 @@
                                     <div id="group-childs{{ t.id }}">
                                        {% for child in tests %}
                                              {% if child.test.parent == t.test and t.status.status != 'fail' %}
-                                                 <div id="child{{ child.id }}" class="row child">
+                                                 <div id="child{{ child.id }}" class="row child child-row">
                                                      <div class="col-md-4 child-col">
                                                          <span style="margin-left: 2%">{{ child.test.test }}</span>
                                                      </div>
@@ -157,10 +157,16 @@
                                            <div class="col-md-2 status">
                                                <div id="status{{ t.id }}" class="select">
                                                    <select class="browser-default custom-select">
-                                                       <option selected disabled>Choisir</option>
+                                                   {% if t.selection is null %}
+                                                       <option selected disabled="">Choisir</option>
+                                                   {% endif %}
 
-                                                   {% for s in t.test.Selections %}
-                                                           <option value="1">{{ s.selection }}</option>
+                                                       {% for s in t.test.Selections %}
+                                                       {% if t.selection is not null and t.selection == s %}
+                                                           <option selected>{{ s.selection }}</option>
+                                                           {% else %}
+                                                           <option>{{ s.selection }}</option>
+                                                           {% endif %}
                                                    {% endfor %}
                                                    </select>
 

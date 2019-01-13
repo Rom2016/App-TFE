@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Administration
+{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/css/bootstrap-select.min.css">
+
+    {{ parent() }}
+
+    <link href="../css/table_user.css" rel="stylesheet" />
+    <link href="../vendor/jQuery-popover/css/bootstrap-popover-x.css" rel="stylesheet">
+    <link href="../css/administration/audit.css" rel="stylesheet" />
+    <link href="../css/administration/users.css" rel="stylesheet" />
+    <link href="../vendor/sweet-alert/dist/sweetalert2.css" rel="stylesheet">
+    <link href="../css/administration/log.css" rel="stylesheet">
+
+    <style>
+        .table-data tbody tr:hover td .more {
+            -webkit-transform: scale(1);
+            -moz-transform: scale(1);
+            -ms-transform: scale(1);
+            -o-transform: scale(1);
+            transform: scale(1);
+        }
+
+
+        .more {
+            display: inline-block;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            background: #e5e5e5;
+            -webkit-border-radius: 100%;
+            -moz-border-radius: 100%;
+            border-radius: 100%;
+            position: relative;
+            -webkit-transition: all 0.4s ease;
+            -o-transition: all 0.4s ease;
+            -moz-transition: all 0.4s ease;
+            transition: all 0.4s ease;
+            -webkit-transform: scale(0);
+            -moz-transform: scale(0);
+            -ms-transform: scale(0);
+            -o-transform: scale(0);
+            transform: scale(0);
+        }
+
+        .more i {
+            font-size: 20px;
+            color: #808080;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
+    </style>
+
+{% endblock%}
+{% block body %}
+    {{ parent() }}
+    <div class="content">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">supervised_user_circle</i>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="tab-pane active">
+                                    <div class="row">
+                                        <div class="col-md-11"></div>
+                                        <i id="display-log" class="material-icons">list_alt</i>
+                                    </div>
+                                    <div id="slider-log" class="" style="background-color: white">
+                                        <div class="user-header">
+                                            <h3>Historique</h3>
+                                        </div>
+                                        <div class="col-md-11">
+                                            <table class="table" style="text-align: center">
+                                                <tbody>
+                                                {% for l in log %}
+                                                    <tr>
+                                                        <td class="log-user">{{ l.creator.first_name }} {{ l.creator.second_name }}</td>
+                                                        <td class="log-icon">{% if l.action.action == 'Créer' %} <i class="material-icons" data-toggle="tooltip" data-placement="top" title="Tooltip on top">create</i>{% elseif l.action.action == 'Supprimer' %} <i class="material-icons" data-toggle="tooltip" data-placement="top" title="Tooltip on top">delete</i>{% endif %}</td>
+                                                        <td class="log-user">{{ l.customer.customer }}</td>
+                                                        <td class="log-date">{{ l.datecreation|date('Y-m-d H:i:s')}}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <!-- DATA TABLE -->
+
+                                            <div class="table-responsive table-responsive-data2">
+                                                <table class="table table-data2 ">
+                                                    <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Client<th>
+                                                        <th>Personne de contact</th>
+                                                        <th></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for c in customers %}
+                                                            <tr class="tr-shadow tr-user">
+                                                                <td>{{ c.customer }}</td>
+                                                                <td>{{ c.firstname }} {{ c.secondname }} <span class="block-email">{{ c.email }}</span></td>
+                                                        <span class="more">
+                                                               <i class="material-icons" rel="tooltip" title="Supprimer l'utilisateur">more_horiz</i>
+                                                        </span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr class="spacer"></tr>
+                                                            <div id="slider{{ c.id }}" class="slider">
+                                                                <div class="user-header">
+                                                                    <h2>{{ c.customer }}</h2>
+                                                                </div>
+                                                            </div>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="../vendor/sweet-alert/dist/sweetalert2.js"></script>
+    <script src="../vendor/Slide-panel/dist/jquery.slidereveal.js"></script>
+    <script src="../js/administration/audit.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/bootstrap-select.min.js"></script>
+    <script src="../vendor/password_strength/dist/jquery.passwordstrength.js"></script>
+    <script src="../js/administration/user.js"></script>
+
+    <script>
+        $('#initial-password').passwordStrength();
+    </script>
+{% endblock %}

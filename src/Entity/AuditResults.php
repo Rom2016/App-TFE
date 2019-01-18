@@ -50,6 +50,12 @@ class AuditResults
      */
     private $selection;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Solution", inversedBy="auditResults")
+     */
+    private $solution;
+
+
 
     /**
      * AuditResults constructor.
@@ -168,6 +174,18 @@ class AuditResults
     public function setSelection(?TestSelections $selection): self
     {
         $this->selection = $selection;
+
+        return $this;
+    }
+
+    public function getSolution(): ?Solution
+    {
+        return $this->solution;
+    }
+
+    public function setSolution(?Solution $solution): self
+    {
+        $this->solution = $solution;
 
         return $this;
     }

@@ -10,9 +10,11 @@ namespace App\Controller;
 
 use App\Entity\AuditSubSection;
 use App\Entity\AuditTests;
+use App\Entity\AuditTestsInfra;
 use App\Entity\InfraSelection;
 use App\Entity\IntCustomer;
 use App\Entity\LinkSelectInfra;
+use App\Entity\LinkSnapPre;
 use App\Entity\LinkSnapTest;
 use App\Entity\LinkTestsInfra;
 use App\Entity\LogAction;
@@ -60,6 +62,7 @@ class AdministrationController extends AbstractController
         $repository = $this->getDoctrine()->getRepository(AppUser::class);
         $repository_role = $this->getDoctrine()->getRepository(Roles::class);
         $repository_log = $this->getDoctrine()->getRepository(LogAdminUser::class);
+
 
         $array['users'] = $repository->findAll();
         $array['roles'] = $repository_role->findAll();
@@ -193,11 +196,20 @@ class AdministrationController extends AbstractController
         $repository = $this->getDoctrine()->getRepository(AppUser::class);
         $repository_section = $this->getDoctrine()->getRepository(AuditSection::class);
         $repository_log = $this->getDoctrine()->getRepository(LogAdminContent::class);
+        $repository_snap = $this->getDoctrine()->getRepository(Snapshot::class);
 
         $array['section'] = $repository_section->findBy(['archived_date'=>null]);
+        $array['snap'] = $repository_snap->findAll();
+
         $array['users'] = $repository->findBy(['deactivated'=>false]);
         if (isset($_GET['nouveau-audit'])) {
             $array['new_audit'] = true;
+        }
+        if(isset($_POST['snap'])){
+            $version = $this->restoreSnapshot();
+            $array['restore'] = true;
+            $array['version'] = $version;
+
         }
         $array['log'] = $repository_log->findAll();
 
@@ -1049,7 +1061,10 @@ class AdministrationController extends AbstractController
     public function newSnapshot()
     {
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+        $repository_test_pre = $this->getDoctrine()->getRepository(AuditTestsInfra::class);
+
         $tests = $repository_test->findBy(['date_archive'=>null]);
+        $tests_pre = $repository_test_pre->findBy(['date_archive'=>null]);
         $entityManager = $this->getDoctrine()->getManager();
         $date = new \DateTime(date('Y-m-d H:i:s'));
         $name = htmlentities($_POST['name']);
@@ -1059,9 +1074,167 @@ class AdministrationController extends AbstractController
             $link = new LinkSnapTest($snap,$value);
             $entityManager->persist($link);
         }
+        foreach ($tests_pre as $key => $value){
+            $link = new LinkSnapPre($snap,$value);
+            $entityManager->persist($link);
+        }
         $entityManager->flush();
     }
 
+    /**
+     * Méthode de création d'un snapshot
+     */
+    public function restoreSnapshot()
+    {
+        $repository_section = $this->getDoctrine()->getRepository(AuditSection::class);
+        $repository_test_pre = $this->getDoctrine()->getRepository(AuditTestsInfra::class);
+        $repository_snapshot = $this->getDoctrine()->getRepository(Snapshot::class);
+        $repository_snap_test = $this->getDoctrine()->getRepository(LinkSnapTest::class);
+        $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $date = new \DateTime(date('Y-m-d H:i:s'));
+
+
+        /**
+         * Récupère l'ID du snap sélectionné
+         */
+        foreach ($_POST['snap'] as $key => $value){
+            $snap = $key;
+        }
+        $snap = $repository_snapshot->findOneBy(['id'=>$snap]);
+        $tests = $repository_snap_test->findBy(['snap'=>$snap]);
+        $sub = [];
+        $section = [];
+        $tests = $repository_snap_test->findBy(['snap'=>$snap]);
+        $sections = $repository_section->findBy(['archived_date'=>null]);
+        /**
+         * Archive le contenu actuel
+         */
+        foreach ($sections as $key => $value) {
+            $value->setArchivedDate($date);
+            $entityManager->persist($value);
+            if ($value->getAuditSubSections()) {
+                foreach ($value->getAuditSubSections() as $ke => $val) {
+                    if ($val->getDateArchive() == null) {
+                        $val->setDateArchive($date);
+                        $entityManager->persist($val);
+                        if ($val->getAuditTests()) {
+                            foreach ($val->getAuditTests() as $k => $v) {
+                                $v->setDateArchive($date);
+                                $entityManager->persist($v);
+                                $child = $repository_test->findBy(['parent' => $v, 'date_archive' => null]);
+                                if ($child) {
+                                    foreach ($child as $i => $j) {
+                                        if ($j->getDateArchive() == null) {
+                                            $j->setDateArchive($date);
+                                            $entityManager->persist($j);
+                                        }
+                                    }
+                                }
+                                if ($v->getSolutions()) {
+                                    foreach ($v->getSolutions() as $i => $j) {
+                                        if ($j->getDateArchive() == null) {
+                                            $j->setDateArchive($date);
+                                            $entityManager->persist($j);
+                                        }
+                                    }
+                                }
+                                /**
+                                 * Si le test est sélection, archive les choix multiples
+                                 */
+                                if ($v->getType()->getType() == 'Selection' && $v->getSelections()) {
+                                    foreach ($v->getSelections() as $i => $j) {
+                                        if ($j->getDateArchive() == null) {
+                                            $j->setDateArchive($date);
+                                            $entityManager->persist($j);
+                                        }
+                                    }
+                                }
+                                /**
+                                 * Archive et recopie les liens avec les questions pré audit du test
+                                 */
+                                if ($v->getLinkSelectInfras()) {
+                                    foreach ($v->getLinkSelectInfras() as $i => $j) {
+                                        if ($j->getDateArchive() == null) {
+                                            $j->setDateArchive($date);
+                                            $entityManager->persist($j);
+                                        }
+                                    }
+                                }
+                                if ($v->getLinkTestsInfras()) {
+                                    foreach ($v->getLinkTestsInfras() as $i => $j) {
+                                        if ($j->getDateArchive() == null) {
+                                            $j->setDateArchive($date);
+                                            $entityManager->persist($j);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        foreach ($tests as $key => $value){
+            $value->getTest()->getSusbection()->setDateArchive(null);
+            $value->getTest()->getSusbection()->getSection()->setArchivedDate(null);
+            $child = $repository_test->findBy(['parent' => $value->getTest()]);
+            $value->getTest()->setDateArchive(null);
+            /**
+             * Archive et recopie les enfants si il y'en a
+             */
+            if ($child) {
+                foreach ($child as $ke => $val) {
+                    $val->setDateArchive(null);
+                    $entityManager->persist($val);
+                }
+            }
+            /**
+             * Archive et recopie les solutions
+             */
+            if ($value->getTest()->getSolutions()) {
+                foreach ($value->getTest()->getSolutions() as $ke => $val) {
+                    if ($val->getDateArchive() != null) {
+                        $val->setDateArchive(null);
+                        $entityManager->persist($val);
+                    }
+                }
+            }
+            /**
+             * Si le test est sélection, archive les choix multiples
+             */
+            if ($value->getTest()->getType()->getType() == 'Selection' && $value->getTest()->getSelections()) {
+                foreach ($value->getTest()->getSelections() as $ke => $val) {
+                    if ($val->getDateArchive() != null) {
+                        $val->setDateArchive(null);
+                        $entityManager->persist($val);
+                    }
+                }
+            }
+            /**
+             * Archive et recopie les liens avec les questions pré audit du test
+             */
+            if ($value->getTest()->getLinkSelectInfras())
+                foreach ($value->getTest()->getLinkSelectInfras() as $ke => $val) {
+                    if ($val->getDateArchive() != null) {
+                        $val->setDateArchive(null);
+                        $entityManager->persist($val);
+                    }
+                }
+            if ($value->getTest()->getLinkTestsInfras())
+                foreach ($value->getTest()->getLinkTestsInfras() as $ke => $val) {
+                    if ($val->getDateArchive() != null) {
+                        $val->setDateArchive(null);
+                        $entityManager->persist($val);
+                    }
+                }
+                $entityManager->persist($value);
+        }
+
+        $entityManager->flush();
+        return $snap->getName();
+    }
     /**
      * ADMINISTRATION CLIENTS
      */
@@ -1084,6 +1257,29 @@ class AdministrationController extends AbstractController
             $array['new_audit'] = true;
         }
         return $this->render('administration/customer/customer.html.twig', $array);
+    }
+
+    /**
+     * Méthode qui gère l'upload du contrac d'un client
+     *
+     * @Route("/administration/clients/enregistrer-contrat", name="admin_customer_upload_contract")
+     */
+
+    public function uplodadContract()
+    {
+        if (isset($_FILES['file']['tmp_name'])) {
+            if ($_FILES['file']['type'] != "application/pdf") {
+                return new Response('<p class="input input-fail">PDF seulement</p>');
+            } else {
+                $destination = 'images/contract/';
+                $name = $_POST['id'];
+                $result = move_uploaded_file($_FILES['file']['tmp_name'], $destination.$name.'.pdf');
+                if ($result == 1)
+                    return new Response('<p class="input input-success">Contract enregistré!</p>');
+                else
+                    return new Response('<p class="input input-fail">Une erreur s\'est produite</p>');
+            }
+        }
     }
 
 }

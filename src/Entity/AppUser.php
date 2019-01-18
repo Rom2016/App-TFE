@@ -100,7 +100,7 @@ class AppUser implements UserInterface, \Serializable
         $this->second_name = $second_name;
         $this->function = $function;
         $this->date_creation = $date_creation;
-        $this->logs = new ArrayCollection();
+        //$this->logs = new ArrayCollection();
         $this->intAuditPermissions = new ArrayCollection();
         $this->intAudits = new ArrayCollection();
         $this->Notifications = new ArrayCollection();
@@ -284,67 +284,9 @@ class AppUser implements UserInterface, \Serializable
         return $this;
     }
 
-    /**
-     * @return Collection|Logs[]
-     */
-    public function getLogs(): Collection
-    {
-        return $this->logs;
-    }
 
-    public function addLog(Logs $log): self
-    {
-        if (!$this->logs->contains($log)) {
-            $this->logs[] = $log;
-            $log->setUser($this);
-        }
 
-        return $this;
-    }
 
-    public function removeLog(Logs $log): self
-    {
-        if ($this->logs->contains($log)) {
-            $this->logs->removeElement($log);
-            // set the owning side to null (unless already changed)
-            if ($log->getUser() === $this) {
-                $log->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|IntAuditPermission[]
-     */
-    public function getIntAuditPermissions(): Collection
-    {
-        return $this->intAuditPermissions;
-    }
-
-    public function addIntAuditPermission(IntAuditPermission $intAuditPermission): self
-    {
-        if (!$this->intAuditPermissions->contains($intAuditPermission)) {
-            $this->intAuditPermissions[] = $intAuditPermission;
-            $intAuditPermission->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeIntAuditPermission(IntAuditPermission $intAuditPermission): self
-    {
-        if ($this->intAuditPermissions->contains($intAuditPermission)) {
-            $this->intAuditPermissions->removeElement($intAuditPermission);
-            // set the owning side to null (unless already changed)
-            if ($intAuditPermission->getUser() === $this) {
-                $intAuditPermission->setUser(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection|IntAudit[]

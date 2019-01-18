@@ -1,29 +1,36 @@
 <div id="group-childs{{ parent.id }}">
     {% for child in childs %}
-                <div id="child{{ child.id }}" class="row child">
-                        <div class="col-md-4">
-                                <span style="margin-left: 2%">{{ child.test.test }}</span>
-                        </div>
-                        <div class="col-md-2 status">
-                                <div id="status{{ child.id }}" class="{% if child.status.status == 'fail' %}selection-fail{% elseif child.status.status == 'error' %}selection-error{% elseif child.status.status == 'success' %}selection-success{% endif %} select">
-                                        <div class="btn-group">
+            <div id="child{{ child.id }}" class="row child child-row">
+                <div class="col-md-4 child-col">
+                    <span style="margin-left: 2%">{{ child.test.test }}</span>
+                </div>
+                <div class="col-md-2 status">
+                    <div id="status{{ child.id }}" class="{% if child.status.status == 'fail' %}selection-fail{% elseif child.status.status == 'error' %}selection-error{% elseif child.status.status == 'success' %}selection-success{% endif %} select">
+                        <div class="btn-group">
                                             <span style="cursor:pointer" class="dropdown-toggle" id="change-status{{ child.id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                    {% if child.status.status == 'fail' %}
-                                                           échec
+                                                       échec
                                                    {% elseif child.status.status == 'error' %}
-                                                           passe avec erreurs
+                                                       passe avec erreurs
                                                    {% elseif child.status.status == 'success' %}
-                                                           passe
+                                                       succès
                                                    {% endif %}
                                             </span>
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                        <span class="dropdown-item selection-choice selection-fail status child">échec</span>
-                                                        <span class="dropdown-item selection-choice selection-error status child">passe avec erreurs</span>
-                                                        <span class="dropdown-item selection-choice selection-success status child">passe</span>
-                                                </div>
-                                        </div>
-                                </div>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <span class="dropdown-item selection-choice selection-fail status child">échec</span>
+                                <span class="dropdown-item selection-choice selection-error status child">passe avec erreurs</span>
+                                <span class="dropdown-item selection-choice selection-success status child">passe</span>
+                            </div>
                         </div>
+                    </div>
                 </div>
+                <div class="col-md-3 comment">
+                    {% if child.comment is null %}
+                        <span class="editable new-comment child">Ajouter un commentaire</span>
+                    {% else %}
+                        <span class="editable child">{{ child.comment }}</span>
+                    {% endif %}
+                </div>
+            </div>
     {% endfor %}
 </div>

@@ -33,12 +33,18 @@ class Snapshot
      */
     private $date_creation;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\LinkSnapPre", mappedBy="snap")
+     */
+    private $pre_audit;
+
 
     public function __construct($name, $date_creation)
     {
         $this->name = $name;
         $this->date_creation = $date_creation;
         $this->test = new ArrayCollection();
+        $this->pre_audit = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -97,6 +103,37 @@ class Snapshot
     public function setDateCreation(\DateTimeInterface $date_creation): self
     {
         $this->date_creation = $date_creation;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LinkSnapPre[]
+     */
+    public function getPreAudit(): Collection
+    {
+        return $this->pre_audit;
+    }
+
+    public function addPreAudit(LinkSnapPre $preAudit): self
+    {
+        if (!$this->pre_audit->contains($preAudit)) {
+            $this->pre_audit[] = $preAudit;
+            $preAudit->setSnap($this);
+        }
+
+        return $this;
+    }
+
+    public function removePreAudit(LinkSnapPre $preAudit): self
+    {
+        if ($this->pre_audit->contains($preAudit)) {
+            $this->pre_audit->removeElement($preAudit);
+            // set the owning side to null (unless already changed)
+            if ($preAudit->getSnap() === $this) {
+                $preAudit->setSnap(null);
+            }
+        }
 
         return $this;
     }

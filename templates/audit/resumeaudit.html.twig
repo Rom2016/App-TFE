@@ -54,7 +54,7 @@
                             </div>
                             <div class="col-md-2">
                                 <button type="button" class="btn btn-secondary">
-                                   <a href="../" style="color: black">Passer au rapport!</a>
+                                   <a href="../audit/rapport?audit={{ audit }}" style="color: black">Passer au rapport!</a>
                                 </button>
                             </div>
                         </div>
@@ -67,7 +67,8 @@
                             <div class="row">
                                 <div class="col-md-4 text-center">Test</div>
                                 <div class="col-md-2 text-center header">Réponse</div>
-                                <div class="col-md-4 text-center header">Commentaire</div>
+                                <div class="col-md-3 text-center header">Commentaire</div>
+                                <div class="col-md-2 text-center header">Solution</div>
                             </div>
                             {% for t in tests %}
                                 {% if t.test.susbection == sub and t.test.type.type == 'Question' and t.test.parent is null%}
@@ -100,15 +101,34 @@
                                         </div>
                                     </div>
                                        </div>
-                                       <div class="col-md-4 comment">
+                                       <div class="col-md-3 comment">
                                            {% if t.comment is null %}
                                            <span class="editable new-comment">Ajouter un commentaire</span>
                                            {% else %}
                                                <span class="editable">{{ t.comment }}</span>
                                             {% endif %}
                                        </div>
-                                   </div>
+                                        <div class="col-md-2 status">
+                                            <div class="select">
+                                                <select class="browser-default custom-select solution">
+                                                    {% if t.solution is null %}
+                                                        <option selected disabled="">Choisir</option>
+                                                    {% endif %}
 
+                                                    {% for sol in t.test.solutions %}
+                                                        {% if t.solution is not null and t.solution == sol %}
+                                                            <option selected>{{ sol.solution }}</option>
+                                                        {% else %}
+                                                            <option>{{ sol.solution }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+
+                                            </div>
+                                        </div>
+
+                                   </div>
+                                    {% if tests is not empty %}
                                     <div id="group-childs{{ t.id }}">
                                        {% for child in tests %}
                                              {% if child.test.parent == t.test and t.status.status != 'fail' %}
@@ -136,7 +156,7 @@
                                                              </div>
                                                          </div>
                                                      </div>
-                                                     <div class="col-md-4 comment">
+                                                     <div class="col-md-3 comment">
                                                          {% if child.comment is null %}
                                                              <span class="editable new-comment child">Ajouter un commentaire</span>
                                                          {% else %}
@@ -147,6 +167,7 @@
                                              {% endif %}
                                         {% endfor %}
                                        </div>
+                                        {% endif %}
                                    {% elseif  t.test.susbection == sub and t.test.type.type == 'Selection' %}
                                        {% set j = j+1 %}
 
@@ -172,8 +193,26 @@
 
                                                </div>
                                            </div>
-                                           <div class="col-md-4 comment">
+                                           <div class="col-md-3 comment">
                                                <span class="editable new-comment">Ajouter un commentaire</span>
+                                           </div>
+                                           <div class="col-md-2 status">
+                                               <div class="select">
+                                                   <select class="browser-default custom-select">
+                                                       {% if t.solution is null %}
+                                                           <option selected disabled="">Choisir</option>
+                                                       {% endif %}
+
+                                                       {% for sol in t.test.solutions %}
+                                                           {% if t.solution is not null and t.solution == sol %}
+                                                               <option selected>{{ sol.solution }}</option>
+                                                           {% else %}
+                                                               <option>{{ sol.solution }}</option>
+                                                           {% endif %}
+                                                       {% endfor %}
+                                                   </select>
+
+                                               </div>
                                            </div>
                                        </div>
 

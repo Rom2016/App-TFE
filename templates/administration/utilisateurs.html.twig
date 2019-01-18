@@ -149,7 +149,60 @@ Administration
                                                       <i class="material-icons">refresh</i>
                                                     </div>
                                                 </div>
-                                            </div>
+                                                <div class="user-header">
+                                                    <h3>Rôles</h3>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h4>
+                                                            Rôles utilisateurs:
+                                                        </h4>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                            {% for r in roles %}
+                                                                {% if r.admin is null %}
+                                                                    <div class="radio">
+                                                                        <label><input type="radio" name="role-user" checked>{{ r.role }}</label>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h4>
+                                                            Rôles administrateurs:
+                                                        </h4>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                            {% for r in roles %}
+                                                                {% if r.admin is not null and r.special is null %}
+                                                                    <label><input type="radio" name="role-user" checked>{{ r.role }}</label>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                    </div>
+                                                </div>
+                                                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <h4>
+                                                                Rôles spéciaux:
+                                                            </h4>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                                {% for r in roles %}
+                                                                    {% if r.admin is not null and r.multiple is null %}
+                                                                        <label><input type="radio" name="role-user" checked>{{ r.role }}</label>
+
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+
+                                                </div>
                                             {% endif %}
                                             {% endfor %}
                                         </tbody>
@@ -258,7 +311,7 @@ Administration
                                                  <div class="col-md-6">
                                                      <select name="role-special" class="selectpicker" title="Sélectionner" multiple>
                                                          {% for r in roles %}
-                                                             {% if r.admin is not null and r.multiple is not null %}
+                                                             {% if r.admin is not null and r.multiple is null %}
                                                                  <option class="role-admin">{{ r.role }}</option>
                                                              {% endif %}
                                                          {% endfor %}

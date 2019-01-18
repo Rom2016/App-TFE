@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="images/favicon.ico" type="image/ico" />
+
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <link href="../vendor/sweet-alert/dist/sweetalert2.css" rel="stylesheet">
+    <link href="../css/audit/report.css" rel="stylesheet" />
+
+    <!-- CSS Files -->
+    <link href="../css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
+
+</head>
+<body>
+{% set i = 0 %}
+<div class="row">
+<div class="col-md-3"></div>
+<div class="content col-md-7">
+    <div class="container-fluid">
+
+        <div class="card">
+            <div class="card-header card-header-tabs card-header-primary header">
+                <h1 class="header">Rapport d'audit</h1>
+            </div>
+            <div class="card-body">
+
+        <div class="row">
+            <div class="col-md-2 bold">
+                <p>Audité:</p>
+            </div>
+            <div class="col-md-2 ">
+                <p>{{ audit.customer.customer }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 bold">
+                Auditeur(s):
+            </div>
+            <div class="col-md-2">
+                    {% for c in audit.creators %}
+                        {{ c.creator.first_name }} {{ c.creator.second_name }}
+                        <br>
+                    {% endfor %}
+            </div>
+        </div>
+            <div class="row">
+                <div class="col-md-2 bold">
+                    <p>Date de réalisation:</p>
+                </div>
+                <div class="col-md-2">
+                    {{ audit.finishDate|date('Y-m-d H:i:s')}}
+                </div>
+            </div>
+
+        {% for s in sections %}
+            {% set i = i+1 %}
+            {% set j = 0 %}
+
+
+            <div class="panel panel-default">
+                <div class="panel-heading"><h3>{{ i }}.{{ s.section }}</h3></div>
+                <div class="panel-body">
+
+                    {% for sub in subs %}
+                        {% if sub.datearchive is null and sub.section == s %}
+                            {% set j = j+1 %}
+                            {% set k = 0 %}
+                            <div class="sub-table">
+                            <div class="row">
+                                <div class="col-md-6 th"><h4 class="bold">{{ i }}.{{ j }}.{{ sub.subsection }}</h4></div>
+                                <div class="text-center col-md-1 th">Résultat</div>
+                                <div class="text-center col-md-4 th">Observation</div>
+                                <div class="text-center col-md-1 th">Enjeu</div>
+                            </div>
+
+                            {% for r in result %}
+                                    {% if r.test.susbection == sub %}
+                                        {% set k = k+1 %}
+                                        <div class="row">
+                                            <div class="col-md-6 td">{{ i }}.{{ j }}.{{ k }}.{{ r.test.test }}</div>
+                                            <div class="text-center td col-md-1">{% if r.status.status == 'success' %}<i class="material-icons low">check_circle_outline</i>{% elseif r.status.status == 'fail' %}<i class="material-icons high">clear</i>{% elseif r.status.status == 'error' %}<i class="material-icons medium">warning</i>{% endif %}</div>
+                                            <div class="col-md-4 td">{{ r.comment }}</div>
+                                            <div class="col-md-1 text-center" style="border-bottom: solid lightgrey 1px">{% if r.test.priority == '1' %}<i class="material-icons high">arrow_upward</i>{% elseif r.test.priority == '2' %}<i class="material-icons medium">arrow_upward</i>{% elseif r.test.priority == '3' %}<i class="material-icons low">arrow_downward</i>{% endif %}</div>
+                                       </div>
+                        {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="row">
+                    <div class="jumbo col-md-12">
+                        {% for key,value in point_section %}
+                            {% if key == s.id %}
+                                <h4 class="">Score indexé:</h4>
+                                <hr>
+                                <h4 class="bold">{{ value }}%</h4>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+                {% endfor %}
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <div class="panel-heading"><h3>Points faibles</h3></div>
+                        <div class="panel-container">
+                            {% if bad_section is defined %}
+                            {% for s in bad_section %}
+                                <div class="row" style="padding: 2%">
+                                    <div class="col-md-12">
+                                        <h3 class="bold">{{ s.section }}</h3>
+                                        <ul>
+                                            {% for sub in bad_sub %}
+                                                {% if sub.section == s %}
+                                                    <li>{{ sub.subsection }}</li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <canvas id="myChart" width="400" height="400"></canvas>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="panel-heading"><h3>Points forts</h3></div>
+                        <div class="panel-container">
+                            {% if good_section is defined %}
+                                {% for s in good_section %}
+                                    <div class="row" style="padding: 2%">
+                                        <div class="col-md-12">
+                                            <h3 class="bold">{{ s.section }}</h3>
+                                            <ul>
+                                                {% for sub in good_sub %}
+                                                    {% if sub.section == s %}
+                                                        <li>{{ sub.subsection }}</li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </ul>
+
+                                        </div>
+                                    </div>
+
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <a class="btn btn-primary pull-right" href="../audit/fin">Terminer l'audit</a>
+                <a href="../audit/générer-rapport?audit={{ audit.id }}" class="btn btn-default pull-right" target="_blank">Exporter le rapport</a>
+            </div>
+
+    </div>
+</div>
+</div>
+</div>
+</body>
+
+<script src="../js/core/jquery.min.js" type="text/javascript"></script>
+<script src="../js/core/popper.min.js" type="text/javascript"></script>
+<script src="../js/core/bootstrap-material-design.min.js" type="text/javascript"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../vendor/sweet-alert/dist/sweetalert2.js"></script>
+<script src="../js/audit/audit.js"></script>
+<script src="../vendor/Chart.js/dist/Chart.js"></script>
+
+<script>
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: [{% for s in sections %}"{{ s.section }}",{% endfor %}],
+            animationSteps: 100,
+            animationEasing: "easeOutBounce",
+            datasets: [{
+                data: [{% for p in point_section %}"{{ p }}",{% endfor %}],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'white'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales:
+                {
+
+                    yAxes: [{
+                        display: false,
+                        gridLines : {
+                            display : false,
+                        }
+                    }],
+                }
+        }
+    });
+</script>

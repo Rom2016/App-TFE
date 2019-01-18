@@ -30,7 +30,7 @@ $('body').on('click', '.status', function() {
                 type: 'POST',
                 data: data
             }).done(function (response) {
-                if ($('#group-childs'+idresult).length == 0) {
+                if (!response.success) {
                     $('#test'+idresult).after(response);
                 }
             }).fail(function () {
@@ -117,7 +117,15 @@ $('body').on('click', '.editable', function(){
 $('select').on('change', function() {
     split = $(this).closest('.row').attr('id').split('test');
     id = split[1];
-    data = {'id':id, 'status':'select', 'data':$(this).val()}
+    if($(this).hasClass('solution')){
+        rq = 'solution';
+    }else{
+        rq = 'test';
+
+    }
+    split = $(this).closest('.row').attr('id').split('test');
+    id = split[1];
+    data = {'id':id, 'status':'select', 'data':$(this).val(), 'rq':rq}
     $.ajax({
         url: '../audit/selection',
         type: 'POST',
@@ -126,4 +134,5 @@ $('select').on('change', function() {
     }).fail(function () {
         swal('Oops...', 'Un problème est survenu, réessayez plus tard!', 'error');
     });
-});
+})
+

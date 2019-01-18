@@ -160,9 +160,11 @@
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-form" role="menu">
                                             {% for u in users %}
+                                                {% if app.user != u and u.deactivated is null%}
                                             <li class="check-participant">
                                                 <input type="checkbox" id="check{{ u.id }}" name="creator[{{ u.id }}]"><label for="check{{ u.id }}" style="cursor: pointer"><img {% if not app.user.profile_pic %}src="../génèrer-avatar?rq=administration&p={{ u.first_name }}&n={{ u.second_name }}"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} class="rounded-circle" style="width: 30px" />{{ u.first_name }} {{u.second_name }}/{{ u.username }}</label>
                                             </li>
+                                            {% endif %}
                                             {% endfor %}
                                         </ul>
                                     </div>

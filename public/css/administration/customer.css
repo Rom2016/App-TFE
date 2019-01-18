@@ -1,0 +1,37 @@
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+.inputfile + label {
+    font-weight: bold;
+    color: white;
+    background-color: black;
+    display: inline-block;
+}
+
+.delete-data{
+    color: #e53935;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+    background-color: red;
+}
+
+.inputfile + label {
+    cursor: pointer; /* "hand" cursor */
+}
+
+.input-success{
+    color: #43a047;
+}
+
+.input-fail{
+    color: #e53935;
+}

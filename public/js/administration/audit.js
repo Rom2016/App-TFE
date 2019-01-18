@@ -1,3 +1,35 @@
+/**
+ * Fonction qui gère l'archivage des différentes couches
+ */
+$('body').on('click', '.trash', function() {
+    el = $(this)
+    if ($(this).hasClass('child')) {
+        layer = 'child';
+        id = $(this).attr('id').split('child');
+    }else if($(this).hasClass('solution')) {
+        layer = 'solution';
+        id = $(this).attr('id').split('solution');
+    }else if($(this).hasClass('select')) {
+        layer = 'selection';
+        id = $(this).attr('id').split('selection');
+    }else if($(this).hasClass('test')) {
+        layer = 'test';
+        id = $(this).attr('id').split('test');
+    }else if($(this).hasClass('sub')) {
+        layer = 'sub';
+        id = $(this).attr('id').split('sub');
+    }
+    data = {'el': layer, 'id': id[1]};
+    $.ajax({
+        url: '../administration/contenu-audits/supprimer',
+        type: 'POST',
+        data: data
+    }).done(function (response) {
+        el.closest('.layer').remove();
+    })
+})
+
+
 $('body').on('click', '.editable', function(){ // Attache l'évènement
     el = $(this); // Met le <span> cliqué dans une variable
     input = $('<input type="text" class="col-md-12" value=""/>');
@@ -496,7 +528,7 @@ function newSnapshot() {
                         type: 'success',
                         showConfirmButton: false,
                         timer: 1500,
-                        title: 'Utilisateur supprimé avec succès!'
+                        title: 'Snapshot enregistré!'
                     })
                     $('#user'+id).remove();
                 }).fail(function(){
@@ -505,7 +537,7 @@ function newSnapshot() {
                         type: 'success',
                         showConfirmButton: false,
                         timer: 1500,
-                        title: 'Utilisateur supprimé avec succès!'
+                        title: 'Snapshot enregistré!'
                     })
                 });
             });
@@ -523,3 +555,22 @@ $('#slider-log').slideReveal({
     overlay: true,
     width: 650
 });
+
+/**
+ * Evenement qui permet de ne sélectionner qu'une checkbox dans la liste des snapshot
+ */
+$("input:checkbox").on('click', function() {
+    // in the handler, 'this' refers to the box clicked on
+    var $box = $(this);
+    if ($box.is(":checked")) {
+        // the name of the box is retrieved using the .attr() method
+        // as it is assumed and expected to be immutable
+        var group = $('.snap')
+        // the checked state of the group/box on the other hand will change
+        // and the current value is retrieved using .prop() method
+        $(group).prop("checked", false);
+        $box.prop("checked", true);
+    } else {
+        $box.prop("checked", false);
+    }
+})

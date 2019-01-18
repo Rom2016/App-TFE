@@ -9081,7 +9081,7 @@ input::placeholder {
   line-height: 1.1; }
 
 label {
-  color: #AAAAAA; }
+}
 
 .radio label,
 label.radio-inline,
@@ -11399,8 +11399,7 @@ a {
 label {
   font-size: 14px;
   line-height: 1.42857;
-  color: #AAAAAA;
-  font-weight: 400; }
+}
 
 /*           Animations              */
 .animation-transition-general, .sidebar .sidebar-wrapper > .nav [data-toggle="collapse"] ~ div > ul > li > a span,

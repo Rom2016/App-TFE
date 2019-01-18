@@ -355,3 +355,15 @@ select {
     background-color: whitesmoke;
     padding: 2%;
 }
+
+.modal-header{
+    border-top: solid #8e24aa 5px;
+}
+
+tr:nth-child(even) {
+    background-color: whitesmoke;
+}
+
+.bold{
+    font-weight: bold;
+}

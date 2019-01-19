@@ -11,6 +11,7 @@ namespace App\Controller;
 use App\Entity\AppUser;
 use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
+use App\Entity\IntCustomer;
 use App\Entity\Roles;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,8 +24,6 @@ use LasseRafn\InitialAvatarGenerator\InitialAvatar;
 
 class UserController extends AbstractController
 {
-
-
     /**
      *
      * @Route("/", name="homepage")
@@ -35,11 +34,13 @@ class UserController extends AbstractController
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $repository_user = $this->getDoctrine()->getRepository(AppUser::class);
+        $repository_customer = $this->getDoctrine()->getRepository(IntCustomer::class);
 
         $user = $repository_user->findOneBy(['id'=>$this->getUser()]);
-        $array['users'] = $repository_user->findAll();
+        $array['users'] = $repository_user->findBy(['deactivated'=>false]);
         $array['nbUser'] = $repository_user->getNb();
         $array['createdAudit'] = $user->getCreations();
+       // $array['customers'] = $repository_customer->findAll()
         if(isset($_GET['nouveau-audit'])){
             $array['new_audit'] = true;
         }

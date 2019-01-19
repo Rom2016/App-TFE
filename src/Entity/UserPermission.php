@@ -28,6 +28,12 @@ class UserPermission
      */
     private $permission;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\IntAudit")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $audit;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -53,6 +59,18 @@ class UserPermission
     public function setPermission(?AuditPermission $permission): self
     {
         $this->permission = $permission;
+
+        return $this;
+    }
+
+    public function getAudit(): ?IntAudit
+    {
+        return $this->audit;
+    }
+
+    public function setAudit(?IntAudit $audit): self
+    {
+        $this->audit = $audit;
 
         return $this;
     }

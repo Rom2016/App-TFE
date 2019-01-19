@@ -9,37 +9,39 @@
 namespace App\Security;
 
 use App\Entity\AppUser;
-use App\Entity\AuditCompany;
+use App\Entity\IntAudit;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
+use Symfony\Component\Security\Core\Security;
+
 
 
 class AuditVoter extends Voter
 {
     // these strings are just invented: you can use anything
-    const READ = 'AUDIT_RO';
-    const WRITE = 'AUDIT_RW';
+    const READ = 'Read';
+    const WRITE = 'Write';
+    const ADMIN = 'Admin';
+    const OWNER = 'Owner';
 
-    private $decisionManager;
+    private $security;
 
-    public function __construct(AccessDecisionManagerInterface $decisionManager)
+    public function __construct(Security $security)
     {
-        $this->decisionManager = $decisionManager;
+        $this->security = $security;
     }
 
     protected function supports($attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (!in_array($attribute, array(self::READ, self::WRITE))) {
+        if (!in_array($attribute, array(self::READ, self::WRITE, self::ADMIN, self::OWNER))) {
             return false;
         }
 
         // only vote on Post objects inside this voter
-        if (!$subject instanceof AuditCompany) {
+        if (!$subject instanceof IntAudit) {
             return false;
         }
-
         return true;
     }
 
@@ -53,7 +55,7 @@ class AuditVoter extends Voter
         }
 
         // you know $subject is a Post object, thanks to supports
-        /** @var AuditCompany $audit */
+        /** @var IntAudit $audit */
         $audit = $subject;
 
         switch ($attribute) {
@@ -61,31 +63,65 @@ class AuditVoter extends Voter
                 return $this->canView($audit, $user, $token);
             case self::WRITE:
                 return $this->canEdit($audit, $user);
+            case self::ADMIN:
+                return $this->canView($audit, $user, $token);
+            case self::OWNER:
+                return $this->isOwner($audit, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canView(AuditCompany $audit, AppUser $user, TokenInterface $token)
+    private function canView(IntAudit $audit, AppUser $user, TokenInterface $token)
     {
-        // if they can edit, they can view
-        if ($this->canEdit($audit, $user) || $this->decisionManager->decide($token, array('ROLE_AUDIT_RO'))) {
+
+        foreach ($user->getAuditPermission() as $key => $value){
+            if($value->getPermission() == 'Read' && $value->getAudit() == $audit){
+                return true;
+            }
+        }
+        if($this->canEdit($audit,$user) || $this->isAdmin($audit,$user) || $this->isOwner($audit,$user)){
             return true;
         }
-
-        // the Post object could have, for example, a method isPrivate()
-        // that checks a boolean $private property
-
+        return false;
 
     }
 
-    private function canEdit(AuditCompany $audit, AppUser $user)
+    private function canEdit(IntAudit $audit, AppUser $user)
     {
-        // this assumes that the data object has a getOwner() method
-        // to get the entity of the user who owns this data object
-        return $user === $audit->getOwner();
+        foreach ($user->getAuditPermission() as $key => $value){
+            if($value->getPermission() == 'Write' && $value->getAudit() == $audit){
+                return true;
+            }
+        }
+        if($this->isAdmin($audit,$user) || $this->isOwner($audit, $user)){
+            return true;
+        }
+        return false;
     }
 
-
-
+    private function isAdmin(IntAudit $audit, AppUser $user)
+    {
+        foreach ($user->getAuditPermission() as $key => $value){
+            if($value->getPermission() == 'Admin' && $value->getAudit() == $audit){
+                return true;
+            }
+        }
+        if($this->isOwner($audit, $user)){
+            return true;
+        }
+        return false;
+    }
+    private function isOwner(IntAudit $audit, AppUser $user)
+    {
+        foreach ($user->getCreations() as $key => $value){
+            if($value->getCreator() == $user && $value->getAudit() == $audit){
+                return true;
+            }
+        }
+        if($this->security->isGranted('ROLE_SUPER_ADMIN')){
+            return true;
+        }
+        return false;
+    }
 }

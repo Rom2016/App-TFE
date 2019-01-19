@@ -19,7 +19,6 @@ class IntAudit
     private $id;
 
 
-
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\IntCustomer", inversedBy="intAudits")
      */
@@ -35,11 +34,7 @@ class IntAudit
      */
     private $started;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\IntAudit", mappedBy="parent")
-     */
-    private $parent;
-
+ 
     /**
      * @ORM\Column(type="string", length=100)
      */
@@ -81,6 +76,13 @@ class IntAudit
     private $infraCustomers;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\IntAudit")
+     */
+    private $parent;
+
+
+
+    /**
      * IntAudit constructor.
      * @param $customer
      * @param $date_creation
@@ -94,6 +96,8 @@ class IntAudit
         $this->date_creation = $date_creation;
         $this->name = $name;
         $this->infraCustomers = new ArrayCollection();
+        $this->intAudits = new ArrayCollection();
+        $this->audits = new ArrayCollection();
 
     }
 
@@ -103,17 +107,7 @@ class IntAudit
         return $this->id;
     }
 
-    public function getCreator(): ?AppUser
-    {
-        return $this->creator;
-    }
 
-    public function setCreator(?AppUser $creator): self
-    {
-        $this->creator = $creator;
-
-        return $this;
-    }
 
     public function getCustomer(): ?IntCustomer
     {
@@ -139,17 +133,6 @@ class IntAudit
         return $this;
     }
 
-    public function getParent(): ?self
-    {
-        return $this->parent;
-    }
-
-    public function setParent(?self $parent): self
-    {
-        $this->parent = $parent;
-
-        return $this;
-    }
 
     /**
      * @return mixed
@@ -168,29 +151,6 @@ class IntAudit
     }
 
 
-
-    public function addParent(IntAudit $parent): self
-    {
-        if (!$this->parent->contains($parent)) {
-            $this->parent[] = $parent;
-            $parent->setParent($this);
-        }
-
-        return $this;
-    }
-
-    public function removeParent(IntAudit $parent): self
-    {
-        if ($this->parent->contains($parent)) {
-            $this->parent->removeElement($parent);
-            // set the owning side to null (unless already changed)
-            if ($parent->getParent() === $this) {
-                $parent->setParent(null);
-            }
-        }
-
-        return $this;
-    }
 
     public function getName(): ?string
     {
@@ -345,6 +305,80 @@ class IntAudit
                 $infraCustomer->setAudit(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|IntAudit[]
+     */
+    public function getIntAudits(): Collection
+    {
+        return $this->intAudits;
+    }
+
+    public function addIntAudit(IntAudit $intAudit): self
+    {
+        if (!$this->intAudits->contains($intAudit)) {
+            $this->intAudits[] = $intAudit;
+            $intAudit->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIntAudit(IntAudit $intAudit): self
+    {
+        if ($this->intAudits->contains($intAudit)) {
+            $this->intAudits->removeElement($intAudit);
+            // set the owning side to null (unless already changed)
+            if ($intAudit->getParent() === $this) {
+                $intAudit->setParent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|IntAudit[]
+     */
+    public function getAudits(): Collection
+    {
+        return $this->audits;
+    }
+
+    public function addAudit(IntAudit $audit): self
+    {
+        if (!$this->audits->contains($audit)) {
+            $this->audits[] = $audit;
+            $audit->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAudit(IntAudit $audit): self
+    {
+        if ($this->audits->contains($audit)) {
+            $this->audits->removeElement($audit);
+            // set the owning side to null (unless already changed)
+            if ($audit->getParent() === $this) {
+                $audit->setParent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?self $parent): self
+    {
+        $this->parent = $parent;
 
         return $this;
     }

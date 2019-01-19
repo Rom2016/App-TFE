@@ -49,6 +49,16 @@ class IntCustomer
     private $second_name;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $deleted;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $date_archive;
+
+    /**
      * IntCustomer constructor.
      * @param $name
      * @param $email
@@ -186,6 +196,30 @@ class IntCustomer
     public function setSecondName(string $second_name): self
     {
         $this->second_name = $second_name;
+
+        return $this;
+    }
+
+    public function getDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(?bool $deleted): self
+    {
+        $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    public function getDateArchive(): ?\DateTimeInterface
+    {
+        return $this->date_archive;
+    }
+
+    public function setDateArchive(?\DateTimeInterface $date_archive): self
+    {
+        $this->date_archive = $date_archive;
 
         return $this;
     }

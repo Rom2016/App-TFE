@@ -284,6 +284,10 @@ class AppUser implements UserInterface, \Serializable
         return $this;
     }
 
+    public function canRead(IntAudit $audit)
+    {
+
+    }
 
 
 

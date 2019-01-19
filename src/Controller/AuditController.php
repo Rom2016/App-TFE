@@ -14,6 +14,7 @@ use App\Entity\AuditResults;
 use App\Entity\AuditSection;
 use App\Entity\AuditTests;
 use App\Entity\AuditTestsInfra;
+use App\Entity\SectionPoints;
 use App\Entity\Solution;
 use App\Entity\Status;
 use App\Entity\TestSelections;
@@ -425,6 +426,9 @@ class AuditController extends AbstractController
         }
         foreach ($section_point as $key => $value){
             $section_pourcent[$key] = number_format((float)$value / $total_section_point[$key] * 100, 2, '.', '');
+            $id = $repository_section->findOneBy(['id'=>$key]);
+            $sectionPoint = new SectionPoints($id, $audit, $section_pourcent[$key]);
+            $entityManager->persist($sectionPoint);
         }
         foreach ($sub as $key => $value) {
             if (number_format((float)$subsection_point[$value->getId()] / $total_subsection_point[$value->getId()] * 100, 2, '.', '') < 35) {
@@ -641,31 +645,84 @@ class AuditController extends AbstractController
 
     }
 
-    /**
-     * @Route("/finalisation-audit", name="finish_audit", options={"utf8": true})
-     */
-    public function finishAudit()
-    {
-        $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
-        $repository_audit_result = $this->getDoctrine()->getRepository(AuditCompanyResult::class);
-        $repository_company =  $this->getDoctrine()->getRepository(Company::class);
-        $repository_audit =  $this->getDoctrine()->getRepository(AuditCompany::class);
 
-        $em = $this->getDoctrine()->getManager();
-        $company = $repository_company->findOneBy(['id'=>$_POST['id_company']]);
-        $audit = $repository_audit->findOneBy(['company'=>$company]);
-        if(isset($_POST['tests'])) {
-            foreach ($_POST['tests'] as $key => $value) {
-                $test = $repository_test->findOneBy(['id' => $value]);
-                $companyTest = $repository_audit_result->findOneBy(['test' => $test, 'audit' => $audit]);
-                $companyTest->setSelected(true);
-                $companyTest->setDone(false);
-                $em->persist($companyTest);
+    /**
+     * Révision des audits créés
+     */
+    /**
+     * Gère le traitement des images envoyées depuis les dropbox pendant un audit
+     * @Route("/voir-audit", name="created_audit", methods="GET" )
+     */
+    function createdAudits()
+    {
+        $repository = $this->getDoctrine()->getRepository(AppUser::class);
+        $repository_audit = $this->getDoctrine()->getRepository(IntAudit::class);
+
+        $audits = $repository_audit->findBy(['date_archive'=>null, 'parent'=>null]);
+
+        if($audits){
+            foreach($audits as $key => $value){
+                if (!$this->isGranted('Read',$value)) {
+                    unset($audits[$key]);
+                }
             }
         }
-        $em->flush();
-        $array['company'] = $company->getId();
-        return $this->render('audit/finalisation_audit.html.twig', $array);
+        $array['users'] = $repository->findAll();
+        $array['audit'] = $audits;
+
+        if (isset($_GET['nouveau-audit'])) {
+            $array['new_audit'] = true;
+        }
+        return $this->render('review-audit/reviewaudit.html.twig', $array);
+    }
+
+
+    /**
+     * Révision des audits créés
+     */
+    /**
+     * Gère le traitement des images envoyées depuis les dropbox pendant un audit
+     * @Route("/voir-audit/audit", name="view_created_audit", methods="GET" )
+     */
+    function viewAudit()
+    {
+        $repository = $this->getDoctrine()->getRepository(AppUser::class);
+        $repository_audit = $this->getDoctrine()->getRepository(IntAudit::class);
+        $repository_result = $this->getDoctrine()->getRepository(AuditResults::class);
+        $repository_point = $this->getDoctrine()->getRepository(SectionPoints::class);
+        $audit = $repository_audit->findOneBy(['date_archive'=>null, 'id'=>$_GET['audit']]);
+        $this->denyAccessUnlessGranted('Read',$audit);
+
+        $audit_child = $repository_audit->findBy(['date_archive'=>null, 'parent'=>$_GET['audit']]);
+        $audit_result = $repository_result->findBy(['audit'=>$audit]);
+
+        foreach ($audit_result as $key => $value){
+            $sec = $value->getTest()->getSusbection()->getSection();
+            $subsection = $value->getTest()->getSusbection();
+            $section[$sec->getId()] = $sec;
+            $sub[$subsection->getId()] = $subsection;
+        }
+        if($audit_child){
+            $array['childs'] = $audit_child;
+
+        }
+        $array['users'] = $repository->findAll();
+        $array['audit'] = $audit;
+        $array['sections'] = $section;
+        $array['subs'] = $sub;
+        $array['tests'] = $audit_result;
+        $array['points'] = $repository_point->findBy(['audit'=>$audit]);
+        $i = 0;
+        $total = 0;
+        foreach ($array['points'] as $key => $value){
+            $total = $total+$value->getPoint();
+            $i = $i+1;
+        }
+        $array['total'] = number_format((float)$total / $i, 2, '.', '');
+        if (isset($_GET['nouveau-audit'])) {
+            $array['new_audit'] = true;
+        }
+        return $this->render('review-audit/audit.html.twig', $array);
     }
 
 

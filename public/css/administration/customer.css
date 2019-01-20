@@ -14,9 +14,10 @@
 }
 
 .delete-data{
-    color: #e53935;
+    color: white ;
     font-size: 40px;
     cursor: pointer;
+    background-color: #e53935;
 }
 
 .inputfile:focus + label,

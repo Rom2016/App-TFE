@@ -19,9 +19,9 @@ use Symfony\Component\Security\Core\Security;
 class AuditVoter extends Voter
 {
     // these strings are just invented: you can use anything
-    const READ = 'Read';
-    const WRITE = 'Write';
-    const ADMIN = 'Admin';
+    const READ = 'Lecture';
+    const WRITE = 'Modification';
+    const ADMIN = 'Administrateur';
     const OWNER = 'Owner';
 
     private $security;
@@ -76,7 +76,7 @@ class AuditVoter extends Voter
     {
 
         foreach ($user->getAuditPermission() as $key => $value){
-            if($value->getPermission() == 'Read' && $value->getAudit() == $audit){
+            if($value->getPermission() == 'Lecture' && $value->getAudit() == $audit){
                 return true;
             }
         }
@@ -90,7 +90,7 @@ class AuditVoter extends Voter
     private function canEdit(IntAudit $audit, AppUser $user)
     {
         foreach ($user->getAuditPermission() as $key => $value){
-            if($value->getPermission() == 'Write' && $value->getAudit() == $audit){
+            if($value->getPermission() == 'Modification' && $value->getAudit() == $audit){
                 return true;
             }
         }
@@ -103,7 +103,7 @@ class AuditVoter extends Voter
     private function isAdmin(IntAudit $audit, AppUser $user)
     {
         foreach ($user->getAuditPermission() as $key => $value){
-            if($value->getPermission() == 'Admin' && $value->getAudit() == $audit){
+            if($value->getPermission() == 'Administrateur' && $value->getAudit() == $audit){
                 return true;
             }
         }

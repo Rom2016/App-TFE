@@ -10,6 +10,7 @@ namespace App\Controller;
 
 use App\Entity\AppUser;
 use App\Entity\AuditCreator;
+use App\Entity\AuditPermission;
 use App\Entity\AuditResults;
 use App\Entity\AuditSection;
 use App\Entity\AuditTests;
@@ -19,6 +20,7 @@ use App\Entity\Solution;
 use App\Entity\Status;
 use App\Entity\TestSelections;
 use App\Entity\TestStatus;
+use App\Entity\UserPermission;
 use Symfony\Component\Routing\RequestContext;
 
 use App\Entity\InfraCustomer;
@@ -456,72 +458,6 @@ class AuditController extends AbstractController
     }
 
 
-
-
-    /**
-     * Gère le traitement des images envoyées depuis les dropbox pendant un audit
-     * @Route("/enregistrer-images", name="save_images_test", methods="POST" )
-     */
-    function saveFiles()
-    {
-        $repository_test = $this->getDoctrine()->getRepository(AuditTestPhase::class);
-
-        $test = $repository_test->findOneBy(['id'=>$_POST['id']]);
-        /**
-         * Initialise le dossier avec le num de l'audit et son sous-dossier avec le nom du test des images traitées
-         */
-        $auditFolder = 'images/test_pic/'.$_POST['auditNumber'];   //2
-        $testFolder = 'images/test_pic/'.$_POST['auditNumber'].'/'.$test->id.'/';   //2
-        $path = $_FILES['file']['name'];
-        $ext = pathinfo($path, PATHINFO_EXTENSION);
-        // if folder doesn't exists, create it
-        /**
-         * Si ils n'existent pas, il faut les créer
-         */
-        if(!file_exists($auditFolder) && !is_dir($auditFolder)) {
-            mkdir($auditFolder);
-        }
-        if(!file_exists($testFolder) && !is_dir($testFolder)) {
-            mkdir($testFolder);
-            /**
-             * Le sous-dossier est créé, le nom de la première image sera '1'.
-             */
-            $fileName = '1.'.$ext;
-        }else {
-            /**
-             * Le sous dossier existe déjà, scan pour récupérer les nom des fichiers par la fin.
-             */
-            $count = scandir($testFolder, 1);
-            if ($count) {
-                /**
-                 * Récupère le premier nom du tableau qui est le plus grand du dossier étant donné qu'on le scan par la fin.
-                 * Récupère ce nombre et converti le en INT.
-                 */
-                $tab = explode('.', $count[0]);
-                $fileName = intval($tab[0]);
-                $fileName = $fileName+1;
-                $fileName = $fileName.'.'.$ext;
-            }
-        }
-        if(!empty($_FILES)){
-
-            $tempFile = $_FILES['file']['tmp_name'];          //3
-            $targetPath = $testFolder;  //4
-        }
-        $targetFile =  $targetPath.$fileName;  //5
-        /**
-         * Enregistre l'image avec son nouveau nom et dans le bon dossier.
-         */
-        if(move_uploaded_file($tempFile, $targetFile)){
-            return new Response('ok');
-        }; //6
-    }
-
-
-
-
-
-
     /**
      * @Route("/audit/générer-rapport", name="generate_report", options={"utf8": true})
      */
@@ -646,6 +582,7 @@ class AuditController extends AbstractController
     }
 
 
+
     /**
      * Révision des audits créés
      */
@@ -662,7 +599,7 @@ class AuditController extends AbstractController
 
         if($audits){
             foreach($audits as $key => $value){
-                if (!$this->isGranted('Read',$value)) {
+                if (!$this->isGranted('Lecture',$value)) {
                     unset($audits[$key]);
                 }
             }
@@ -682,16 +619,27 @@ class AuditController extends AbstractController
      */
     /**
      * Gère le traitement des images envoyées depuis les dropbox pendant un audit
-     * @Route("/voir-audit/audit", name="view_created_audit", methods="GET" )
+     * @Route("/voir-audit/audit", name="view_created_audit")
      */
     function viewAudit()
     {
+
+        if(isset($_POST['submit_audit'])){
+            switch ($_POST['submit_audit']){
+                case 'perm':$this->assignPerm();
+                break;
+                case 'version':$this->newVersion();
+            }
+        }
         $repository = $this->getDoctrine()->getRepository(AppUser::class);
         $repository_audit = $this->getDoctrine()->getRepository(IntAudit::class);
         $repository_result = $this->getDoctrine()->getRepository(AuditResults::class);
         $repository_point = $this->getDoctrine()->getRepository(SectionPoints::class);
+        $repository_permission = $this->getDoctrine()->getRepository(AuditPermission::class);
+
         $audit = $repository_audit->findOneBy(['date_archive'=>null, 'id'=>$_GET['audit']]);
-        $this->denyAccessUnlessGranted('Read',$audit);
+        $this->denyAccessUnlessGranted('Lecture',$audit);
+
 
         $audit_child = $repository_audit->findBy(['date_archive'=>null, 'parent'=>$_GET['audit']]);
         $audit_result = $repository_result->findBy(['audit'=>$audit]);
@@ -704,7 +652,6 @@ class AuditController extends AbstractController
         }
         if($audit_child){
             $array['childs'] = $audit_child;
-
         }
         $array['users'] = $repository->findAll();
         $array['audit'] = $audit;
@@ -722,10 +669,56 @@ class AuditController extends AbstractController
         if (isset($_GET['nouveau-audit'])) {
             $array['new_audit'] = true;
         }
+        $array['permission'] = $repository_permission->findAll();
         return $this->render('review-audit/audit.html.twig', $array);
     }
 
+    /**
+     * Gère le traitement des images envoyées depuis les dropbox pendant un audit
+     * @Route("/voir-audit/audit/utilisateur", name="get_user", methods="POST" )
+     */
+    public function searchUsers()
+    {
+        $repository_user = $this->getDoctrine()->getRepository(AppUser::class);
+        $users = $repository_user->findBy(['deactivated'=>false]);
+        $em = $this->getDoctrine()->getManager();
+        $template['users'] = $repository_user->findNameContaining($_POST['search-user'],$this->getUser()->getId());
+        return $this->render('audit/searchusers.html.twig', $template);
+    }
 
+    public function assignPerm()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repository_user = $this->getDoctrine()->getRepository(AppUser::class);
+        $repository_perm = $this->getDoctrine()->getRepository(AuditPermission::class);
+        $repository_audit = $this->getDoctrine()->getRepository(IntAudit::class);
 
+        $audit = $repository_audit->findOneBy(['id'=>$_POST['audit-perm']]);
+        $perm = $repository_perm->findOneBy(['permission'=>$_POST['perm']]);
+        $user = $repository_user->findOneBy(['username'=>$_POST['user']]);
+        $perm = new UserPermission($user,$perm,$audit);
+        $em->persist($perm);
+        $em->flush();
+    }
 
+    public function newVersion()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repository_user = $this->getDoctrine()->getRepository(AppUser::class);
+        $repository_audit = $this->getDoctrine()->getRepository(IntAudit::class);
+        $repository_result = $this->getDoctrine()->getRepository(AuditResults::class);
+        $date = new \DateTime(date('Y-m-d H:i:s'));
+        $audit = $repository_audit->findOneBy(['id'=>$_POST['audit-perm']]);
+        $result = $repository_result->findBy(['audit'=>$audit]);
+        $newAudit = new IntAudit($audit->getCustomer(), $date, $_POST['input-version']);
+        $newAudit->setParent($audit);
+        foreach ($result as $key => $value){
+            $newResult = new AuditResults($newAudit, $value->getTest(), $value->getStatus());
+            $em->persist($newResult);
+        }
+
+        $em->persist($newAudit);
+        $em->flush();
+
+    }
 }

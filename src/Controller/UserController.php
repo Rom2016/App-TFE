@@ -12,6 +12,8 @@ use App\Entity\AppUser;
 use App\Entity\AuditPhase;
 use App\Entity\AuditTestPhase;
 use App\Entity\IntCustomer;
+use App\Entity\LogAdminContent;
+use App\Entity\LogAdminUser;
 use App\Entity\Roles;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,14 +37,24 @@ class UserController extends AbstractController
 
         $repository_user = $this->getDoctrine()->getRepository(AppUser::class);
         $repository_customer = $this->getDoctrine()->getRepository(IntCustomer::class);
+        $repository_log_user = $this->getDoctrine()->getRepository(LogAdminUser::class);
+        $repository_log_content = $this->getDoctrine()->getRepository(LogAdminContent::class);
 
         $user = $repository_user->findOneBy(['id'=>$this->getUser()]);
+
         $array['users'] = $repository_user->findBy(['deactivated'=>false]);
         $array['nbUser'] = $repository_user->getNb();
         $array['createdAudit'] = $user->getCreations();
        // $array['customers'] = $repository_customer->findAll()
         if(isset($_GET['nouveau-audit'])){
             $array['new_audit'] = true;
+        }
+        if(isset($_GET['nouveau-audit'])){
+            $array['new_audit'] = true;
+        }
+        if($this->isGranted('ROLE_GLOBAL_ADMIN')){
+            $array['loguser'] = $repository_log_user->findAll();
+            $array['logcontent'] = $repository_log_content->findAll();
         }
         return $this->render('user/homepage.html.twig', $array);
     }

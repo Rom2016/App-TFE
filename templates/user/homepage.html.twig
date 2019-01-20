@@ -29,29 +29,128 @@
             <h2>Tableau de bord</h2>
         </div>
         <div class="row">
-            <p>Nb Audit,nb test , moyenne général</p>
-        </div>
-        <div class="row">
-            <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="col-md-2">
                 <div class="card card-stats">
                     <div class="card-header card-header-info card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons">check_box</i>
+                            <i class="material-icons">account_circle</i>
                         </div>
-                        <p class="card-category">Nombre de tests créés</p>
-                        <h3 class="card-title purple" style="color: purple">
+                        <p class="card-category">Utilisateurs actifs</p>
+                        <h3 class="card-title purple" style="color: purple">{{ nbUser }}
                         </h3>
                     </div>
                     <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">link</i>
+                            <a href="#pablo">Visualiser</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header card-header-warning">
+                        <h3 class="card-title">Historique des activités administratives</h3>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body" style="overflow-y: scroll; height:300px;">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#log-user" role="tab" aria-controls="home" aria-selected="true" style="color: black">Utilisateur</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#log-custom" role="tab" aria-controls="profile" aria-selected="false" style="color: black">Client</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#log-content" role="tab" aria-controls="contact" aria-selected="false" style="color: black">Contenu de l'audit</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="">
+                            <div class="tab-pane fade show active" id="log-user" role="tabpanel" aria-labelledby="home-tab">
+                                <table class="table" style="text-align: center">
+                                    <thead>
+                                    <th>Source</th>
+                                    <th>Action</th>
+                                    <th>Récipient</th>
+                                    <th><i class="material-icons">watch_later</i></th>
+                                    </thead>
+                                    <tbody>
+                                    {% for l in loguser %}
+                                        <tr>
+                                            <td class="log-user">{{ l.creator.first_name }} {{ l.creator.second_name }}</td>
+                                            <td class="log-icon">{% if l.action.action == 'Créer' %} <i class="material-icons"  title="Créer">create</i>{% elseif l.action.action == 'Supprimer' %} <i class="material-icons" title="Désactiver">delete</i>{% endif %}</td>
+                                            <td class="log-user">{{ l.recipient.username }}</td>
+                                            <td class="log-date">{{ l.datecreation|date('Y-m-d H:i:s')}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="log-custom" role="tabpanel" aria-labelledby="profile-tab">
+                                <table class="table" style="text-align: center">
+                                    <thead>
+                                    <th>Source</th>
+                                    <th>Action</th>
+                                    <th>Client</th>
+                                    <th><i class="material-icons">watch_later</i></th>
+                                    </thead>
+                                    <tbody>
+                                    {% for l in loguser %}
+                                        <tr>
+                                            <td class="log-user">{{ l.creator.first_name }} {{ l.creator.second_name }}</td>
+                                            <td class="log-icon">{% if l.action.action == 'Créer' %} <i class="material-icons"  title="Créer">create</i>{% elseif l.action.action == 'Supprimer' %} <i class="material-icons" title="Désactiver">delete</i>{% endif %}</td>
+                                            <td class="log-user">{{ l.recipient.username }}</td>
+                                            <td class="log-date">{{ l.datecreation|date('Y-m-d H:i:s')}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="log-content" role="tabpanel" aria-labelledby="contact-tab">
+                                <table class="table" style="text-align: center">
+                                    <thead>
+                                    <th>Source</th>
+                                    <th>Action</th>
+                                    <th>Couche</th>
+                                    <th>Element</th>
+                                    <th><i class="material-icons">watch_later</i></th>
+                                    </thead>
+                                    <tbody>
+                                    {% for l in logcontent %}
+                                        <tr>
+                                            <td class="log-user">{{ l.creator.first_name }} {{ l.creator.second_name }}</td>
+                                            <td class="log-icon">{% if l.action.action == 'Créer' %} <i class="material-icons" data-toggle="tooltip" data-placement="top" title="Tooltip on top">create</i>{% elseif l.action.action == 'Supprimer' %} <i class="material-icons" data-toggle="tooltip" data-placement="top" title="Tooltip on top">delete</i>{% endif %}</td>
+                                            <td class="">{{ l.element }}</td>
+                                            <td class="log-user">{{ l.name }}</td>
+                                            <td class="log-date">{{ l.datecreation|date('Y-m-d H:i:s')}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-           <div class="col-md-8">
+            <div class="col-md-4">
                 <div class="card">
-                    <div class="card-header card-header-info">
+                    <div class="card-header card-header-warning">
+                        <h3 class="card-title">Historique des activités de sécurité</h3>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body" style="overflow-y: scroll; height:300px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+                 <div class="col-md-7">
+                <div class="card">
+                    <div class="card-header card-header-primary">
                         <h3 class="card-title">Mes audits créés</h3>
                         <p class="card-category"></p>
                     </div>
@@ -84,40 +183,54 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-5">
                 <div class="card">
                     <div class="card-header card-header-warning">
-                        <h3 class="card-title">Audits</h3>
+                        <h3 class="card-title">Historique des activités des audits</h3>
                         <p class="card-category"></p>
                     </div>
-                    <div class="card-body">
-                        <canvas id="chartEmails"></canvas>
+                    <div class="card-body" style="overflow-y: scroll; height:300px;">
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-6">
-                <div class="card card-stats">
-                    <div class="card-header card-header-info card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">account_circle</i>
-                        </div>
-                        <p class="card-category">Utilisateurs enregistrés</p>
-                        <h3 class="card-title purple" style="color: purple">{{ nbUser }}
-                        </h3>
-                    </div>
-                    <div class="card-footer">
-                        <div class="stats">
-                            <i class="material-icons">link</i>
-                            <a href="#pablo">Visualiser</a>
-                        </div>
-                    </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-12">
+            <div class="card">
+            <div class="card-header card-header-info">
+                <h3 class="card-title">Audits</h3>
+                <p class="card-category"></p>
+            </div>
+            <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td><h4 style="text-align: center"><span style="font-weight: bold">75</span> tests écrits</h4></td>
+                            </tr>
+                            <tr>
+                                <td><h4 style="text-align: center"><span style="font-weight: bold">8</span> audits réalisés</h4></td>
+                            </tr>
+                            <tr>
+                                <td><h4 style="text-align: center">Moyenne générale: <span style="font-weight: bold">42%</span></h4></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+                <div class="col-md-9"><canvas id="chartEmails"></canvas></div>
             </div>
 
+            </div>
         </div>
+        </div>
+        </div>
+{% if is_granted('ROLE_GLOBAL_ADMIN') %}
+
+        {% endif %}
+
+</div>
 </div>
 
 {% endblock %}
@@ -134,17 +247,11 @@
 
            var myCharEmails = new Chart(ctxEmail, {
             type: 'line',
+               label: '# d\'audits réalisés',
             data: {
                 labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin"],
                 datasets: [
-                    {
-                        label : 'Nombre de mails envoyés',
-                        data : [20,15,35,20,10,25],
-                        backgroundColor : 'rgba(255, 167, 38, 0.1)',
-                        borderColor : '#ffa726',
-                        fill : false,
-                        lineTension : .4
-                    },
+
                         {
                         label : 'Nombre d\'audits réalisés',
                         data : [10,5,15,8,6,20],
@@ -152,15 +259,8 @@
                         borderColor : '#9c27b0',
                         fill : false,
                         lineTension : .4
-                    },
-                      {
-                        label : 'Nombre de prises de contact prises',
-                        data : [2,1,8,6,4,12],
-                        backgroundColor : 'rgba(156, 188, 212, 0.1)',
-                        borderColor : '#00bcd4',
-                        fill : false,
-                        lineTension : .4
                     }
+
 
                 ]
             },

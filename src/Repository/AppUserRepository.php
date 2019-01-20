@@ -28,6 +28,28 @@ class AppUserRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function findNameContaining($key, $id) {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+        SELECT * FROM app_user u
+        WHERE u.first_name LIKE :price
+        AND u.deactivated = FALSE 
+        AND u.id != :id
+        AND NOT EXISTS
+            (SELECT * FROM user_permission p
+            WHERE p.user_id = u.id)
+        OR NOT EXISTS
+            (SELECT * FROM audit_creator c
+            WHERE c.creator_id = u.id)    
+        ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['price' => $key.'%', 'id'=>$id]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAll();
+    }
+
 //    /**
 //     * @return AppUser[] Returns an array of AppUser objects
 //     */

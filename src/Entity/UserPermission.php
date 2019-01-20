@@ -29,10 +29,26 @@ class UserPermission
     private $permission;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\IntAudit")
+     * @ORM\ManyToOne(targetEntity="App\Entity\IntAudit", inversedBy="userPermissions")
      * @ORM\JoinColumn(nullable=false)
      */
     private $audit;
+
+
+
+    /**
+     * UserPermission constructor.
+     * @param $user
+     * @param $permission
+     * @param $audit
+     */
+    public function __construct($user, $permission, $audit)
+    {
+        $this->user = $user;
+        $this->permission = $permission;
+        $this->audit = $audit;
+    }
+
 
     public function getId(): ?int
     {

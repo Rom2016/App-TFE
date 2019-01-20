@@ -68,6 +68,12 @@
                             <p>Révision des audits</p>
                         </a>
                     </li>
+                    <li class="nav-item" id="nav-dash">
+                        <a class="nav-link" href="../">
+                            <i class="material-icons">report</i>
+                            <p>Rapports</p>
+                        </a>
+                    </li>
                     <li class="nav-item" id="nav-adm">
                         <a class="nav-link" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
                             <i class="material-icons">build</i>
@@ -88,6 +94,7 @@
                             </a>
                         </div>
                     </li>
+
                 </ul>
                 {% if is_granted('ROLE_CREATOR') %}
                 <li>

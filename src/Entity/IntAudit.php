@@ -80,6 +80,11 @@ class IntAudit
      */
     private $parent;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserPermission", mappedBy="audit")
+     */
+    private $userPermissions;
+
 
 
     /**
@@ -98,6 +103,7 @@ class IntAudit
         $this->infraCustomers = new ArrayCollection();
         $this->intAudits = new ArrayCollection();
         $this->audits = new ArrayCollection();
+        $this->userPermissions = new ArrayCollection();
 
     }
 
@@ -382,6 +388,39 @@ class IntAudit
 
         return $this;
     }
+
+    /**
+     * @return Collection|UserPermission[]
+     */
+    public function getUserPermissions(): Collection
+    {
+        return $this->userPermissions;
+    }
+
+    public function addUserPermission(UserPermission $userPermission): self
+    {
+        if (!$this->userPermissions->contains($userPermission)) {
+            $this->userPermissions[] = $userPermission;
+            $userPermission->setAudit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserPermission(UserPermission $userPermission): self
+    {
+        if ($this->userPermissions->contains($userPermission)) {
+            $this->userPermissions->removeElement($userPermission);
+            // set the owning side to null (unless already changed)
+            if ($userPermission->getAudit() === $this) {
+                $userPermission->setAudit(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 
 
 }

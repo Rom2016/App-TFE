@@ -46,6 +46,7 @@ class AdministrationController extends AbstractController
      */
     public function adminUsers()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_USER');
         /**
          * Si l'utilisateur est connecté et qu'il a les droits admin, render le template d'admin
          */
@@ -86,6 +87,7 @@ class AdministrationController extends AbstractController
      */
     public function deleteUser()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_USER');
         if (isset($_POST)) {
             $entityManager = $this->getDoctrine()->getManager();
             $repository_log = $this->getDoctrine()->getRepository(LogAction::class);
@@ -99,12 +101,12 @@ class AdministrationController extends AbstractController
             $entityManager->persist($log);
             $entityManager->flush();
             return $this->render('administration/disableuser.html.twig', $array);
-
         }
     }
 
     public function newUser()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_USER');
         $entityManager = $this->getDoctrine()->getManager();
         $repository_user = $this->getDoctrine()->getRepository(AppUser::class);
         $repository_role = $this->getDoctrine()->getRepository(Roles::class);
@@ -116,6 +118,7 @@ class AdministrationController extends AbstractController
          * Créer le nouvel utilisateur
          */
         $user = new AppUser($_POST['email'], password_hash($_POST['initial-pwd'], PASSWORD_BCRYPT), $_POST['fName'], $_POST['sName'], $_POST['function'], $date);
+        $user->setDeactivated(false);
         $entityManager->persist($user);
         /**
          * Créer ses rôles
@@ -153,29 +156,15 @@ class AdministrationController extends AbstractController
     }
 
 
-    /**
-     *
-     * @Route("/administration/changer-role", name="ajax_save_role", methods="POST")
-     */
-    public function saveRole()
-    {
-        $repository_role = $this->getDoctrine()->getRepository(Roles::class);
-        $entityManager = $this->getDoctrine()->getManager();
-        $repository_user = $this->getDoctrine()->getRepository(AppUser::class);
-        $role = $repository_role->findOneBy(['role' => $_POST['role']]);
-        $user = $repository_user->findOneBy(['id' => $_POST['id']]);
-        $user->setRole($role);
-        $entityManager->persist($user);
-        $entityManager->flush();
-        return new Response($_POST['role']);
-    }
+
 
     /**
      *
-     * @Route("/administration/vérifie-utilisateur", name="ajax_check_username", options={"utf8": true}, methods="POST")
+     * @Route("/administration/utilisateur/vérifie-utilisateur", name="ajax_check_username", options={"utf8": true}, methods="POST")
      */
     public function checkUsername()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_USER');
         $repository_user = $this->getDoctrine()->getRepository(AppUser::class);
         $user = $repository_user->findOneBy(['username' => $_POST['email']]);
         if ($user) {
@@ -192,7 +181,7 @@ class AdministrationController extends AbstractController
      */
     public function adminAudit()
     {
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $repository = $this->getDoctrine()->getRepository(AppUser::class);
         $repository_section = $this->getDoctrine()->getRepository(AuditSection::class);
         $repository_log = $this->getDoctrine()->getRepository(LogAdminContent::class);
@@ -212,14 +201,7 @@ class AdministrationController extends AbstractController
 
         }
         $array['log'] = $repository_log->findAll();
-
         return $this->render('administration/audits.html.twig', $array);
-        /**
-         * L'utilisateur n'a pas les droits admin, render le template d'accès refusé.
-         */
-        /**
-         * L'utilisateur n'est pas connecté, redirigé vers le portail de connexion.
-         */
     }
 
     /**
@@ -229,6 +211,7 @@ class AdministrationController extends AbstractController
      */
     public function newSubsection()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $entityManager = $this->getDoctrine()->getManager();
         $repository_subsection = $this->getDoctrine()->getRepository(AuditSubSection::class);
         $repository_section = $this->getDoctrine()->getRepository(AuditSection::class);
@@ -254,6 +237,7 @@ class AdministrationController extends AbstractController
      */
     public function newSection()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $entityManager = $this->getDoctrine()->getManager();
         $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
         $action = $repository_log_action->findOneBy(['action'=>'Créer']);
@@ -275,6 +259,7 @@ class AdministrationController extends AbstractController
      */
     public function newTest()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $entityManager = $this->getDoctrine()->getManager();
         $repository_subsection = $this->getDoctrine()->getRepository(AuditSubSection::class);
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
@@ -302,6 +287,7 @@ class AdministrationController extends AbstractController
      */
     public function newSelect()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $entityManager = $this->getDoctrine()->getManager();
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
         $repository_status = $this->getDoctrine()->getRepository(Status::class);
@@ -328,6 +314,7 @@ class AdministrationController extends AbstractController
      */
     public function newChild()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $entityManager = $this->getDoctrine()->getManager();
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
         $date = new \DateTime(date('Y-m-d H:i:s'));
@@ -353,6 +340,7 @@ class AdministrationController extends AbstractController
      */
     public function newSolution()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $entityManager = $this->getDoctrine()->getManager();
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
         $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
@@ -378,6 +366,7 @@ class AdministrationController extends AbstractController
      */
     public function updateSection()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $entityManager = $this->getDoctrine()->getManager();
         $repository_section = $this->getDoctrine()->getRepository(AuditSection::class);
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
@@ -502,6 +491,7 @@ class AdministrationController extends AbstractController
      */
     public function updateSubSection()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $entityManager = $this->getDoctrine()->getManager();
         $repository_sub = $this->getDoctrine()->getRepository(AuditSubSection::class);
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
@@ -614,6 +604,7 @@ class AdministrationController extends AbstractController
      */
     public function updateTest()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $entityManager = $this->getDoctrine()->getManager();
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
         $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
@@ -706,6 +697,7 @@ class AdministrationController extends AbstractController
      */
     public function updateSelectionStatus()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $entityManager = $this->getDoctrine()->getManager();
         $repository_selection = $this->getDoctrine()->getRepository(TestSelections::class);
         $repository_status = $this->getDoctrine()->getRepository(Status::class);
@@ -735,6 +727,7 @@ class AdministrationController extends AbstractController
      */
     public function updateChild()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $entityManager = $this->getDoctrine()->getManager();
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
         $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
@@ -761,6 +754,7 @@ class AdministrationController extends AbstractController
      */
     public function updatePrio()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $entityManager = $this->getDoctrine()->getManager();
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
         $test = $repository_test->findOneBy(['id' => $_POST['id']]);
@@ -776,6 +770,7 @@ class AdministrationController extends AbstractController
      */
     public function updateSolution()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $entityManager = $this->getDoctrine()->getManager();
         $repository_solution = $this->getDoctrine()->getRepository(Solution::class);
         $repository_log_action = $this->getDoctrine()->getRepository(LogAction::class);
@@ -801,6 +796,7 @@ class AdministrationController extends AbstractController
      */
     public function updateSelection()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $entityManager = $this->getDoctrine()->getManager();
         $repository_selection = $this->getDoctrine()->getRepository(TestSelections::class);
         $selection = $repository_selection->findOneBy(['id' => $_POST['id']]);
@@ -827,6 +823,7 @@ class AdministrationController extends AbstractController
      */
     public function deleteElement()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         switch ($_POST['el']) {
             case 'child':
                 if ($this->deleteChild()) {
@@ -861,6 +858,7 @@ class AdministrationController extends AbstractController
      */
     public function deleteSub()
     {
+
         $entityManager = $this->getDoctrine()->getManager();
         $repository_sub = $this->getDoctrine()->getRepository(AuditSubSection::class);
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
@@ -1060,6 +1058,7 @@ class AdministrationController extends AbstractController
      */
     public function newSnapshot()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CONTENT');
         $repository_test = $this->getDoctrine()->getRepository(AuditTests::class);
         $repository_test_pre = $this->getDoctrine()->getRepository(AuditTestsInfra::class);
 
@@ -1246,6 +1245,7 @@ class AdministrationController extends AbstractController
      */
     public function adminCustomer()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CUSTOMER');
         $repository = $this->getDoctrine()->getRepository(AppUser::class);
         $repository_customer = $this->getDoctrine()->getRepository(IntCustomer::class);
         $repository_log = $this->getDoctrine()->getRepository(LogAdminCustomer::class);
@@ -1267,6 +1267,7 @@ class AdministrationController extends AbstractController
 
     public function uplodadContract()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN_CUSTOMER');
         if (isset($_FILES['file']['tmp_name'])) {
             if ($_FILES['file']['type'] != "application/pdf") {
                 return new Response('<p class="input input-fail">PDF seulement</p>');

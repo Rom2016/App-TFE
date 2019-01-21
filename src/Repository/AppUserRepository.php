@@ -39,7 +39,7 @@ class AppUserRepository extends ServiceEntityRepository
         AND NOT EXISTS
             (SELECT * FROM user_permission p
             WHERE p.user_id = u.id)
-        OR NOT EXISTS
+        AND NOT EXISTS
             (SELECT * FROM audit_creator c
             WHERE c.creator_id = u.id)    
         ';

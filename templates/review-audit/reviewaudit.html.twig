@@ -12,9 +12,15 @@
             {% for a in audit %}
                 <div class="col-md-3">
                 <div class="card card-stats">
-                    <div class="card-header card-header-success card-header-icon">
+                    <div class="card-header {% if a.finishDate is not null %}card-header-success{% elseif a.finishDate is null %} card-header-warning {% elseif a.started is null %} card-header-primary{% endif %} card-header-icon">
                         <div class="card-icon">
+                            {% if a.finishDate is not null %}
                             <a href="../voir-audit/audit?audit={{ a.id }}" style="color: white"><i class="material-icons">lock_open</i></a>
+                            {% elseif a.finishDate is null %}
+                            <a href="../audit/reprendre-audit?audit={{ a.id }}" style="color: white"><i class="material-icons" style="">pause_circle_filled</i>
+                            {% elseif audit.started is null %}
+                                <a href="../audit/préaudit?audit={{ a.id }}"><i class="material-icons" style="color: white">power_settings_new</i></a>
+                                {% endif %}
                         </div>
                         <h3 class="card-title purple" style="">
                             {{ a.customer.customer }}

@@ -1,14 +1,13 @@
+
 <div class="row layer">
     <div  class="sub-section comment col-md-2">
         <span id="sub-section{{ ss.id }}" class="editable suggestion sub-section">{{ ss.subsection }}</span>
-
     </div>
 
     <div id="test-group{{ ss.id }}" class="test comment col-md-8">
         {% if tests is defined %}
         {% for t in tests %}
-            {% if t.parent is null and t.datearchive is null %}
-                <div id="test{{ t.id }}" class="layer">
+            <div id="test{{ t.id }}" class="layer">
                     <div class="row">
                         <div class="modify-test col-md-9 input-group mb-3">
                             <span class="editable suggestion test">{{ t.test }}</span>
@@ -77,9 +76,8 @@
                                             <h4>Ajoute une possibilité d'une réponse à choix multiples</h4>
                                         </div>
                                         <div id="group-selection{{ t.id }}">
-                                            {% if selections is defined %}
-                                            {% for s in selections %}
-                                                {% if s.datearchive is null and s.test == t %}
+                                            {% for s in t.Selections %}
+                                                {% if s.datearchive is null %}
                                                     <div id="row-selection{{ s.id }}" class="row layer" style="margin: 1%" >
                                                         <div  class="comment col-md-6">
                                                             <span id="selection{{ s.id }}" class="editable suggestion selection">{{ s.selection }}</span>
@@ -110,7 +108,6 @@
                                                     </div>
                                                 {% endif %}
                                             {% endfor %}
-                                            {% endif %}
                                         </div>
 
                                         <div class="row">
@@ -131,8 +128,7 @@
                                         <h4>Ajoute un enfant au test</h4>
                                     </div>
                                     <div id="table-child{{ t.id }}" class="table-child">
-                                         {% if childs is defined %}
-                                        {% for child in childs %}
+                                        {% for child in ss.auditTests %}
                                             {% if child.parent is not null %}
                                                 {% if child.parent == t and child.datearchive is null%}
                                                     <div id="group-child{{ child.id }}" class="row group-child layer" style="margin: 1%">
@@ -158,7 +154,6 @@
                                                 {% endif %}
                                             {% endif %}
                                         {% endfor %}
-                                        {% endif %}
                                     </div>
                                     <div class="row">
                                         <div id="add-child{{ t.id }}" class="group-child col-md-10">
@@ -175,9 +170,8 @@
                                         <h4>Ajoute une solution au test</h4>
                                     </div>
                                     <div id="table-sol{{ t.id }}">
-                                        {% if solutions is defined %}
-                                        {% for sol in solutions %}
-                                            {% if sol.datearchive is null and sol.test == t %}
+                                        {% for sol in t.solutions %}
+                                            {% if sol.datearchive is null %}
                                                 <div id="group-solution{{ sol.id }}" class="row group-solution layer" style="margin: 1%">
                                                     <div class="col-md-8 comment">
                                                         <span id="sol{{  sol.id }}" class="editable suggestion solution">{{ sol.solution }}</span>
@@ -188,7 +182,6 @@
                                                 </div>
                                             {% endif %}
                                         {% endfor %}
-                                        {% endif %}
                                     </div>
                                     <div class="row">
                                         <div id="add-sol{{ t.id }}" class="group-sol col-md-10">
@@ -204,21 +197,20 @@
                         </div>
                     </div>
                 </div>
-            {% endif %}
         {% endfor %}
         {% endif %}
+
     </div>
     <div class="col-md-1 test-drop">
         <div class="nav-item dropdown">
             <a class="nav-link" id="navbarDropdownMenuAccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="material-icons">arrow_drop_down_circle</i></a>
+                <i class="material-icons test-edit">arrow_drop_down_circle</i></a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuAccount">
                 <div class="test-drop-group">
-                    <a class="dropdown-item" onclick="addTest({{ ss.id }},'check')"><i class="material-icons ">note_add</i>Ajouter un test checkbox</a>
-                    <a class="dropdown-item" onclick="addTest({{ ss.id }},'check')"><i class="material-icons">note_add</i>Ajouter un test checkbox</a>
-                    <a class="dropdown-item" onclick="addTest({{ ss.id }},'select')"><i class="material-icons">note_add</i>Ajouter un test sélection</a>
+                    <a class="dropdown-item" onclick="addTest({{ ss.id }},'check')"><i class="material-icons test-edit">note_add</i>Ajouter un test checkbox</a>
+                    <a class="dropdown-item" onclick="addTest({{ ss.id }},'select')"><i class="material-icons test-edit">note_add</i>Ajouter un test sélection</a>
                 </div>
-                <a class="dropdown-item"><i class="material-icons">delete</i>Archiver la sous-section</a>
+                <a id="trash-sub{{ ss.id }}" class="dropdown-item trash sub"><i class="material-icons test-edit">delete</i>Archiver la sous-section</a>
             </div>
         </div>
     </div>

@@ -14,6 +14,8 @@ use App\Entity\AuditTestPhase;
 use App\Entity\IntCustomer;
 use App\Entity\LogAdminContent;
 use App\Entity\LogAdminUser;
+use App\Entity\LogAuditPerm;
+use App\Entity\LogAudits;
 use App\Entity\Roles;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,6 +41,8 @@ class UserController extends AbstractController
         $repository_customer = $this->getDoctrine()->getRepository(IntCustomer::class);
         $repository_log_user = $this->getDoctrine()->getRepository(LogAdminUser::class);
         $repository_log_content = $this->getDoctrine()->getRepository(LogAdminContent::class);
+        $repository_log_audit = $this->getDoctrine()->getRepository(LogAudits::class);
+        $repository_log_audit_perm = $this->getDoctrine()->getRepository(LogAuditPerm::class);
 
         $user = $repository_user->findOneBy(['id'=>$this->getUser()]);
 
@@ -52,9 +56,18 @@ class UserController extends AbstractController
         if(isset($_GET['nouveau-audit'])){
             $array['new_audit'] = true;
         }
-        if($this->isGranted('ROLE_GLOBAL_ADMIN')){
+        if($this->isGranted('ROLE_ADMIN_USER')){
             $array['loguser'] = $repository_log_user->findAll();
+        }
+        if($this->isGranted('ROLE_ADMIN_CONTENT')){
             $array['logcontent'] = $repository_log_content->findAll();
+        }
+        if($this->isGranted('ROLE_ADMIN_CUSTOMER')){
+            $array['loguser'] = $repository_log_user->findAll();
+        }
+        if($this->isGranted('ROLE_ADMIN_GLOBAL')){
+            $array['logaudit'] = $repository_log_audit->findAll();
+            $array['logperm'] = $repository_log_audit_perm->findAll();
         }
         return $this->render('user/homepage.html.twig', $array);
     }
@@ -66,6 +79,7 @@ class UserController extends AbstractController
      */
     public function viewProfile()
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $repository_user = $this->getDoctrine()->getRepository(AppUser::class);
 
         /**
@@ -98,6 +112,7 @@ class UserController extends AbstractController
      */
     public function generateAvatar()
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $avatar = new InitialAvatar();
         switch($_GET['rq']){
             case 'avatar':

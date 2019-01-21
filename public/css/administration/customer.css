@@ -36,3 +36,8 @@
 .input-fail{
     color: #e53935;
 }
+
+.modal-header-warning{
+    background-color: #e53935;
+    color: white;
+}

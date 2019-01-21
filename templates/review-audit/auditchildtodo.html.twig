@@ -1,0 +1,220 @@
+{% set indexsub = 0 %}
+{% set indextest = 0 %}
+{% set active = 0 %}
+<div id="audit{{ audit.id }}" class="card content">
+    <div class="card-header card-header-tabs card-header-primary">
+        <div class="nav-tabs-navigation">
+            <div class="nav-tabs-wrapper">
+                <ul class="nav nav-tabs" data-tabs="tabs">
+                    {% for section in sections %}
+                        {% if section.auditSubSections is not empty %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if active == 0 %}active{% endif %}" href="#{{ section.section }}" data-toggle="tab">
+                                    <p class="adm-link">{{ section.section }}</p>
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
+                            {% set active = 1 %}
+
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="tab-content">
+            {% set active = 0 %}
+            {% for s in sections %}
+                <div class="tab-pane {% if active == 0 %}active{% endif %}" id="{{ s.section }}">
+                    {% set active = 1 %}
+
+                    {% set i = 0 %}
+                    {% for sub in subs %}
+                        {% if sub.section == s %}
+                            {% set i = i+1 %}
+                            {% set j =0 %}
+                            <h3>{{ i }}.{{  sub.subsection }}</h3>
+                            <div class="row">
+                                <div class="col-md-4 text-center">Test</div>
+                                <div class="col-md-2 text-center header">Réponse</div>
+                                <div class="col-md-3 text-center header">Commentaire</div>
+                                <div class="col-md-2 text-center header">Solution</div>
+                            </div>
+                            {% for t in tests %}
+                                {% if t.test.susbection == sub and t.test.type.type == 'Question' and t.test.parent is null%}
+                                    {% set j = j+1 %}
+                                    {% if last_response is defined and last_response.test.test == t.test.test and last_response.test.susbection == t.test.susbection %}
+                                        {% set indextest = j %}
+                                        {% set indexsub = i %}
+                                    {% endif %}
+                                    <div id="test{{ t.id }}" class="row">
+                                        <div class="col-md-4 comment">
+                                            <span>{{ i }}.{{ j }}.{{ t.test.test }}</span>
+                                        </div>
+                                        <div class="col-md-2 status">
+                                            <div id="status{{ t.id }}" class="{% if t.status.status == 'fail' %}selection-fail{% elseif t.status.status == 'error' %}selection-error{% elseif t.status.status == 'success' %}selection-success{% endif %} select">
+                                                <div class="btn-group">
+                                            <span id="change-status{{ t.id }}" style="cursor:pointer" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                {% if t.status.status == 'fail' %}
+                                                    échec
+                                                {% elseif t.status.status == 'error' %}
+                                                    passe avec erreurs
+                                                {% elseif t.status.status == 'success' %}
+                                                    succès
+                                                {% endif %}
+                                            </span>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <span class="dropdown-item selection-choice selection-fail status">échec</span>
+                                                        <span class="dropdown-item selection-choice selection-error status">passe avec erreurs</span>
+                                                        <span class="dropdown-item selection-choice selection-success status">passe</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 comment">
+                                            {% if t.comment is null %}
+                                                <span class="editable new-comment">Ajouter un commentaire</span>
+                                            {% else %}
+                                                <span class="editable">{{ t.comment }}</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-2 status">
+                                            <div class="select">
+                                                <select class="browser-default custom-select solution">
+                                                    {% if t.solution is null %}
+                                                        <option selected disabled="">Choisir</option>
+                                                    {% endif %}
+
+                                                    {% for sol in t.test.solutions %}
+                                                        {% if t.solution is not null and t.solution == sol %}
+                                                            <option selected>{{ sol.solution }}</option>
+                                                        {% else %}
+                                                            <option>{{ sol.solution }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if tests is not empty %}
+                                        <div id="group-childs{{ t.id }}">
+                                            {% for child in tests %}
+                                                {% if child.test.parent == t.test and t.status.status != 'fail' %}
+                                                    <div id="child{{ child.id }}" class="row child child-row">
+                                                        <div class="col-md-4 child-col">
+                                                            <span style="margin-left: 2%">{{ child.test.test }}</span>
+                                                        </div>
+                                                        <div class="col-md-2 status">
+                                                            <div id="status{{ child.id }}" class="{% if child.status.status == 'fail' %}selection-fail{% elseif child.status.status == 'error' %}selection-error{% elseif child.status.status == 'success' %}selection-success{% endif %} select">
+                                                                <div class="btn-group">
+                                            <span style="cursor:pointer" class="dropdown-toggle" id="change-status{{ child.id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                   {% if child.status.status == 'fail' %}
+                                                       échec
+                                                   {% elseif child.status.status == 'error' %}
+                                                       passe avec erreurs
+                                                   {% elseif child.status.status == 'success' %}
+                                                       succès
+                                                   {% endif %}
+                                            </span>
+                                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                                        <span class="dropdown-item selection-choice selection-fail status child">échec</span>
+                                                                        <span class="dropdown-item selection-choice selection-error status child">passe avec erreurs</span>
+                                                                        <span class="dropdown-item selection-choice selection-success status child">passe</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 comment">
+                                                            {% if child.comment is null %}
+                                                                <span class="editable new-comment child">Ajouter un commentaire</span>
+                                                            {% else %}
+                                                                <span class="editable child">{{ child.comment }}</span>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                {% elseif  t.test.susbection == sub and t.test.type.type == 'Selection' %}
+                                    {% set j = j+1 %}
+
+                                    <div id="test{{ t.id }}" class="row">
+                                        <div class="col-md-4 comment">
+                                            <span>{{ i }}.{{ j }}.{{ t.test.test }}</span>
+                                        </div>
+                                        <div class="col-md-2 status">
+                                            <div id="status{{ t.id }}">
+                                                <select class="browser-default custom-select select">
+                                                    {% if t.selection is null %}
+                                                        <option selected disabled="">Choisir</option>
+                                                    {% endif %}
+
+                                                    {% for s in t.test.Selections %}
+                                                        {% if t.selection is not null and t.selection == s %}
+                                                            <option selected>{{ s.selection }}</option>
+                                                        {% else %}
+                                                            <option>{{ s.selection }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 comment">
+                                            <span class="editable new-comment">Ajouter un commentaire</span>
+                                        </div>
+                                        <div class="col-md-2 status">
+                                            <div class="select">
+                                                <select class="browser-default custom-select">
+                                                    {% if t.solution is null %}
+                                                        <option selected disabled="">Choisir</option>
+                                                    {% endif %}
+
+                                                    {% for sol in t.test.solutions %}
+                                                        {% if t.solution is not null and t.solution == sol %}
+                                                            <option selected>{{ sol.solution }}</option>
+                                                        {% else %}
+                                                            <option>{{ sol.solution }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                {% endif %}
+
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="card col-md-5">
+        <div class="card-header card-header-tabs card-header-primary">
+            <h3>Récapitulatif</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12 jumbo">
+                    <h3 class="text-center bold">Audit en cours</h3>
+                </div>
+                {% if is_granted('Owner',audit.parent) %}
+                <button id="conclude{{ audit.id }}" class="conclude-audit btn btn-block">Conclure l'audit</button>
+                 {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="card col-md-7">
+        <div class="card-header card-header-tabs card-header-primary">
+            <h3>Questionnaire pré-audit</h3>
+        </div>
+    </div>
+</div>

@@ -14,14 +14,24 @@
 {% block body %}
     {{ parent() }}
     <div class="content row">
+        <div class="col-md-12" style="background-color: white">
+            <h2>Révision des audits:</h2>
+            <h3>{{ audit.customer.customer }}</h3>
+        </div>
         <nav class="col-md-1">
             <ul id="action-audit" class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="205">
+                {% if is_granted('Administrateur',audit) %}
                 <li id="display-perm" class="col-md-12" title="Gérer les permissions"><i class="material-icons">supervised_user_circle</i></li>
+                {% endif %}
                 <li class="col-md-12 rounded-circle" title="Voir les logs"><i class="material-icons ">list_alt</i>
+                    {% if is_granted('Owner',audit) %}
                 <li class="col-md-12 rounded-circle" title="Activer la clause de confidentialité"><i class="material-icons">lock</i></li>
+                {% endif %}
+
 
             </ul>
         </nav>
+        {% if is_granted('Administrateur',audit) %}
         <div class="slider" id="slider-perm">
             <div class="row">
                 <div class="col-md-3"></div>
@@ -106,6 +116,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
 
         <div class="container-fluid col-md-11">
             <div class="row">
@@ -115,16 +126,18 @@
             <div class="col-md-11">
             <ul id="nav-version" class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active link-versio " href="#audit{{ audit.id }}" style="color: black">{{ audit.name }}</a>
+                    <a id="nav-audit{{ audit.id }}" class="nav-link active audit-version" style="color: black; cursor: pointer">{{ audit.name }}</a>
                 </li>
 
                 {% if childs is defined %}
                  {% for c in childs %}
                      <li class="nav-item">
-                         <a class="nav-link" href="#audit{{ c.id }}" style="color: black">{{ c.name }}</a>
+                         <a id="nav-audit{{ c.id }}" class="nav-link audit-version" style="color: black; cursor: pointer">{{ c.name }}</a>
                      </li>
                  {% endfor %}
                 {% endif %}
+                {% if is_granted('Modification',audit) %}
+
                 <li class="nav-item">
                     <a class="nav-link active link-versio " style="color: black" data-toggle="modal" data-target="#modalVersion"><i class="material-icons">add</i></a>
                     <div class="modal fade" id="modalVersion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -146,6 +159,10 @@
                                                 <h3>Nom de la version</h3>
                                                 <input type="text" class="form-control" name="input-version" id="input-version" placeholder="" required>
                                                 <input type="hidden" class="form-control" id="" name="audit-perm" value="{{ audit.id }}">
+                                                <div class="custom-control custom-checkbox form-group">
+                                                    <input type="checkbox" id="check-version" class="custom-control-input" name="copy-origin">
+                                                    <label class="custom-control-label" for="check-version">Copier l'orignal</label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -157,6 +174,7 @@
                         </form>
                     </div>
                 </li>
+                {% endif %}
             </ul>
             </div>
             </div>
@@ -164,8 +182,6 @@
             {% set indextest = 0 %}
             {% set active = 0 %}
             <div class="tab-content" id="tab-audit">
-                <div class="tab-pane fade show active" id="audit{{ audit.id }}" role="tabpanel" aria-labelledby="home-tab">
-
                     <div class="card">
                         <div class="card-header card-header-tabs card-header-primary">
                             <div class="nav-tabs-navigation">
@@ -230,16 +246,16 @@
                                                             </div>
                                                             <div class="col-md-3 comment">
                                                                 {% if t.comment is null %}
-                                                                    <span class="editable">/</span>
+                                                                    <span class="">/</span>
                                                                 {% else %}
-                                                                    <span class="editable">{{ t.comment }}</span>
+                                                                    <span class="">{{ t.comment }}</span>
                                                                 {% endif %}
                                                             </div>
                                                             <div class="col-md-3 comment">
                                                                 {% if t.solution is null %}
-                                                                    <span class="editable">/</span>
+                                                                    <span class="">/</span>
                                                                 {% else %}
-                                                                    <span class="editable">{{ t.solution }}</span>
+                                                                    <span class="">{{ t.solution }}</span>
                                                                 {% endif %}
                                                             </div>
 
@@ -269,16 +285,16 @@
                                                                             </div>
                                                                             <div class="col-md-3 comment">
                                                                                 {% if child.comment is null %}
-                                                                                    <span class="editable child">/</span>
+                                                                                    <span class=" child">/</span>
                                                                                 {% else %}
-                                                                                    <span class="editable child">{{ child.comment }}</span>
+                                                                                    <span class=" child">{{ child.comment }}</span>
                                                                                 {% endif %}
                                                                             </div>
                                                                             <div class="col-md-3 comment">
                                                                                 {% if child.solution is null %}
-                                                                                    <span class="editable">/</span>
+                                                                                    <span class="">/</span>
                                                                                 {% else %}
-                                                                                    <span class="editable">{{ child.solution }}</span>
+                                                                                    <span class="">{{ child.solution }}</span>
                                                                                 {% endif %}
                                                                             </div>
                                                                         </div>
@@ -294,31 +310,24 @@
                                                                 <span>{{ i }}.{{ j }}.{{ t.test.test }}</span>
                                                             </div>
                                                             <div class="col-md-2 status">
-                                                                <div id="status{{ t.id }}" class="select">
-                                                                    <select class="browser-default custom-select">
-                                                                        {% if t.selection is null %}
-                                                                            <option selected disabled="">Choisir</option>
-                                                                        {% endif %}
-
-                                                                        {% for s in t.test.Selections %}
-                                                                            {% if t.selection is not null and t.selection == s %}
-                                                                                <option selected>{{ s.selection }}</option>
-                                                                            {% else %}
-                                                                                <option>{{ s.selection }}</option>
-                                                                            {% endif %}
-                                                                        {% endfor %}
-                                                                    </select>
-
+                                                                <div  class="{% if t.status.status == 'fail' %}selection-fail{% elseif t.status.status == 'error' %}selection-error{% elseif t.status.status == 'success' %}selection-success{% endif %} select">
+                                                                    <div class="btn-group">
+                                            <span id="change-status{{ t.id }}" style="cursor:pointer" aria-haspopup="true" aria-expanded="false">
+                                                 {% if t.selection is not null %}
+                                                 {{ t.selection.selection }}
+                                                {% endif %}
+                                            </span>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-3 comment">
-                                                                <span class="editable">/</span>
+                                                                <span class="">/</span>
                                                             </div>
                                                             <div class="col-md-3 comment">
                                                                 {% if t.solution is null %}
-                                                                    <span class="editable">/</span>
+                                                                    <span class="">/</span>
                                                                 {% else %}
-                                                                    <span class="editable">{{ t.solution }}</span>
+                                                                    <span class="">{{ t.solution }}</span>
                                                                 {% endif %}
                                                             </div>
                                                         </div>
@@ -374,224 +383,10 @@
 
                </div>
             </div>
-                </div>
-                {% if childs is defined %}
-                {% for c in childs %}
-                   <div class="tab-pane fade" id="audit{{ c.id }}" role="tabpanel" aria-labelledby="home-tab">
-                       <div class="card">
-                           <div class="card-header card-header-tabs card-header-primary">
-                               <div class="nav-tabs-navigation">
-                                   <div class="nav-tabs-wrapper">
-                                       <ul class="nav nav-tabs" data-tabs="tabs">
-                                           {% for section in sections %}
-                                               <li class="nav-item">
-                                                   <a class="nav-link {% if active == 0 %}active{% endif %}" href="#{{ section.id }}" data-toggle="tab">
-                                                       <p class="adm-link">{{ section.section }}</p>
-                                                       <div class="ripple-container"></div>
-                                                   </a>
-                                               </li>
-                                               {% set active = 1 %}
-                                           {% endfor %}
-                                       </ul>
-                                   </div>
-                               </div>
-                           </div>
-                           <div class="card-body">
-                               <div class="tab-content">
-                                   {% set active = 0 %}
-                                   {% for s in sections %}
-                                       {% set i = 0 %}
-
-                                       <div class="tab-pane {% if active == 0 %}active{% endif %}" id="{{ s.id }}">
-                                           {% for sub in subs %}
-                                               {% if sub.section == s %}
-                                                   {% set i = i+1 %}
-                                                   {% set j =0 %}
-                                                   <h4>{{ i }}.{{  sub.subsection }}</h4>
-                                                   <div class="row">
-                                                       <div class="col-md-4 text-center">Test</div>
-                                                       <div class="col-md-2 text-center header">Réponse</div>
-                                                       <div class="col-md-3 text-center header">Commentaire</div>
-                                                       <div class="col-md-2 text-center header">Solution</div>
-                                                   </div>
-                                                   {% for t in tests %}
-                                                       {% if t.test.susbection == sub and t.test.type.type == 'Question' and t.test.parent is null%}
-                                                           {% set j = j+1 %}
-                                                           {% if last_response is defined and last_response.test.test == t.test.test and last_response.test.susbection == t.test.susbection %}
-                                                               {% set indextest = j %}
-                                                               {% set indexsub = i %}
-                                                           {% endif %}
-                                                           <div id="test{{ t.id }}" class="row">
-                                                               <div class="col-md-4 comment">
-                                                                   <span>{{ i }}.{{ j }}.{{ t.test.test }}</span>
-                                                               </div>
-                                                               <div class="col-md-2 status">
-                                                                   <div id="status{{ t.id }}" class="{% if t.status.status == 'fail' %}selection-fail{% elseif t.status.status == 'error' %}selection-error{% elseif t.status.status == 'success' %}selection-success{% endif %} select">
-                                                                       <div class="btn-group">
-                                            <span id="change-status{{ t.id }}" style="cursor:pointer" aria-haspopup="true" aria-expanded="false">
-                                                {% if t.status.status == 'fail' %}
-                                                    échec
-                                                {% elseif t.status.status == 'error' %}
-                                                    passe avec erreurs
-                                                {% elseif t.status.status == 'success' %}
-                                                    succès
-                                                {% endif %}
-                                            </span>
-                                                                       </div>
-                                                                   </div>
-                                                               </div>
-                                                               <div class="col-md-3 comment">
-                                                                   {% if t.comment is null %}
-                                                                       <span class="editable">/</span>
-                                                                   {% else %}
-                                                                       <span class="editable">{{ t.comment }}</span>
-                                                                   {% endif %}
-                                                               </div>
-                                                               <div class="col-md-3 comment">
-                                                                   {% if t.solution is null %}
-                                                                       <span class="editable">/</span>
-                                                                   {% else %}
-                                                                       <span class="editable">{{ t.solution }}</span>
-                                                                   {% endif %}
-                                                               </div>
-
-                                                           </div>
-                                                           {% if tests is not empty %}
-                                                               <div id="group-childs{{ t.id }}">
-                                                                   {% for child in tests %}
-                                                                       {% if child.test.parent == t.test and t.status.status != 'fail' %}
-                                                                           <div id="child{{ child.id }}" class="row child child-row">
-                                                                               <div class="col-md-4 child-col">
-                                                                                   <span style="margin-left: 2%">{{ child.test.test }}</span>
-                                                                               </div>
-                                                                               <div class="col-md-2 status">
-                                                                                   <div id="status{{ child.id }}" class="{% if child.status.status == 'fail' %}selection-fail{% elseif child.status.status == 'error' %}selection-error{% elseif child.status.status == 'success' %}selection-success{% endif %} select">
-                                                                                       <div class="btn-group">
-                                            <span style="cursor:pointer" id="change-status{{ child.id }}" aria-expanded="false">
-                                                   {% if child.status.status == 'fail' %}
-                                                       échec
-                                                   {% elseif child.status.status == 'error' %}
-                                                       passe avec erreurs
-                                                   {% elseif child.status.status == 'success' %}
-                                                       succès
-                                                   {% endif %}
-                                            </span>
-                                                                                       </div>
-                                                                                   </div>
-                                                                               </div>
-                                                                               <div class="col-md-3 comment">
-                                                                                   {% if child.comment is null %}
-                                                                                       <span class="editable child">/</span>
-                                                                                   {% else %}
-                                                                                       <span class="editable child">{{ child.comment }}</span>
-                                                                                   {% endif %}
-                                                                               </div>
-                                                                               <div class="col-md-3 comment">
-                                                                                   {% if child.solution is null %}
-                                                                                       <span class="editable">/</span>
-                                                                                   {% else %}
-                                                                                       <span class="editable">{{ child.solution }}</span>
-                                                                                   {% endif %}
-                                                                               </div>
-                                                                           </div>
-                                                                       {% endif %}
-                                                                   {% endfor %}
-                                                               </div>
-                                                           {% endif %}
-                                                       {% elseif  t.test.susbection == sub and t.test.type.type == 'Selection' %}
-                                                           {% set j = j+1 %}
-
-                                                           <div id="test{{ t.id }}" class="row">
-                                                               <div class="col-md-4 comment">
-                                                                   <span>{{ i }}.{{ j }}.{{ t.test.test }}</span>
-                                                               </div>
-                                                               <div class="col-md-2 status">
-                                                                   <div id="status{{ t.id }}" class="select">
-                                                                       <select class="browser-default custom-select">
-                                                                           {% if t.selection is null %}
-                                                                               <option selected disabled="">Choisir</option>
-                                                                           {% endif %}
-
-                                                                           {% for s in t.test.Selections %}
-                                                                               {% if t.selection is not null and t.selection == s %}
-                                                                                   <option selected>{{ s.selection }}</option>
-                                                                               {% else %}
-                                                                                   <option>{{ s.selection }}</option>
-                                                                               {% endif %}
-                                                                           {% endfor %}
-                                                                       </select>
-
-                                                                   </div>
-                                                               </div>
-                                                               <div class="col-md-3 comment">
-                                                                   <span class="editable">/</span>
-                                                               </div>
-                                                               <div class="col-md-3 comment">
-                                                                   {% if t.solution is null %}
-                                                                       <span class="editable">/</span>
-                                                                   {% else %}
-                                                                       <span class="editable">{{ t.solution }}</span>
-                                                                   {% endif %}
-                                                               </div>
-                                                           </div>
-
-                                                       {% endif %}
-
-                                                   {% endfor %}
-                                               {% endif %}
-                                           {% endfor %}
-                                       </div>
-                                       {% set active = 1 %}
-                                   {% endfor %}
-                               </div>
-                           </div>
-                       </div>
-                       <div class="row">
-                           <div class="card col-md-5">
-                               <div class="card-header card-header-tabs card-header-primary">
-                                   <h3>Récapitulatif</h3>
-                               </div>
-                               <div class="card-body">
-                                   <div class="row">
-                                       <div class="col-md-9">
-                                           {% for s in sections %}
-                                               {% for p in points %}
-                                                   {% if p.section == s %}
-                                                       <div class="row">
-                                                           <div class="col-md-4"><h4 class="bold">{{ s.section }}</h4></div>
-                                                           <div class="col-md-8">
-                                                               <div class="progress">
-                                                                   <div class="progress-bar progress-bar-striped {% if p.point < 50 %}bg-danger{% elseif p.point >= 50 and p.point <70 %}bg-warning{% elseif p.point >= 70 %}bg-success{% endif %}" role="progressbar" style="width: {{ p.point }}%" aria-valuenow="{{ p.point }}" aria-valuemin="0" aria-valuemax="100">{{ p.point }}%</div>
-                                                               </div>
-                                                           </div>
-                                                       </div>
-                                                   {% endif %}
-                                               {% endfor %}
-                                           {% endfor %}
-                                       </div>
-                                       <div class="col-md-3">
-                                           <div class="jumbo">
-                                               <h4>Score:</h4>
-                                               <hr>
-                                               <h4 class="bold">{{ total }}%</h4>
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
-                           </div>
-                           <div class="card col-md-7">
-                               <div class="card-header card-header-tabs card-header-primary">
-                                   <h3>Questionnaire pré-audit</h3>
-                               </div>
-
-                           </div>
-                       </div>
-                   </div>
-                {% endfor %}
-                {% endif %}
             </div>
     </div>
     </div>
+
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
@@ -599,6 +394,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/bootstrap-select.min.js"></script>
 
     <script src="../js/audit/review.js"></script>
+    <script src="../js/audit/audit.js"></script>
+
     <script src="../vendor/jquery-ui-1.12.1/jquery-ui.js"></script>
 
     <script>

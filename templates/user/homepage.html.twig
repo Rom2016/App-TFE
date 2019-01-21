@@ -47,7 +47,7 @@
                     </div>
                 </div>
             </div>
-
+            {% if is_granted('ROLE_ADMIN_USER') or is_granted('ROLE_ADMIN_CONTENT') or is_granted('ROLE_ADMIN_CUSTOMER') %}
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header card-header-warning">
@@ -55,18 +55,28 @@
                         <p class="card-category"></p>
                     </div>
                     <div class="card-body" style="overflow-y: scroll; height:300px;">
-                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <div class="row">
+                            <div class="col-md-3"></div>
+                        <ul class="nav nav-tabs" id="myTab" role="tablist" style="border-bottom: solid 1px ">
+                            {% if is_granted('ROLE_ADMIN_USER') %}
                             <li class="nav-item">
                                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#log-user" role="tab" aria-controls="home" aria-selected="true" style="color: black">Utilisateur</a>
                             </li>
+                            {% endif %}
+                            {% if is_granted('ROLE_ADMIN_CUSTOMER') %}
                             <li class="nav-item">
                                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#log-custom" role="tab" aria-controls="profile" aria-selected="false" style="color: black">Client</a>
                             </li>
+                            {% endif %}
+                            {% if is_granted('ROLE_ADMIN_CONTENT') %}
                             <li class="nav-item">
                                 <a class="nav-link" id="contact-tab" data-toggle="tab" href="#log-content" role="tab" aria-controls="contact" aria-selected="false" style="color: black">Contenu de l'audit</a>
                             </li>
+                            {% endif %}
                         </ul>
+                        </div>
                         <div class="tab-content" id="">
+                            {% if is_granted('ROLE_ADMIN_USER') %}
                             <div class="tab-pane fade show active" id="log-user" role="tabpanel" aria-labelledby="home-tab">
                                 <table class="table" style="text-align: center">
                                     <thead>
@@ -87,6 +97,8 @@
                                     </tbody>
                                 </table>
                             </div>
+                            {% endif %}
+                            {% if is_granted('ROLE_ADMIN_CUSTOMER') %}
                             <div class="tab-pane fade" id="log-custom" role="tabpanel" aria-labelledby="profile-tab">
                                 <table class="table" style="text-align: center">
                                     <thead>
@@ -107,6 +119,8 @@
                                     </tbody>
                                 </table>
                             </div>
+                            {% endif %}
+                            {% if is_granted('ROLE_ADMIN_CONTENT') %}
                             <div class="tab-pane fade" id="log-content" role="tabpanel" aria-labelledby="contact-tab">
                                 <table class="table" style="text-align: center">
                                     <thead>
@@ -120,7 +134,7 @@
                                     {% for l in logcontent %}
                                         <tr>
                                             <td class="log-user">{{ l.creator.first_name }} {{ l.creator.second_name }}</td>
-                                            <td class="log-icon">{% if l.action.action == 'Créer' %} <i class="material-icons" data-toggle="tooltip" data-placement="top" title="Tooltip on top">create</i>{% elseif l.action.action == 'Supprimer' %} <i class="material-icons" data-toggle="tooltip" data-placement="top" title="Tooltip on top">delete</i>{% endif %}</td>
+                                            <td class="log-icon">{% if l.action.action == 'Créer' %} <i class="material-icons" data-toggle="tooltip" data-placement="top" title="Tooltip on top">create</i>{% elseif l.action.action == 'Supprimer' %} <i class="material-icons" data-toggle="tooltip" data-placement="top" title="Tooltip on top">delete</i>{% elseif l.action.action == 'Modifier' %} <i class="material-icons" title="Modifier">edit</i>{% endif %}</td>
                                             <td class="">{{ l.element }}</td>
                                             <td class="log-user">{{ l.name }}</td>
                                             <td class="log-date">{{ l.datecreation|date('Y-m-d H:i:s')}}</td>
@@ -129,11 +143,13 @@
                                     </tbody>
                                 </table>
                             </div>
+                            {% endif %}
                         </div>
-
                     </div>
                 </div>
             </div>
+            {% endif %}
+            {% if is_granted('ROLE_ADMIN_GLOBAL') %}
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header card-header-warning">
@@ -144,11 +160,12 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
 
         <div class="row">
 
-                 <div class="col-md-7">
+                 <div class="col-md-6">
                 <div class="card">
                     <div class="card-header card-header-primary">
                         <h3 class="card-title">Mes audits créés</h3>
@@ -183,16 +200,75 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-5">
+            {% if is_granted('ROLE_ADMIN_GLOBAL') %}
+
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-header card-header-warning">
                         <h3 class="card-title">Historique des activités des audits</h3>
                         <p class="card-category"></p>
                     </div>
                     <div class="card-body" style="overflow-y: scroll; height:300px;">
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <ul class="nav nav-tabs" id="myTab" role="tablist" style="border-bottom: solid 1px ">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#log-audit-action" role="tab" aria-controls="home" aria-selected="true" style="color: black">Action</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#log-audit-perm" role="tab" aria-controls="profile" aria-selected="false" style="color: black">Permission</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="">
+                            <div class="tab-pane fade show active" id="log-audit-action" role="tabpanel" aria-labelledby="home-tab">
+                                <table class="table" style="text-align: center">
+                                    <thead>
+                                    <th>Source</th>
+                                    <th>Action</th>
+                                    <th>Audit</th>
+                                    <th><i class="material-icons">watch_later</i></th>
+                                    </thead>
+                                    <tbody>
+                                    {% for l in logaudit %}
+                                        <tr>
+                                            <td class="log-user">{{ l.source.first_name }} {{ l.source.second_name }}</td>
+                                            <td class="log-icon">{% if l.action.action == 'Créer' %} <i class="material-icons"  title="Créer">create</i>{% elseif l.action.action == 'Supprimer' %} <i class="material-icons" title="Désactiver">delete</i>{% elseif l.action.action == 'Terminer' %} <i class="material-icons" title="Terminer">done</i>{% endif %}</td>
+                                            <td class="log-user">{{ l.audit.name}}</td>
+                                            <td class="log-date">{{ l.date|date('Y-m-d H:i:s')}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade show active" id="log-audit-perm" role="tabpanel" aria-labelledby="home-tab">
+                                <table class="table" style="text-align: center">
+                                    <thead>
+                                    <th>Source</th>
+                                    <th>Permission</th>
+                                    <th>Audit</th>
+                                    <th>Récipient</th>
+                                    <th><i class="material-icons">watch_later</i></th>
+                                    </thead>
+                                    <tbody>
+                                    {% for l in logperm %}
+                                        <tr>
+                                            <td class="log-user">{{ l.source.first_name }} {{ l.source.second_name }}</td>
+                                            <td class="log-icon">{% if l.permission.permission == 'Lecture' %} <i class="material-icons" title="Lecture">remove_red_eye</i>{% elseif l.permission.permission == 'Modification' %} <i class="material-icons" title="Modification">create</i>{% elseif l.permission.permission == 'Administrateur' %}<i class="material-icons" title="Administrateur">supervisor_account</i>{% endif %}</td>
+                                            <td class="log-user">{{ l.audit.name}}</td>
+                                            <td class="log-user">{{ l.recipient.first_name }} {{ l.recipient.second_name }}</td>
+                                            <td class="log-date">{{ l.date|date('Y-m-d H:i:s')}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
         <div class="row">
 

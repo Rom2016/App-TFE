@@ -284,10 +284,7 @@ class AppUser implements UserInterface, \Serializable
         return $this;
     }
 
-    public function canRead(IntAudit $audit)
-    {
 
-    }
 
 
 
@@ -389,7 +386,6 @@ class AppUser implements UserInterface, \Serializable
         $role = $this->getUserRoles();
         foreach ($role as $key => $value){
             $roles[] =$value->getRole()->getRole();
-
         }
         return $roles;
     }

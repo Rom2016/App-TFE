@@ -54,5 +54,22 @@ class SecurityController extends AbstractController
         }
     }
 
-
+    /**
+     * @Route("/voir-audit/audit/connexion", name="login_audit")
+     */
+    public function loginAudit(AuthenticationUtils $authenticationUtils)
+    {
+        $securityContext = $this->container->get('security.authorization_checker');
+        if (!$securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            $error = $authenticationUtils->getLastAuthenticationError();
+            $lastUsername = $authenticationUtils->getLastUsername();
+            return $this->render('security/admin_form.html.twig', array(
+                'last_username' => $lastUsername,
+                'error'         => $error,
+            ));
+        }
+        else {
+            return $this->redirectToRoute('homepage');
+        }
+    }
 }

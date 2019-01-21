@@ -1,7 +1,7 @@
 $('#fName').focusout(function(){
     username = $('#userEmail').val();
     $.ajax({
-        url: '../administration/vérifie-utilisateur',
+        url: '../administration/utilisateur/vérifie-utilisateur',
         type: 'POST',
         data: 'email='+username,
     }).done(function(response){
@@ -21,7 +21,7 @@ $('#fName').focusout(function(){
 $('#sName').focusout(function(){
     username = $('#userEmail').val();
     $.ajax({
-        url: '../administration/vérifie-utilisateur',
+        url: '../administration/utilisateur/vérifie-utilisateur',
         type: 'POST',
         data: 'email='+username,
     }).done(function(response){
@@ -42,7 +42,7 @@ $('#sName').focusout(function(){
 $('#userEmail').focusout(function(){
     username = $('#userEmail').val();
     $.ajax({
-        url: '../administration/vérifie-utilisateur',
+        url: '../administration/utilisateur/vérifie-utilisateur',
         type: 'POST',
         data: 'email='+username,
     }).done(function(response){
@@ -91,6 +91,10 @@ function deleteUser(id,name){
                             title: 'Utilisateur supprimé avec succès!'
                         })
                         $('#user'+id).remove();
+                    $('#slider'+id).slideReveal('hide');
+
+                    $('#slider'+id).remove();
+
                     }).fail(function(){
                     swal({
                         position: 'top-end',
@@ -99,7 +103,10 @@ function deleteUser(id,name){
                         timer: 1500,
                         title: 'Utilisateur supprimé avec succès!'
                     })
-                    $('#user'+id).remove()                    });
+                    $('#user'+id).remove()});
+                    $('#slider'+id).slideReveal('hide');
+                    $('#slider'+id).remove();
+
             });
         },
     })

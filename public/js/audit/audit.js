@@ -114,7 +114,7 @@ $('body').on('click', '.editable', function(){
 /**
  * Fonction qui gère l'enregistrement aux tests sélection
  */
-$('select').on('change', function() {
+$('body').on('change', '.select', function(){
     split = $(this).closest('.row').attr('id').split('test');
     id = split[1];
     if($(this).hasClass('solution')){

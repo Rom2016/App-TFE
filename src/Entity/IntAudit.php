@@ -85,6 +85,16 @@ class IntAudit
      */
     private $userPermissions;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\LogAudits", mappedBy="audit")
+     */
+    private $logAudits;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\LogAuditPerm", mappedBy="audit")
+     */
+    private $logPerm;
+
 
 
     /**
@@ -104,6 +114,8 @@ class IntAudit
         $this->intAudits = new ArrayCollection();
         $this->audits = new ArrayCollection();
         $this->userPermissions = new ArrayCollection();
+        $this->logAudits = new ArrayCollection();
+        $this->logPerm = new ArrayCollection();
 
     }
 
@@ -414,6 +426,68 @@ class IntAudit
             // set the owning side to null (unless already changed)
             if ($userPermission->getAudit() === $this) {
                 $userPermission->setAudit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LogAudits[]
+     */
+    public function getLogAudits(): Collection
+    {
+        return $this->logAudits;
+    }
+
+    public function addLogAudit(LogAudits $logAudit): self
+    {
+        if (!$this->logAudits->contains($logAudit)) {
+            $this->logAudits[] = $logAudit;
+            $logAudit->setAudit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLogAudit(LogAudits $logAudit): self
+    {
+        if ($this->logAudits->contains($logAudit)) {
+            $this->logAudits->removeElement($logAudit);
+            // set the owning side to null (unless already changed)
+            if ($logAudit->getAudit() === $this) {
+                $logAudit->setAudit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LogAuditPerm[]
+     */
+    public function getLogPerm(): Collection
+    {
+        return $this->logPerm;
+    }
+
+    public function addLogPerm(LogAuditPerm $logPerm): self
+    {
+        if (!$this->logPerm->contains($logPerm)) {
+            $this->logPerm[] = $logPerm;
+            $logPerm->setAudit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLogPerm(LogAuditPerm $logPerm): self
+    {
+        if ($this->logPerm->contains($logPerm)) {
+            $this->logPerm->removeElement($logPerm);
+            // set the owning side to null (unless already changed)
+            if ($logPerm->getAudit() === $this) {
+                $logPerm->setAudit(null);
             }
         }
 

@@ -31,25 +31,27 @@ $('body').on('click', '.select-user', function(){
     $('#search-result').remove();
     $('#search-user').val(val);
 })
-/*
-$('#search-user').autocomplete({
-    source : function(requete, reponse){ // les deux arguments représentent les données nécessaires au plugin
-        $.ajax({
-            url : 'http://ws.geonames.org/searchJSON', // on appelle le script JSON
-            dataType : 'json', // on spécifie bien que le type de données est en JSON
-            data : {
-                name_startsWith : $('#recherche').val(), // on donne la chaîne de caractère tapée dans le champ de recherche
-                maxRows : 15
-            },
 
-            success : function(donnee){
-                reponse($.map(donnee.geonames, function(objet){
-                    return objet.name + ', ' + objet.countryName; // on retourne cette forme de suggestion
-                }));
-            }
-        });
-    }
-});
-*/
-$('.selectpicker').selectpicker();
+$('.audit-version').click(function () {
+    split = $(this).attr('id').split('audit');
+    data = {'id':split[1]};
+    $.ajax({
+        url: '../voir-audit/audit/enfant',
+        type: 'POST',
+        data: data
+    }).done(function(response){
+        $('#tab-audit').html(response);
+    })
+})
 
+$('body').on('click', '.conclude-audit', function() {
+    split = $(this).attr('id').split('conclude');
+    data = {'id':split[1]};
+    $.ajax({
+        url: '../voir-audit/audit/conclure-audit',
+        type: 'POST',
+        data: data
+    }).done(function(response){
+        $('#tab-audit').html(response);
+    })
+})

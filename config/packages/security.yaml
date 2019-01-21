@@ -19,8 +19,18 @@ security:
                           check_path: login_admin
                 provider: app_db
                 logout:
-                      path:   logout_admin
+                      path:   ^/administration
                       target: /
+        audit_login:
+                        pattern: ^/voir-audit/audit
+                        anonymous: ~
+                        form_login:
+                                  login_path: login_audit
+                                  check_path: login_audit
+                        provider: app_db
+                        logout:
+                              path:   ^/administration
+                              target: /
         main_login:
             pattern: ^/
             anonymous: ~
@@ -38,15 +48,16 @@ security:
             ROLE_ADMIN_USER: ROLE_CREATOR
             ROLE_ADMIN_CONTENT: ROLE_CREATOR
             ROLE_ADMIN_CUSTOMER: ROLE_CREATOR
-            ROLE_GLOBAL_ADMIN: [ROLE_ADMIN_USER, ROLE_ADMIN_CONTENT, ROLE_ADMIN_CUSTOMER]
-            ROLE_SUPER_ADMIN: ROLE_GLOBAL_ADMIN
+            ROLE_ADMIN_GLOBAL: [ROLE_ADMIN_USER, ROLE_ADMIN_CONTENT, ROLE_ADMIN_CUSTOMER]
+            ROLE_SUPER_ADMIN: ROLE_ADMIN_GLOBAL
     access_control:
       - { path: ^/administration/utilisateurs, roles: ROLE_ADMIN_USER }
       - { path: ^/administration/contenu-audits, roles: ROLE_ADMIN_CONTENT }
       - { path: ^/administration/clients, roles: ROLE_ADMIN_CUSTOMER }
       - { path: ^/audit/créer, roles: ROLE_CREATOR }
-      - { path: ~/connexion, roles: IS_AUTHENTICATED_ANONYMOUSLY }
       - { path: ^/$, roles: ROLE_USER }
       - { path: ^/profile, roles: ROLE_USER}
+      - { path: ~/connexion, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
 
 

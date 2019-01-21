@@ -119,8 +119,8 @@ Administration
                                         </thead>
                                         <tbody>
                                         {% for user in users %}
-                                            {% if app.user.id != user.id and user.deactivated is null%}
-                                            <tr class="tr-shadow tr-user {% if user.deactivated is not null %}deactivated{% endif %}" id="user{{ user.id }}">
+                                            {% if app.user.id != user.id and user.deactivated == false%}
+                                            <tr class="tr-shadow tr-user" id="user{{ user.id }}">
                                                 <td><img {% if not app.user.profile_pic %}src="../génèrer-avatar?rq=administration&p={{ user.first_name }}&n={{ user.second_name }}"{% else %}src="../images/profile_pic/{{ app.user.id }}.{{ app.user.profile_pic }}"{% endif %} class="rounded-circle" style="width: 30px" /></td>
                                                 <td>{{ user.first_name }} {{ user.secondName }}</td>
                                                 <td>
@@ -142,11 +142,22 @@ Administration
                                                     <h2>{{ user.first_name }} {{ user.secondName }}</h2>
                                                 </div>
                                                 <div class="row">
+                                                    {% set i = false %}
+                                                    {% if is_granted('ROLE_SUPER_ADMIN') == false %}
+                                                        {% for r in user.roles %}
+                                                        {% if r == 'ROLE_SUPER_ADMIN' and is_granted('ROLE_ADMIN_USER')  or r == 'ROLE_SUPER_ADMIN' and is_granted('ROLE_ADMIN_GLOBAL') or r == 'ROLE_ADMIN_GLOBAL' and is_granted('ROLE_ADMIN_USER') or r == 'ROLE_ADMIN_GLOBAL' and is_granted('ROLE_ADMIN_GLOBAL') %}
+                                                            {% set i = true %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% endif %}
+
+                                                    {% if i == false %}
                                                     <div class="col-md-1">
-                                                      <i class="material-icons" onclick="deleteUser({{user.id }},'{{ user.first_name }} {{ user.secondName }}')">delete</i>
+                                                      <i class="material-icons" style="cursor: pointer" title="Désactiver le compte" onclick="deleteUser({{user.id }},'{{ user.first_name }} {{ user.secondName }}')">delete</i>
                                                     </div>
+                                                    {% endif %}
                                                     <div class="col-md-1">
-                                                      <i class="material-icons">refresh</i>
+                                                      <i class="material-icons" style="cursor: pointer" title="Réinitialiser le mot de passe">refresh</i>
                                                     </div>
                                                 </div>
                                                 <div class="user-header">

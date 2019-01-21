@@ -64,7 +64,7 @@ class AuditVoter extends Voter
             case self::WRITE:
                 return $this->canEdit($audit, $user);
             case self::ADMIN:
-                return $this->canView($audit, $user, $token);
+                return $this->isAdmin($audit, $user, $token);
             case self::OWNER:
                 return $this->isOwner($audit, $user);
         }
@@ -76,7 +76,7 @@ class AuditVoter extends Voter
     {
 
         foreach ($user->getAuditPermission() as $key => $value){
-            if($value->getPermission() == 'Lecture' && $value->getAudit() == $audit){
+            if($value->getPermission()->getPermission() == 'Lecture' && $value->getAudit() == $audit){
                 return true;
             }
         }
@@ -84,13 +84,12 @@ class AuditVoter extends Voter
             return true;
         }
         return false;
-
     }
 
     private function canEdit(IntAudit $audit, AppUser $user)
     {
         foreach ($user->getAuditPermission() as $key => $value){
-            if($value->getPermission() == 'Modification' && $value->getAudit() == $audit){
+            if($value->getPermission()->getPermission() == 'Modification' && $value->getAudit() == $audit){
                 return true;
             }
         }
@@ -103,7 +102,7 @@ class AuditVoter extends Voter
     private function isAdmin(IntAudit $audit, AppUser $user)
     {
         foreach ($user->getAuditPermission() as $key => $value){
-            if($value->getPermission() == 'Administrateur' && $value->getAudit() == $audit){
+            if($value->getPermission()->getPermission() == 'Administrateur' && $value->getAudit() == $audit){
                 return true;
             }
         }
@@ -115,7 +114,7 @@ class AuditVoter extends Voter
     private function isOwner(IntAudit $audit, AppUser $user)
     {
         foreach ($user->getCreations() as $key => $value){
-            if($value->getCreator() == $user && $value->getAudit() == $audit){
+            if($value->getAudit() == $audit){
                 return true;
             }
         }

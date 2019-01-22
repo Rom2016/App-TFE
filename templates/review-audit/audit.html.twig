@@ -27,8 +27,6 @@
                     {% if is_granted('Owner',audit) %}
                 <li class="col-md-12 rounded-circle" title="Activer la clause de confidentialité"><i class="material-icons">lock</i></li>
                 {% endif %}
-
-
             </ul>
         </nav>
         {% if is_granted('Administrateur',audit) %}
@@ -132,7 +130,34 @@
                 {% if childs is defined %}
                  {% for c in childs %}
                      <li class="nav-item">
-                         <a id="nav-audit{{ c.id }}" class="nav-link audit-version" style="color: black; cursor: pointer">{{ c.name }}</a>
+                         <a id="nav-audit{{ c.id }}" class="nav-link audit-version" style="color: black; cursor: pointer">{{ c.name }}{% if is_granted('Owner',c) %}<i class="material-icons" data-toggle="modal" data-target="#deleteVersion{{ c.id }}">clear</i>{% endif %}</a>
+                         <div class="modal fade" id="deleteVersion{{ c.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                             <form action="" method="post">
+                                 <div class="modal-dialog" role="document">
+                                     <div class="modal-content">
+                                         <div class="modal-header">
+                                             <h3 class="modal-title bold" id="exampleModalLabel">Archiver la version</h3>
+                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                 <span aria-hidden="true">&times;</span>
+                                             </button>
+                                         </div>
+                                         <div class="modal-body">
+                                             <div class="row">
+                                                 <div class="col-md-6">
+                                                     <i class="material-icons" style="font-size: 200px">delete</i>
+                                                 </div>
+                                                 <div class="col-md-5">
+                                                     <h3>{{ c.name }}</h3>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                         <div class="modal-footer">
+                                             <button type="submit" name="submit_audit" class="btn btn-danger" value="version">Archiver</button>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </form>
+                         </div>
                      </li>
                  {% endfor %}
                 {% endif %}
@@ -255,7 +280,7 @@
                                                                 {% if t.solution is null %}
                                                                     <span class="">/</span>
                                                                 {% else %}
-                                                                    <span class="">{{ t.solution }}</span>
+                                                                    <span class="">{{ t.solution.solution }}</span>
                                                                 {% endif %}
                                                             </div>
 
@@ -294,7 +319,7 @@
                                                                                 {% if child.solution is null %}
                                                                                     <span class="">/</span>
                                                                                 {% else %}
-                                                                                    <span class="">{{ child.solution }}</span>
+                                                                                    <span class="">{{ child.solution.solution }}</span>
                                                                                 {% endif %}
                                                                             </div>
                                                                         </div>
@@ -327,7 +352,7 @@
                                                                 {% if t.solution is null %}
                                                                     <span class="">/</span>
                                                                 {% else %}
-                                                                    <span class="">{{ t.solution }}</span>
+                                                                    <span class="">{{ t.solution.solution }}</span>
                                                                 {% endif %}
                                                             </div>
                                                         </div>

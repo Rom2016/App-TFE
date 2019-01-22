@@ -200,6 +200,8 @@ class AdministrationController extends AbstractController
             $array['version'] = $version;
 
         }
+        $array['section'] = $repository_section->findBy(['archived_date'=>null]);
+        $array['snap'] = $repository_snap->findAll();
         $array['log'] = $repository_log->findAll();
         return $this->render('administration/audits.html.twig', $array);
     }
@@ -1066,7 +1068,7 @@ class AdministrationController extends AbstractController
         $tests_pre = $repository_test_pre->findBy(['date_archive'=>null]);
         $entityManager = $this->getDoctrine()->getManager();
         $date = new \DateTime(date('Y-m-d H:i:s'));
-        $name = htmlentities($_POST['name']);
+        $name = $_POST['name'];
         $snap = new Snapshot($name,$date);
         $entityManager->persist($snap);
         foreach ($tests as $key => $value){
